@@ -83,3 +83,5 @@ tests/title
 tests/vulkan
 tests/windows
 
+.idea
+cmake-build-debug

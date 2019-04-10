@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.4.1)
 
-project(GLFW C)
+project(GLFW LANGUAGES CXX C)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fexceptions")
 
 set(CMAKE_LEGACY_CYGWIN_WIN32 OFF)
 
@@ -339,6 +341,10 @@ configure_file(src/glfw3.pc.in src/glfw3.pc @ONLY)
 #--------------------------------------------------------------------
 # Add subdirectories
 #--------------------------------------------------------------------
+
+add_subdirectory(assimp)
+add_subdirectory(assimpmodel)
+
 add_subdirectory(src)
 
 if (GLFW_BUILD_EXAMPLES)
