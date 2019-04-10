@@ -54,7 +54,7 @@ GLFWbool _glfwInitVulkan(int mode)
 #elif defined(_GLFW_WIN32)
     _glfw.vk.handle = _glfw_dlopen("vulkan-1.dll");
 #elif defined(_GLFW_COCOA)
-    _glfw.vk.handle = _glfw_dlopen("libMoltenVK.dylib");
+    _glfw.vk.handle = _glfw_dlopen("libvulkan.1.dylib");
 #else
     _glfw.vk.handle = _glfw_dlopen("libvulkan.so.1");
 #endif
@@ -136,9 +136,6 @@ GLFWbool _glfwInitVulkan(int mode)
 #elif defined(_GLFW_WAYLAND)
         else if (strcmp(ep[i].extensionName, "VK_KHR_wayland_surface") == 0)
             _glfw.vk.KHR_wayland_surface = GLFW_TRUE;
-#elif defined(_GLFW_MIR)
-        else if (strcmp(ep[i].extensionName, "VK_KHR_mir_surface") == 0)
-            _glfw.vk.KHR_mir_surface = GLFW_TRUE;
 #endif
     }
 

@@ -48,7 +48,6 @@ static void error_callback(int error, const char* description)
 
 int main(int argc, char** argv)
 {
-    GLFWmonitor* monitor = NULL;
     GLFWwindow* window;
     struct nk_context* nk;
     struct nk_font_atlas* atlas;
@@ -57,6 +56,8 @@ int main(int argc, char** argv)
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
+
+    glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
     window = glfwCreateWindow(400, 400, "Opacity", NULL, NULL);
     if (!window)

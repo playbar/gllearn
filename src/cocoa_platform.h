@@ -27,13 +27,36 @@
 #include <stdint.h>
 #include <dlfcn.h>
 
+#include <Carbon/Carbon.h>
+#include <CoreVideo/CVBase.h>
+#include <CoreVideo/CVDisplayLink.h>
+
+// NOTE: All of NSGL was deprecated in the 10.14 SDK
+//       This disables the pointless warnings for every symbol we use
+#define GL_SILENCE_DEPRECATION
+
 #if defined(__OBJC__)
-#import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
 #else
-#include <Carbon/Carbon.h>
-#include <ApplicationServices/ApplicationServices.h>
 typedef void* id;
+#endif
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 101200
+ #define NSBitmapFormatAlphaNonpremultiplied NSAlphaNonpremultipliedBitmapFormat
+ #define NSEventMaskAny NSAnyEventMask
+ #define NSEventMaskKeyUp NSKeyUpMask
+ #define NSEventModifierFlagCapsLock NSAlphaShiftKeyMask
+ #define NSEventModifierFlagCommand NSCommandKeyMask
+ #define NSEventModifierFlagControl NSControlKeyMask
+ #define NSEventModifierFlagDeviceIndependentFlagsMask NSDeviceIndependentModifierFlagsMask
+ #define NSEventModifierFlagOption NSAlternateKeyMask
+ #define NSEventModifierFlagShift NSShiftKeyMask
+ #define NSEventTypeApplicationDefined NSApplicationDefined
+ #define NSWindowStyleMaskBorderless NSBorderlessWindowMask
+ #define NSWindowStyleMaskClosable NSClosableWindowMask
+ #define NSWindowStyleMaskMiniaturizable NSMiniaturizableWindowMask
+ #define NSWindowStyleMaskResizable NSResizableWindowMask
+ #define NSWindowStyleMaskTitled NSTitledWindowMask
 #endif
 
 typedef VkFlags VkMacOSSurfaceCreateFlagsMVK;
@@ -87,6 +110,7 @@ typedef struct _GLFWwindowNS
     id              layer;
 
     GLFWbool        maximized;
+    GLFWbool        retina;
 
     // Cached window properties to filter out duplicate events
     int             width, height;
@@ -106,12 +130,14 @@ typedef struct _GLFWlibraryNS
 {
     CGEventSourceRef    eventSource;
     id                  delegate;
-    id                  autoreleasePool;
+    GLFWbool            finishedLaunching;
     GLFWbool            cursorHidden;
     TISInputSourceRef   inputSource;
     IOHIDManagerRef     hidManager;
     id                  unicodeData;
-    id                  listener;
+    id                  helper;
+    id                  keyUpMonitor;
+    id                  nibObjects;
 
     char                keyName[64];
     short int           keycodes[256];
@@ -166,4 +192,6 @@ void _glfwInitTimerNS(void);
 void _glfwPollMonitorsNS(void);
 void _glfwSetVideoModeNS(_GLFWmonitor* monitor, const GLFWvidmode* desired);
 void _glfwRestoreVideoModeNS(_GLFWmonitor* monitor);
+
+float _glfwTransformYNS(float y);
 

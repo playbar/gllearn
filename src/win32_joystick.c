@@ -260,6 +260,8 @@ static void closeJoystick(_GLFWjoystick* js)
         IDirectInputDevice8_Release(js->win32.device);
     }
 
+    free(js->win32.objects);
+
     _glfwFreeJoystick(js);
     _glfwInputJoystick(js, GLFW_DISCONNECTED);
 }
@@ -743,7 +745,7 @@ void _glfwPlatformUpdateGamepadGUID(char* guid)
     if (strcmp(guid + 20, "504944564944") == 0)
     {
         char original[33];
-        strcpy(original, guid);
+        strncpy(original, guid, sizeof(original) - 1);
         sprintf(guid, "03000000%.4s0000%.4s000000000000",
                 original, original + 4);
     }
