@@ -8,10 +8,13 @@
 
 
 ModelAssimp *gAssimpObject =NULL;
-bool bpress = false;
+bool bleftpress = false;
 
 GLint gWidth = 640;
 GLint gHeith = 480;
+
+GLfloat glastx = 0;
+GLfloat glasty = 0;
 
 static void error_callback(int error, const char* description)
 {
@@ -33,12 +36,12 @@ void mouse_button_callback( GLFWwindow* window, int button, int action, int mods
 
     if (action == GLFW_PRESS)
     {
-        bpress = true;
+        bleftpress = true;
 //        gAssimpObject->DoubleTapAction();
     }
     else if( GLFW_RELEASE == action )
     {
-        bpress = false;
+        bleftpress = false;
     }
     else
     {
@@ -48,17 +51,32 @@ void mouse_button_callback( GLFWwindow* window, int button, int action, int mods
 void cursor_position_callback(GLFWwindow* window, double x, double y)
 {
 
-    float dX = x / gAssimpObject->GetScreenWidth();
-    float dY = -y / gAssimpObject->GetScreenHeight();
-    printf("dx =%f, dy = %f \n", dX, dY);
+    float dx = x - glastx;
+    float dy = y - glasty;
 
-//    if( bpress ) {
-//        float dX = x / gAssimpObject->GetScreenWidth();
-//        float dY = -y / gAssimpObject->GetScreenHeight();
-//        gAssimpObject->MoveAction(dX, dY);
-//    }
+    glastx = x;
+    glasty = y;
+
+//    float xpos = ((x-gWidth / 2)/gWidth) * 2;
+//    float ypos = ((y - gHeith / 2) / gHeith) * 2;
+
+    float posx = dx / gAssimpObject->GetScreenWidth();
+    float posy = -dy / gAssimpObject->GetScreenHeight();
+
+    if( bleftpress ) {
+        printf("dx =%f, dy = %f \n", posx, posy);
+        gAssimpObject->MoveAction(posx, posy);
+    }
     return;
 }
+
+
+void scroll_callback(GLFWwindow* window, double x, double y)
+{
+    printf("scroll, x=%f, y=%f\n", x, y);
+    return;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -82,6 +100,7 @@ int main(int argc, char **argv)
     glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
+    glfwSetScrollCallback( window, scroll_callback);
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
@@ -91,7 +110,7 @@ int main(int argc, char **argv)
 
     gAssimpObject = new ModelAssimp();
     gAssimpObject->PerformGLInits();
-    gAssimpObject->SetViewport( gWidth, gHeith );
+    gAssimpObject->SetViewport( gWidth * 2, gHeith * 2 );
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
