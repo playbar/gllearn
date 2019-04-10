@@ -55,7 +55,7 @@ void CheckGLError(std::string funcName){
     if (err == GL_NO_ERROR) {
         return;
     } else {
-        printf("[FAIL GL] %s", funcName.c_str());
+        printf("[FAIL GL] %s\n", funcName.c_str());
     }
 
     switch(err) {

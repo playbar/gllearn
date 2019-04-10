@@ -17,6 +17,9 @@
 #ifndef ASSIMPLOADER_H
 #define ASSIMPLOADER_H
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <map>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

@@ -1,5 +1,8 @@
 link_libraries(glfw)
 link_libraries(assimp)
+link_libraries(opencv_core)
+link_libraries(opencv_imgproc)
+link_libraries(opencv_imgcodecs)
 
 include_directories(${glfw_INCLUDE_DIRS}
         "${GLFW_SOURCE_DIR}/deps"

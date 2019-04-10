@@ -320,7 +320,7 @@ void AssimpLoader::Render3DModel(glm::mat4 *mvpMat) {
 
     }
 
-    CheckGLError("AssimpLoader::renderObject() ");
+    CheckGLError("AssimpLoader::renderObject() \n");
 
 }
 
