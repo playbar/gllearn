@@ -1,2 +1,0 @@
-../../resources/models/planet/planet.obj
-../../resources/models/rock/rock.obj

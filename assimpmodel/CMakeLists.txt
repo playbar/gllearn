@@ -3,20 +3,16 @@ link_libraries(assimp)
 
 include_directories(${glfw_INCLUDE_DIRS}
         "${GLFW_SOURCE_DIR}/deps"
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../glm
         ${CMAKE_CURRENT_SOURCE_DIR}/../assimp/include
-        ${CMAKE_CURRENT_SOURCE_DIR})
+        ${CMAKE_CURRENT_SOURCE_DIR}/opencv
+        )
 
 if (MATH_LIBRARY)
     link_libraries("${MATH_LIBRARY}")
 endif()
 
-if (MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
-
-if (GLFW_USE_OSMESA)
-    add_definitions(-DUSE_NATIVE_OSMESA)
-endif()
 
 if (WIN32)
     set(ICON glfw.rc)
@@ -44,13 +40,6 @@ add_executable(assimpmodel
         modelAssimp.cpp
         ${ICON}
         ${GLAD})
-
-
-if (MSVC)
-    # Tell MSVC to use main instead of WinMain for Windows subsystem executables
-    set_target_properties(${WINDOWS_BINARIES} PROPERTIES
-                          LINK_FLAGS "/ENTRY:mainCRTStartup")
-endif()
 
 if (APPLE)
     set_target_properties(assimpmodel PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "assimpmodel")

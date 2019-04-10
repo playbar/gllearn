@@ -20,7 +20,6 @@
 
 #include "assimp/Importer.hpp"
 #include <opencv2/opencv.hpp>
-#include <myJNIHelper.h>
 
 /**
  * Class constructor
@@ -62,7 +61,7 @@ void ModelAssimp::PerformGLInits() {
     modelObject = new AssimpLoader();
 
     // extract the OBJ and companion files from assets
-    std::string objFilename, mtlFilename, texFilename;
+//    std::string objFilename, texFilename;
 
     // load obj model
 //    bool isFilesPresent  =
@@ -70,16 +69,17 @@ void ModelAssimp::PerformGLInits() {
 //            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.mtl", mtlFilename) &&
 //            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.jpg", texFilename);
 
+//    // load dae model
+//    bool isFilesPresent  =
+//            gHelperObject->ExtractAssetReturnFilename("astroboy/astroboy_walk.dae", objFilename) &&
+//            gHelperObject->ExtractAssetReturnFilename("astroboy/seymour.jpg", texFilename);
+//    if( !isFilesPresent ) {
+//        printf("Model %s does not exist!", objFilename.c_str());
+//        return;
+//    }
 
-    // load dae model
-    bool isFilesPresent  =
-            gHelperObject->ExtractAssetReturnFilename("astroboy/astroboy_walk.dae", objFilename) &&
-            gHelperObject->ExtractAssetReturnFilename("astroboy/seymour.jpg", texFilename);
-
-    if( !isFilesPresent ) {
-        printf("Model %s does not exist!", objFilename.c_str());
-        return;
-    }
+    std::string objFilename = "astroboy/astroboy_walk.dae";
+    std::string texFilename = "astroboy/seymour.jpg";
 
     modelObject->Load3DModel(objFilename);
 
