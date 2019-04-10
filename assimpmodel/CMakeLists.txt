@@ -44,6 +44,7 @@ add_executable(assimpmodel
         ${ICON}
         ${GLAD})
 
+
 if (APPLE)
     set_target_properties(assimpmodel PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "assimpmodel")
 endif()
