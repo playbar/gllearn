@@ -446,6 +446,10 @@ static void detectEWMH(void)
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_WINDOW_TYPE");
     _glfw.x11.NET_WM_WINDOW_TYPE_NORMAL =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_WINDOW_TYPE_NORMAL");
+    _glfw.x11.NET_WORKAREA =
+        getSupportedAtom(supportedAtoms, atomCount, "_NET_WORKAREA");
+    _glfw.x11.NET_CURRENT_DESKTOP =
+        getSupportedAtom(supportedAtoms, atomCount, "_NET_CURRENT_DESKTOP");
     _glfw.x11.NET_ACTIVE_WINDOW =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_ACTIVE_WINDOW");
     _glfw.x11.NET_FRAME_EXTENTS =
@@ -479,7 +483,11 @@ static GLFWbool initExtensions(void)
                                       &_glfw.x11.vidmode.errorBase);
     }
 
+#if defined(__CYGWIN__)
+    _glfw.x11.xi.handle = _glfw_dlopen("libXi-6.so");
+#else
     _glfw.x11.xi.handle = _glfw_dlopen("libXi.so.6");
+#endif
     if (_glfw.x11.xi.handle)
     {
         _glfw.x11.xi.QueryVersion = (PFN_XIQueryVersion)
@@ -505,7 +513,11 @@ static GLFWbool initExtensions(void)
         }
     }
 
+#if defined(__CYGWIN__)
+    _glfw.x11.randr.handle = _glfw_dlopen("libXrandr-2.so");
+#else
     _glfw.x11.randr.handle = _glfw_dlopen("libXrandr.so.2");
+#endif
     if (_glfw.x11.randr.handle)
     {
         _glfw.x11.randr.AllocGamma = (PFN_XRRAllocGamma)
@@ -593,7 +605,11 @@ static GLFWbool initExtensions(void)
                        RROutputChangeNotifyMask);
     }
 
+#if defined(__CYGWIN__)
+    _glfw.x11.xcursor.handle = _glfw_dlopen("libXcursor-1.so");
+#else
     _glfw.x11.xcursor.handle = _glfw_dlopen("libXcursor.so.1");
+#endif
     if (_glfw.x11.xcursor.handle)
     {
         _glfw.x11.xcursor.ImageCreate = (PFN_XcursorImageCreate)
@@ -604,7 +620,11 @@ static GLFWbool initExtensions(void)
             _glfw_dlsym(_glfw.x11.xcursor.handle, "XcursorImageLoadCursor");
     }
 
+#if defined(__CYGWIN__)
+    _glfw.x11.xinerama.handle = _glfw_dlopen("libXinerama-1.so");
+#else
     _glfw.x11.xinerama.handle = _glfw_dlopen("libXinerama.so.1");
+#endif
     if (_glfw.x11.xinerama.handle)
     {
         _glfw.x11.xinerama.IsActive = (PFN_XineramaIsActive)
@@ -644,14 +664,22 @@ static GLFWbool initExtensions(void)
         }
     }
 
+#if defined(__CYGWIN__)
+    _glfw.x11.x11xcb.handle = _glfw_dlopen("libX11-xcb-1.so");
+#else
     _glfw.x11.x11xcb.handle = _glfw_dlopen("libX11-xcb.so.1");
+#endif
     if (_glfw.x11.x11xcb.handle)
     {
         _glfw.x11.x11xcb.GetXCBConnection = (PFN_XGetXCBConnection)
             _glfw_dlsym(_glfw.x11.x11xcb.handle, "XGetXCBConnection");
     }
 
+#if defined(__CYGWIN__)
+    _glfw.x11.xrender.handle = _glfw_dlopen("libXrender-1.so");
+#else
     _glfw.x11.xrender.handle = _glfw_dlopen("libXrender.so.1");
+#endif
     if (_glfw.x11.xrender.handle)
     {
         _glfw.x11.xrender.QueryExtension = (PFN_XRenderQueryExtension)
@@ -756,8 +784,9 @@ static GLFWbool initExtensions(void)
 //
 static void getSystemContentScale(float* xscale, float* yscale)
 {
-    // NOTE: Default to the display-wide DPI as we don't currently have a policy
-    //       for which monitor a window is considered to be on
+    // NOTE: Fall back to the display-wide DPI instead of RandR monitor DPI if
+    //       Xft.dpi retrieval below fails as we don't currently have an exact
+    //       policy for which monitor a window is considered to "be on"
     float xdpi = DisplayWidth(_glfw.x11.display, _glfw.x11.screen) *
         25.4f / DisplayWidthMM(_glfw.x11.display, _glfw.x11.screen);
     float ydpi = DisplayHeight(_glfw.x11.display, _glfw.x11.screen) *
@@ -1024,6 +1053,24 @@ void _glfwPlatformTerminate(void)
         _glfw.x11.xinerama.handle = NULL;
     }
 
+    if (_glfw.x11.xrender.handle)
+    {
+        _glfw_dlclose(_glfw.x11.xrender.handle);
+        _glfw.x11.xrender.handle = NULL;
+    }
+
+    if (_glfw.x11.vidmode.handle)
+    {
+        _glfw_dlclose(_glfw.x11.vidmode.handle);
+        _glfw.x11.vidmode.handle = NULL;
+    }
+
+    if (_glfw.x11.xi.handle)
+    {
+        _glfw_dlclose(_glfw.x11.xi.handle);
+        _glfw.x11.xi.handle = NULL;
+    }
+
     // NOTE: These need to be unloaded after XCloseDisplay, as they register
     //       cleanup callbacks that get called by that function
     _glfwTerminateEGL();
@@ -1036,7 +1083,7 @@ void _glfwPlatformTerminate(void)
 
 const char* _glfwPlatformGetVersionString(void)
 {
-    return _GLFW_VERSION_NUMBER " X11 GLX EGL"
+    return _GLFW_VERSION_NUMBER " X11 GLX EGL OSMesa"
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
         " clock_gettime"
 #else
