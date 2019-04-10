@@ -9,6 +9,7 @@
 
 ModelAssimp *gAssimpObject =NULL;
 bool bleftpress = false;
+bool brightpress = false;
 
 GLint gWidth = 640;
 GLint gHeith = 480;
@@ -29,22 +30,30 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void mouse_button_callback( GLFWwindow* window, int button, int action, int mods )
 {
-    if (button != GLFW_MOUSE_BUTTON_LEFT)
-        return;
 
     printf("button = %d, action=%d, mods = %d\n", button, action, mods );
 
-    if (action == GLFW_PRESS)
+    if( GLFW_MOUSE_BUTTON_LEFT == button )
     {
-        bleftpress = true;
-//        gAssimpObject->DoubleTapAction();
+        if( GLFW_PRESS == action )
+        {
+            bleftpress = true;
+        }
+        else if(GLFW_RELEASE == action )
+        {
+            bleftpress = false;
+        }
     }
-    else if( GLFW_RELEASE == action )
+    if( GLFW_MOUSE_BUTTON_RIGHT == button )
     {
-        bleftpress = false;
-    }
-    else
-    {
+        if( GLFW_PRESS == action )
+        {
+            brightpress = true;
+        }
+        else if(GLFW_RELEASE == action )
+        {
+            brightpress = false;
+        }
     }
 }
 
@@ -57,15 +66,23 @@ void cursor_position_callback(GLFWwindow* window, double x, double y)
     glastx = x;
     glasty = y;
 
-//    float xpos = ((x-gWidth / 2)/gWidth) * 2;
-//    float ypos = ((y - gHeith / 2) / gHeith) * 2;
-
-    float posx = dx / gAssimpObject->GetScreenWidth();
-    float posy = -dy / gAssimpObject->GetScreenHeight();
 
     if( bleftpress ) {
+        float posx = dx * 2 / gAssimpObject->GetScreenWidth();
+        float posy = -dy * 2 / gAssimpObject->GetScreenHeight();
+
         printf("dx =%f, dy = %f \n", posx, posy);
         gAssimpObject->MoveAction(posx, posy);
+    }
+    if( brightpress )
+    {
+        float dX = -(float) dx / gAssimpObject->GetScreenWidth();
+        float dY = (float) dy / gAssimpObject->GetScreenHeight();
+        float posX = 2* x / gAssimpObject->GetScreenWidth() - 1.0;
+        float posY = -2* y / gAssimpObject->GetScreenHeight() + 1.0;
+        posX = fmax(-1., fmin(1., posX));
+        posY = fmax(-1., fmin(1., posY));
+        gAssimpObject->ScrollAction(dX, dY, posX, posY);
     }
     return;
 }
@@ -74,6 +91,16 @@ void cursor_position_callback(GLFWwindow* window, double x, double y)
 void scroll_callback(GLFWwindow* window, double x, double y)
 {
     printf("scroll, x=%f, y=%f\n", x, y);
+    float scale = 1.0f;
+    if( y > 0 ){
+        scale = 1.11;
+    }
+    else if( y < 0)
+    {
+      scale = 0.89;
+    }
+
+    gAssimpObject->ScaleAction(scale);
     return;
 }
 
