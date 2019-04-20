@@ -352,6 +352,7 @@ CV_IMPL CvString
 cvMemStorageAllocString( CvMemStorage* storage, const char* ptr, int len )
 {
     CvString str;
+    memset(&str, 0, sizeof(CvString));
 
     str.len = len >= 0 ? len : (int)strlen(ptr);
     str.ptr = (char*)cvMemStorageAlloc( storage, str.len + 1 );
@@ -1694,6 +1695,9 @@ cvSeqRemoveSlice( CvSeq* seq, CvSlice slice )
 
     slice.end_index = slice.start_index + length;
 
+    if ( slice.start_index == slice.end_index )
+        return;
+
     if( slice.end_index < total )
     {
         CvSeqReader reader_to, reader_from;
@@ -2543,6 +2547,7 @@ cvSetAdd( CvSet* set, CvSetElem* element, CvSetElem** inserted_element )
 CV_IMPL void
 cvSetRemove( CvSet* set, int index )
 {
+    CV_Assert(set != NULL);
     CvSetElem* elem = cvGetSetElem( set, index );
     if( elem )
         cvSetRemoveByPtr( set, elem );
@@ -2774,7 +2779,7 @@ cvGraphAddEdgeByPtr( CvGraph* graph,
 
     if( start_vtx == end_vtx )
         CV_Error( start_vtx ? CV_StsBadArg : CV_StsNullPtr,
-        "vertex pointers coinside (or set to NULL)" );
+        "vertex pointers coincide (or set to NULL)" );
 
     edge = (CvGraphEdge*)cvSetNew( (CvSet*)(graph->edges) );
     assert( edge->flags >= 0 );
@@ -2877,7 +2882,7 @@ cvGraphRemoveEdgeByPtr( CvGraph* graph, CvGraphVtx* start_vtx, CvGraphVtx* end_v
             break;
     }
 
-    assert( edge != 0 );
+    CV_Assert( edge != 0 );
 
     next_edge = edge->next[ofs];
     if( prev_edge )

@@ -89,23 +89,46 @@ namespace {
 class OpticalFlowDual_TVL1 : public DualTVL1OpticalFlow
 {
 public:
+
+    OpticalFlowDual_TVL1(double tau_, double lambda_, double theta_, int nscales_, int warps_,
+                         double epsilon_, int innerIterations_, int outerIterations_,
+                         double scaleStep_, double gamma_, int medianFiltering_,
+                         bool useInitialFlow_) :
+        tau(tau_), lambda(lambda_), theta(theta_), gamma(gamma_), nscales(nscales_),
+        warps(warps_), epsilon(epsilon_), innerIterations(innerIterations_),
+        outerIterations(outerIterations_), useInitialFlow(useInitialFlow_),
+        scaleStep(scaleStep_), medianFiltering(medianFiltering_)
+    {
+    }
     OpticalFlowDual_TVL1();
 
-    void calc(InputArray I0, InputArray I1, InputOutputArray flow);
-    void collectGarbage();
+    void calc(InputArray I0, InputArray I1, InputOutputArray flow) CV_OVERRIDE;
+    void collectGarbage() CV_OVERRIDE;
 
-    CV_IMPL_PROPERTY(double, Tau, tau)
-    CV_IMPL_PROPERTY(double, Lambda, lambda)
-    CV_IMPL_PROPERTY(double, Theta, theta)
-    CV_IMPL_PROPERTY(double, Gamma, gamma)
-    CV_IMPL_PROPERTY(int, ScalesNumber, nscales)
-    CV_IMPL_PROPERTY(int, WarpingsNumber, warps)
-    CV_IMPL_PROPERTY(double, Epsilon, epsilon)
-    CV_IMPL_PROPERTY(int, InnerIterations, innerIterations)
-    CV_IMPL_PROPERTY(int, OuterIterations, outerIterations)
-    CV_IMPL_PROPERTY(bool, UseInitialFlow, useInitialFlow)
-    CV_IMPL_PROPERTY(double, ScaleStep, scaleStep)
-    CV_IMPL_PROPERTY(int, MedianFiltering, medianFiltering)
+    inline double getTau() const CV_OVERRIDE { return tau; }
+    inline void setTau(double val) CV_OVERRIDE { tau = val; }
+    inline double getLambda() const CV_OVERRIDE { return lambda; }
+    inline void setLambda(double val) CV_OVERRIDE { lambda = val; }
+    inline double getTheta() const CV_OVERRIDE { return theta; }
+    inline void setTheta(double val) CV_OVERRIDE { theta = val; }
+    inline double getGamma() const CV_OVERRIDE { return gamma; }
+    inline void setGamma(double val) CV_OVERRIDE { gamma = val; }
+    inline int getScalesNumber() const CV_OVERRIDE { return nscales; }
+    inline void setScalesNumber(int val) CV_OVERRIDE { nscales = val; }
+    inline int getWarpingsNumber() const CV_OVERRIDE { return warps; }
+    inline void setWarpingsNumber(int val) CV_OVERRIDE { warps = val; }
+    inline double getEpsilon() const CV_OVERRIDE { return epsilon; }
+    inline void setEpsilon(double val) CV_OVERRIDE { epsilon = val; }
+    inline int getInnerIterations() const CV_OVERRIDE { return innerIterations; }
+    inline void setInnerIterations(int val) CV_OVERRIDE { innerIterations = val; }
+    inline int getOuterIterations() const CV_OVERRIDE { return outerIterations; }
+    inline void setOuterIterations(int val) CV_OVERRIDE { outerIterations = val; }
+    inline bool getUseInitialFlow() const CV_OVERRIDE { return useInitialFlow; }
+    inline void setUseInitialFlow(bool val) CV_OVERRIDE { useInitialFlow = val; }
+    inline double getScaleStep() const CV_OVERRIDE { return scaleStep; }
+    inline void setScaleStep(double val) CV_OVERRIDE { scaleStep = val; }
+    inline int getMedianFiltering() const CV_OVERRIDE { return medianFiltering; }
+    inline void setMedianFiltering(int val) CV_OVERRIDE { medianFiltering = val; }
 
 protected:
     double tau;
@@ -122,11 +145,13 @@ protected:
     int medianFiltering;
 
 private:
-   void procOneScale(const Mat_<float>& I0, const Mat_<float>& I1, Mat_<float>& u1, Mat_<float>& u2, Mat_<float>& u3);
+    void procOneScale(const Mat_<float>& I0, const Mat_<float>& I1, Mat_<float>& u1, Mat_<float>& u2, Mat_<float>& u3);
 
+#ifdef HAVE_OPENCL
     bool procOneScale_ocl(const UMat& I0, const UMat& I1, UMat& u1, UMat& u2);
 
     bool calc_ocl(InputArray I0, InputArray I1, InputOutputArray flow);
+#endif
     struct dataMat
     {
         std::vector<Mat_<float> > I0s;
@@ -170,6 +195,8 @@ private:
         Mat_<float> u3x_buf;
         Mat_<float> u3y_buf;
     } dm;
+
+#ifdef HAVE_OPENCL
     struct dataUMat
     {
         std::vector<UMat> I0s;
@@ -195,8 +222,10 @@ private:
         UMat diff_buf;
         UMat norm_buf;
     } dum;
+#endif
 };
 
+#ifdef HAVE_OPENCL
 namespace cv_ocl_tvl1flow
 {
     bool centeredGradient(const UMat &src, UMat &dx, UMat &dy);
@@ -216,7 +245,7 @@ namespace cv_ocl_tvl1flow
 
 bool cv_ocl_tvl1flow::centeredGradient(const UMat &src, UMat &dx, UMat &dy)
 {
-    size_t globalsize[2] = { src.cols, src.rows };
+    size_t globalsize[2] = { (size_t)src.cols, (size_t)src.rows };
 
     ocl::Kernel kernel;
     if (!kernel.create("centeredGradientKernel", cv::ocl::video::optical_flow_tvl1_oclsrc, ""))
@@ -237,7 +266,7 @@ bool cv_ocl_tvl1flow::warpBackward(const UMat &I0, const UMat &I1, UMat &I1x, UM
     UMat &u1, UMat &u2, UMat &I1w, UMat &I1wx, UMat &I1wy,
     UMat &grad, UMat &rho)
 {
-    size_t globalsize[2] = { I0.cols, I0.rows };
+    size_t globalsize[2] = { (size_t)I0.cols, (size_t)I0.rows };
 
     ocl::Kernel kernel;
     if (!kernel.create("warpBackwardKernel", cv::ocl::video::optical_flow_tvl1_oclsrc, ""))
@@ -281,7 +310,7 @@ bool cv_ocl_tvl1flow::estimateU(UMat &I1wx, UMat &I1wy, UMat &grad,
     UMat &p21, UMat &p22, UMat &u1,
     UMat &u2, UMat &error, float l_t, float theta, char calc_error)
 {
-    size_t globalsize[2] = { I1wx.cols, I1wx.rows };
+    size_t globalsize[2] = { (size_t)I1wx.cols, (size_t)I1wx.rows };
 
     ocl::Kernel kernel;
     if (!kernel.create("estimateUKernel", cv::ocl::video::optical_flow_tvl1_oclsrc, ""))
@@ -322,7 +351,7 @@ bool cv_ocl_tvl1flow::estimateU(UMat &I1wx, UMat &I1wy, UMat &grad,
 bool cv_ocl_tvl1flow::estimateDualVariables(UMat &u1, UMat &u2,
     UMat &p11, UMat &p12, UMat &p21, UMat &p22, float taut)
 {
-    size_t globalsize[2] = { u1.cols, u1.rows };
+    size_t globalsize[2] = { (size_t)u1.cols, (size_t)u1.rows };
 
     ocl::Kernel kernel;
     if (!kernel.create("estimateDualVariablesKernel", cv::ocl::video::optical_flow_tvl1_oclsrc, ""))
@@ -353,6 +382,7 @@ bool cv_ocl_tvl1flow::estimateDualVariables(UMat &u1, UMat &u2,
     return kernel.run(2, globalsize, NULL, false);
 
 }
+#endif
 
 OpticalFlowDual_TVL1::OpticalFlowDual_TVL1()
 {
@@ -372,9 +402,13 @@ OpticalFlowDual_TVL1::OpticalFlowDual_TVL1()
 
 void OpticalFlowDual_TVL1::calc(InputArray _I0, InputArray _I1, InputOutputArray _flow)
 {
+    CV_INSTRUMENT_REGION();
+
+#ifndef __APPLE__
     CV_OCL_RUN(_flow.isUMat() &&
                ocl::Image2D::isFormatSupported(CV_32F, 1, false),
                calc_ocl(_I0, _I1, _flow))
+#endif
 
     Mat I0 = _I0.getMat();
     Mat I1 = _I1.getMat();
@@ -443,8 +477,8 @@ void OpticalFlowDual_TVL1::calc(InputArray _I0, InputArray _I1, InputOutputArray
     // create the scales
     for (int s = 1; s < nscales; ++s)
     {
-        resize(dm.I0s[s - 1], dm.I0s[s], Size(), scaleStep, scaleStep);
-        resize(dm.I1s[s - 1], dm.I1s[s], Size(), scaleStep, scaleStep);
+        resize(dm.I0s[s - 1], dm.I0s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
+        resize(dm.I1s[s - 1], dm.I1s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
 
         if (dm.I0s[s].cols < 16 || dm.I0s[s].rows < 16)
         {
@@ -454,8 +488,8 @@ void OpticalFlowDual_TVL1::calc(InputArray _I0, InputArray _I1, InputOutputArray
 
         if (useInitialFlow)
         {
-            resize(dm.u1s[s - 1], dm.u1s[s], Size(), scaleStep, scaleStep);
-            resize(dm.u2s[s - 1], dm.u2s[s], Size(), scaleStep, scaleStep);
+            resize(dm.u1s[s - 1], dm.u1s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
+            resize(dm.u2s[s - 1], dm.u2s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
 
             multiply(dm.u1s[s], Scalar::all(scaleStep), dm.u1s[s]);
             multiply(dm.u2s[s], Scalar::all(scaleStep), dm.u2s[s]);
@@ -486,9 +520,9 @@ void OpticalFlowDual_TVL1::calc(InputArray _I0, InputArray _I1, InputOutputArray
         // otherwise, upsample the optical flow
 
         // zoom the optical flow for the next finer scale
-        resize(dm.u1s[s], dm.u1s[s - 1], dm.I0s[s - 1].size());
-        resize(dm.u2s[s], dm.u2s[s - 1], dm.I0s[s - 1].size());
-        if (use_gamma) resize(dm.u3s[s], dm.u3s[s - 1], dm.I0s[s - 1].size());
+        resize(dm.u1s[s], dm.u1s[s - 1], dm.I0s[s - 1].size(), 0, 0, INTER_LINEAR);
+        resize(dm.u2s[s], dm.u2s[s - 1], dm.I0s[s - 1].size(), 0, 0, INTER_LINEAR);
+        if (use_gamma) resize(dm.u3s[s], dm.u3s[s - 1], dm.I0s[s - 1].size(), 0, 0, INTER_LINEAR);
 
         // scale the optical flow with the appropriate zoom factor (don't scale u3!)
         multiply(dm.u1s[s - 1], Scalar::all(1 / scaleStep), dm.u1s[s - 1]);
@@ -499,6 +533,7 @@ void OpticalFlowDual_TVL1::calc(InputArray _I0, InputArray _I1, InputOutputArray
     merge(uxy, 2, _flow);
 }
 
+#ifdef HAVE_OPENCL
 bool OpticalFlowDual_TVL1::calc_ocl(InputArray _I0, InputArray _I1, InputOutputArray _flow)
 {
     UMat I0 = _I0.getUMat();
@@ -552,8 +587,8 @@ bool OpticalFlowDual_TVL1::calc_ocl(InputArray _I0, InputArray _I1, InputOutputA
     // create the scales
     for (int s = 1; s < nscales; ++s)
     {
-        resize(dum.I0s[s - 1], dum.I0s[s], Size(), scaleStep, scaleStep);
-        resize(dum.I1s[s - 1], dum.I1s[s], Size(), scaleStep, scaleStep);
+        resize(dum.I0s[s - 1], dum.I0s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
+        resize(dum.I1s[s - 1], dum.I1s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
 
         if (dum.I0s[s].cols < 16 || dum.I0s[s].rows < 16)
         {
@@ -563,8 +598,8 @@ bool OpticalFlowDual_TVL1::calc_ocl(InputArray _I0, InputArray _I1, InputOutputA
 
         if (useInitialFlow)
         {
-            resize(dum.u1s[s - 1], dum.u1s[s], Size(), scaleStep, scaleStep);
-            resize(dum.u2s[s - 1], dum.u2s[s], Size(), scaleStep, scaleStep);
+            resize(dum.u1s[s - 1], dum.u1s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
+            resize(dum.u2s[s - 1], dum.u2s[s], Size(), scaleStep, scaleStep, INTER_LINEAR);
 
             //scale by scale factor
             multiply(dum.u1s[s], Scalar::all(scaleStep), dum.u1s[s]);
@@ -584,8 +619,8 @@ bool OpticalFlowDual_TVL1::calc_ocl(InputArray _I0, InputArray _I1, InputOutputA
             break;
 
         // zoom the optical flow for the next finer scale
-        resize(dum.u1s[s], dum.u1s[s - 1], dum.I0s[s - 1].size());
-        resize(dum.u2s[s], dum.u2s[s - 1], dum.I0s[s - 1].size());
+        resize(dum.u1s[s], dum.u1s[s - 1], dum.I0s[s - 1].size(), 0, 0, INTER_LINEAR);
+        resize(dum.u2s[s], dum.u2s[s - 1], dum.I0s[s - 1].size(), 0, 0, INTER_LINEAR);
 
         // scale the optical flow with the appropriate zoom factor
         multiply(dum.u1s[s - 1], Scalar::all(1 / scaleStep), dum.u1s[s - 1]);
@@ -598,13 +633,14 @@ bool OpticalFlowDual_TVL1::calc_ocl(InputArray _I0, InputArray _I1, InputOutputA
     merge(uxy, _flow);
     return true;
 }
+#endif
 
 ////////////////////////////////////////////////////////////
 // buildFlowMap
 
 struct BuildFlowMapBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> u1;
     Mat_<float> u2;
@@ -651,7 +687,7 @@ void buildFlowMap(const Mat_<float>& u1, const Mat_<float>& u2, Mat_<float>& map
 
 struct CenteredGradientBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> src;
     mutable Mat_<float> dx;
@@ -738,7 +774,7 @@ void centeredGradient(const Mat_<float>& src, Mat_<float>& dx, Mat_<float>& dy)
 
 struct ForwardGradientBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> src;
     mutable Mat_<float> dx;
@@ -808,7 +844,7 @@ void forwardGradient(const Mat_<float>& src, Mat_<float>& dx, Mat_<float>& dy)
 
 struct DivergenceBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> v1;
     Mat_<float> v2;
@@ -867,7 +903,7 @@ void divergence(const Mat_<float>& v1, const Mat_<float>& v2, Mat_<float>& div)
 
 struct CalcGradRhoBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> I0;
     Mat_<float> I1w;
@@ -937,7 +973,7 @@ void calcGradRho(const Mat_<float>& I0, const Mat_<float>& I1w, const Mat_<float
 
 struct EstimateVBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> I1wx;
     Mat_<float> I1wy;
@@ -1084,7 +1120,7 @@ float estimateU(const Mat_<float>& v1, const Mat_<float>& v2, const Mat_<float>&
 
 struct EstimateDualVariablesBody : ParallelLoopBody
 {
-    void operator() (const Range& range) const;
+    void operator() (const Range& range) const CV_OVERRIDE;
 
     Mat_<float> u1x;
     Mat_<float> u1y;
@@ -1124,18 +1160,22 @@ void EstimateDualVariablesBody::operator() (const Range& range) const
         {
             const float g1 = static_cast<float>(hypot(u1xRow[x], u1yRow[x]));
             const float g2 = static_cast<float>(hypot(u2xRow[x], u2yRow[x]));
-            const float g3 = static_cast<float>(hypot(u3xRow[x], u3yRow[x]));
 
             const float ng1  = 1.0f + taut * g1;
             const float ng2 =  1.0f + taut * g2;
-            const float ng3 = 1.0f + taut * g3;
 
             p11Row[x] = (p11Row[x] + taut * u1xRow[x]) / ng1;
             p12Row[x] = (p12Row[x] + taut * u1yRow[x]) / ng1;
             p21Row[x] = (p21Row[x] + taut * u2xRow[x]) / ng2;
             p22Row[x] = (p22Row[x] + taut * u2yRow[x]) / ng2;
-            if (use_gamma) p31Row[x] = (p31Row[x] + taut * u3xRow[x]) / ng3;
-            if (use_gamma) p32Row[x] = (p32Row[x] + taut * u3yRow[x]) / ng3;
+
+            if (use_gamma)
+            {
+                const float g3 = static_cast<float>(hypot(u3xRow[x], u3yRow[x]));
+                const float ng3 = 1.0f + taut * g3;
+                p31Row[x] = (p31Row[x] + taut * u3xRow[x]) / ng3;
+                p32Row[x] = (p32Row[x] + taut * u3yRow[x]) / ng3;
+            }
         }
     }
 }
@@ -1180,6 +1220,7 @@ void estimateDualVariables(const Mat_<float>& u1x, const Mat_<float>& u1y,
     parallel_for_(Range(0, u1x.rows), body);
 }
 
+#ifdef HAVE_OPENCL
 bool OpticalFlowDual_TVL1::procOneScale_ocl(const UMat& I0, const UMat& I1, UMat& u1, UMat& u2)
 {
     using namespace cv_ocl_tvl1flow;
@@ -1267,6 +1308,7 @@ bool OpticalFlowDual_TVL1::procOneScale_ocl(const UMat& I0, const UMat& I1, UMat
     }
     return true;
 }
+#endif
 
 void OpticalFlowDual_TVL1::procOneScale(const Mat_<float>& I0, const Mat_<float>& I1, Mat_<float>& u1, Mat_<float>& u2, Mat_<float>& u3)
 {
@@ -1402,6 +1444,7 @@ void OpticalFlowDual_TVL1::collectGarbage()
     dm.u2x_buf.release();
     dm.u2y_buf.release();
 
+#ifdef HAVE_OPENCL
     //dataUMat structure dum
     dum.I0s.clear();
     dum.I1s.clear();
@@ -1425,6 +1468,7 @@ void OpticalFlowDual_TVL1::collectGarbage()
 
     dum.diff_buf.release();
     dum.norm_buf.release();
+#endif
 }
 
 } // namespace
@@ -1432,4 +1476,14 @@ void OpticalFlowDual_TVL1::collectGarbage()
 Ptr<DualTVL1OpticalFlow> cv::createOptFlow_DualTVL1()
 {
     return makePtr<OpticalFlowDual_TVL1>();
+}
+
+Ptr<DualTVL1OpticalFlow> cv::DualTVL1OpticalFlow::create(
+    double tau, double lambda, double theta, int nscales, int warps,
+    double epsilon, int innerIterations, int outerIterations, double scaleStep,
+    double gamma, int medianFilter, bool useInitialFlow)
+{
+    return makePtr<OpticalFlowDual_TVL1>(tau, lambda, theta, nscales, warps,
+                                         epsilon, innerIterations, outerIterations,
+                                         scaleStep, gamma, medianFilter, useInitialFlow);
 }

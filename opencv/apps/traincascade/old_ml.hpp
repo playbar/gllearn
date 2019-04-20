@@ -38,8 +38,8 @@
 //
 //M*/
 
-#ifndef __OPENCV_ML_HPP__
-#define __OPENCV_ML_HPP__
+#ifndef OPENCV_OLD_ML_HPP
+#define OPENCV_OLD_ML_HPP
 
 #ifdef __cplusplus
 #  include "opencv2/core.hpp"
@@ -54,7 +54,7 @@
 #include <iostream>
 
 // Apple defines a check() macro somewhere in the debug headers
-// that interferes with a method definiton in this header
+// that interferes with a method definition in this header
 #undef check
 
 /****************************************************************************************\
@@ -88,7 +88,7 @@ struct CvVectors
 #if 0
 /* A structure, representing the lattice range of statmodel parameters.
    It is used for optimizing statmodel parameters by cross-validation method.
-   The lattice is logarithmic, so <step> must be greater then 1. */
+   The lattice is logarithmic, so <step> must be greater than 1. */
 typedef struct CvParamLattice
 {
     double min_val;
@@ -158,7 +158,7 @@ protected:
 /* The structure, representing the grid range of statmodel parameters.
    It is used for optimizing statmodel accuracy by varying model parameters,
    the accuracy estimate being computed by cross-validation.
-   The grid is logarithmic, so <step> must be greater then 1. */
+   The grid is logarithmic, so <step> must be greater than 1. */
 
 class CvMLData;
 
@@ -1243,9 +1243,9 @@ struct CvGBTreesParams : public CvDTreeParams
 // weak             - array[0..(class_count-1)] of CvSeq
 //                    for storing tree ensembles
 // orig_response    - original responses of the training set samples
-// sum_response     - predicitons of the current model on the training dataset.
+// sum_response     - predictions of the current model on the training dataset.
 //                    this matrix is updated on every iteration.
-// sum_response_tmp - predicitons of the model on the training set on the next
+// sum_response_tmp - predictions of the model on the training set on the next
 //                    step. On every iteration values of sum_responses_tmp are
 //                    computed via sum_responses values. When the current
 //                    step is complete sum_response values become equal to
@@ -1270,7 +1270,7 @@ struct CvGBTreesParams : public CvDTreeParams
 //                    matrix has the same size as train_data. 1 - missing
 //                    value, 0 - not a missing value.
 // class_labels     - output class labels map.
-// rng              - random number generator. Used for spliting the
+// rng              - random number generator. Used for splitting the
 //                    training set.
 // class_count      - count of output classes.
 //                    class_count == 1 in the case of regression,
@@ -1536,7 +1536,7 @@ public:
     // type  - defines which error is to compute: train (CV_TRAIN_ERROR) or
     //         test (CV_TEST_ERROR).
     // OUTPUT
-    // resp  - vector of predicitons
+    // resp  - vector of predictions
     // RESULT
     // Error value.
     */
@@ -1896,32 +1896,6 @@ protected:
 };
 
 /****************************************************************************************\
-*                           Auxilary functions declarations                              *
-\****************************************************************************************/
-
-/* Generates <sample> from multivariate normal distribution, where <mean> - is an
-   average row vector, <cov> - symmetric covariation matrix */
-CVAPI(void) cvRandMVNormal( CvMat* mean, CvMat* cov, CvMat* sample,
-                           CvRNG* rng CV_DEFAULT(0) );
-
-/* Generates sample from gaussian mixture distribution */
-CVAPI(void) cvRandGaussMixture( CvMat* means[],
-                               CvMat* covs[],
-                               float weights[],
-                               int clsnum,
-                               CvMat* sample,
-                               CvMat* sampClasses CV_DEFAULT(0) );
-
-#define CV_TS_CONCENTRIC_SPHERES 0
-
-/* creates test set */
-CVAPI(void) cvCreateTestSet( int type, CvMat** samples,
-                 int num_samples,
-                 int num_features,
-                 CvMat** responses,
-                 int num_classes, ... );
-
-/****************************************************************************************\
 *                                      Data                                             *
 \****************************************************************************************/
 
@@ -2063,6 +2037,6 @@ template<> void DefaultDeleter<CvDTreeSplit>::operator ()(CvDTreeSplit* obj) con
 }
 
 #endif // __cplusplus
-#endif // __OPENCV_ML_HPP__
+#endif // OPENCV_OLD_ML_HPP
 
 /* End of file. */

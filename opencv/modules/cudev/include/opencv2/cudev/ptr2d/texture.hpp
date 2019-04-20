@@ -43,8 +43,8 @@
 
 #pragma once
 
-#ifndef __OPENCV_CUDEV_PTR2D_TEXTURE_HPP__
-#define __OPENCV_CUDEV_PTR2D_TEXTURE_HPP__
+#ifndef OPENCV_CUDEV_PTR2D_TEXTURE_HPP
+#define OPENCV_CUDEV_PTR2D_TEXTURE_HPP
 
 #include <cstring>
 #include "../common.hpp"
@@ -195,8 +195,8 @@ template <typename T> struct TexturePtr
         // Use the texture object
         return tex2D<T>(texObj, x, y);
     #else
-        (void) y;
-        (void) x;
+        CV_UNUSED(y);
+        CV_UNUSED(x);
         return T();
     #endif
     }

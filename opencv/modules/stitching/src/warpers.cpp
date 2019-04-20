@@ -110,7 +110,8 @@ Rect PlaneWarper::buildMaps(Size src_size, InputArray K, InputArray R, InputArra
     _xmap.create(dsize, CV_32FC1);
     _ymap.create(dsize, CV_32FC1);
 
-    if (ocl::useOpenCL())
+#ifdef HAVE_OPENCL
+    if (ocl::isOpenCLActivated())
     {
         ocl::Kernel k("buildWarpPlaneMaps", ocl::stitching::warpers_oclsrc);
         if (!k.empty())
@@ -124,7 +125,7 @@ Rect PlaneWarper::buildMaps(Size src_size, InputArray K, InputArray R, InputArra
                    ocl::KernelArg::PtrReadOnly(uk_rinv), ocl::KernelArg::PtrReadOnly(ut),
                    dst_tl.x, dst_tl.y, 1/projector_.scale, rowsPerWI);
 
-            size_t globalsize[2] = { dsize.width, (dsize.height + rowsPerWI - 1) / rowsPerWI };
+            size_t globalsize[2] = { (size_t)dsize.width, ((size_t)dsize.height + rowsPerWI - 1) / rowsPerWI };
             if (k.run(2, globalsize, NULL, true))
             {
                 CV_IMPL_ADD(CV_IMPL_OCL);
@@ -132,6 +133,7 @@ Rect PlaneWarper::buildMaps(Size src_size, InputArray K, InputArray R, InputArra
             }
         }
     }
+#endif
 
     Mat xmap = _xmap.getMat(), ymap = _ymap.getMat();
 
@@ -217,6 +219,58 @@ void PlaneWarper::detectResultRoi(Size src_size, Point &dst_tl, Point &dst_br)
     dst_tl.y = static_cast<int>(tl_vf);
     dst_br.x = static_cast<int>(br_uf);
     dst_br.y = static_cast<int>(br_vf);
+}
+
+
+Point2f AffineWarper::warpPoint(const Point2f &pt, InputArray K, InputArray H)
+{
+    Mat R, T;
+    getRTfromHomogeneous(H, R, T);
+    return PlaneWarper::warpPoint(pt, K, R, T);
+}
+
+
+Rect AffineWarper::buildMaps(Size src_size, InputArray K, InputArray H, OutputArray xmap, OutputArray ymap)
+{
+    Mat R, T;
+    getRTfromHomogeneous(H, R, T);
+    return PlaneWarper::buildMaps(src_size, K, R, T, xmap, ymap);
+}
+
+
+Point AffineWarper::warp(InputArray src, InputArray K, InputArray H,
+                         int interp_mode, int border_mode, OutputArray dst)
+{
+    Mat R, T;
+    getRTfromHomogeneous(H, R, T);
+    return PlaneWarper::warp(src, K, R, T, interp_mode, border_mode, dst);
+}
+
+
+Rect AffineWarper::warpRoi(Size src_size, InputArray K, InputArray H)
+{
+    Mat R, T;
+    getRTfromHomogeneous(H, R, T);
+    return PlaneWarper::warpRoi(src_size, K, R, T);
+}
+
+
+void AffineWarper::getRTfromHomogeneous(InputArray H_, Mat &R, Mat &T)
+{
+    Mat H = H_.getMat();
+    CV_Assert(H.size() == Size(3, 3) && H.type() == CV_32F);
+
+    T = Mat::zeros(3, 1, CV_32F);
+    R = H.clone();
+
+    T.at<float>(0,0) = R.at<float>(0,2);
+    T.at<float>(1,0) = R.at<float>(1,2);
+    R.at<float>(0,2) = 0.f;
+    R.at<float>(1,2) = 0.f;
+
+    // we want to compensate transform to fit into plane warper
+    R = R.t();
+    T = (R * T) * -1;
 }
 
 
@@ -310,7 +364,8 @@ void SphericalPortraitWarper::detectResultRoi(Size src_size, Point &dst_tl, Poin
 
 Rect SphericalWarper::buildMaps(Size src_size, InputArray K, InputArray R, OutputArray xmap, OutputArray ymap)
 {
-    if (ocl::useOpenCL())
+#ifdef HAVE_OPENCL
+    if (ocl::isOpenCLActivated())
     {
         ocl::Kernel k("buildWarpSphericalMaps", ocl::stitching::warpers_oclsrc);
         if (!k.empty())
@@ -331,7 +386,7 @@ Rect SphericalWarper::buildMaps(Size src_size, InputArray K, InputArray R, Outpu
             k.args(ocl::KernelArg::WriteOnlyNoSize(uxmap), ocl::KernelArg::WriteOnly(uymap),
                    ocl::KernelArg::PtrReadOnly(uk_rinv), dst_tl.x, dst_tl.y, 1/projector_.scale, rowsPerWI);
 
-            size_t globalsize[2] = { dsize.width, (dsize.height + rowsPerWI - 1) / rowsPerWI };
+            size_t globalsize[2] = { (size_t)dsize.width, ((size_t)dsize.height + rowsPerWI - 1) / rowsPerWI };
             if (k.run(2, globalsize, NULL, true))
             {
                 CV_IMPL_ADD(CV_IMPL_OCL);
@@ -339,7 +394,7 @@ Rect SphericalWarper::buildMaps(Size src_size, InputArray K, InputArray R, Outpu
             }
         }
     }
-
+#endif
     return RotationWarperBase<SphericalProjector>::buildMaps(src_size, K, R, xmap, ymap);
 }
 
@@ -358,7 +413,8 @@ Point SphericalWarper::warp(InputArray src, InputArray K, InputArray R, int inte
 
 Rect CylindricalWarper::buildMaps(Size src_size, InputArray K, InputArray R, OutputArray xmap, OutputArray ymap)
 {
-    if (ocl::useOpenCL())
+#ifdef HAVE_OPENCL
+    if (ocl::isOpenCLActivated())
     {
         ocl::Kernel k("buildWarpCylindricalMaps", ocl::stitching::warpers_oclsrc);
         if (!k.empty())
@@ -380,7 +436,7 @@ Rect CylindricalWarper::buildMaps(Size src_size, InputArray K, InputArray R, Out
                    ocl::KernelArg::PtrReadOnly(uk_rinv), dst_tl.x, dst_tl.y, 1/projector_.scale,
                    rowsPerWI);
 
-            size_t globalsize[2] = { dsize.width, (dsize.height + rowsPerWI - 1) / rowsPerWI };
+            size_t globalsize[2] = { (size_t)dsize.width, ((size_t)dsize.height + rowsPerWI - 1) / rowsPerWI };
             if (k.run(2, globalsize, NULL, true))
             {
                 CV_IMPL_ADD(CV_IMPL_OCL);
@@ -388,7 +444,7 @@ Rect CylindricalWarper::buildMaps(Size src_size, InputArray K, InputArray R, Out
             }
         }
     }
-
+#endif
     return RotationWarperBase<CylindricalProjector>::buildMaps(src_size, K, R, xmap, ymap);
 }
 

@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnTouchListener;
+import android.view.SurfaceView;
 
 public class ColorBlobDetectionActivity extends Activity implements OnTouchListener, CvCameraViewListener2 {
     private static final String  TAG              = "OCVSample::Activity";
@@ -73,6 +74,7 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
         setContentView(R.layout.color_blob_detection_surface_view);
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.color_blob_detection_activity_surface_view);
+        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
@@ -157,7 +159,7 @@ public class ColorBlobDetectionActivity extends Activity implements OnTouchListe
 
         mDetector.setHsvColor(mBlobColorHsv);
 
-        Imgproc.resize(mDetector.getSpectrum(), mSpectrum, SPECTRUM_SIZE);
+        Imgproc.resize(mDetector.getSpectrum(), mSpectrum, SPECTRUM_SIZE, 0, 0, Imgproc.INTER_LINEAR_EXACT);
 
         mIsColorSelected = true;
 

@@ -43,8 +43,8 @@
 //
 //M*/
 
-#ifndef __OPENCV_VIZ_VIZ3D_HPP__
-#define __OPENCV_VIZ_VIZ3D_HPP__
+#ifndef OPENCV_VIZ_VIZ3D_HPP
+#define OPENCV_VIZ_VIZ3D_HPP
 
 #if !defined YES_I_AGREE_THAT_VIZ_API_IS_NOT_STABLE_NOW_AND_BINARY_COMPARTIBILITY_WONT_BE_SUPPORTED && !defined CVAPI_EXPORTS
     //#error "Viz is in beta state now. Please define macro above to use it"
@@ -62,7 +62,7 @@ namespace cv
 //! @addtogroup viz
 //! @{
 
-        /** @brief The Viz3d class represents a 3D visualizer window. This class is implicitly shared. :
+        /** @brief The Viz3d class represents a 3D visualizer window. This class is implicitly shared.
         */
         class CV_EXPORTS Viz3d
         {
@@ -134,7 +134,7 @@ namespace cv
 
             /** @brief Sets the intrinsic parameters of the viewer using Camera.
 
-            @param camera Camera object wrapping intrinsinc parameters.
+            @param camera Camera object wrapping intrinsic parameters.
              */
             void setCamera(const Camera &camera);
 
@@ -186,8 +186,13 @@ namespace cv
             void setWindowSize(const Size &window_size);
 
             /** @brief Returns the name of the window which has been set in the constructor.
+             *  `Viz - ` is prepended to the name if necessary.
              */
             String getWindowName() const;
+
+            /** @brief Returns the Mat screenshot of the current scene.
+            */
+            cv::Mat getScreenshot() const;
 
             /** @brief Saves screenshot of the current scene.
 
@@ -224,6 +229,26 @@ namespace cv
              */
             void spinOnce(int time = 1, bool force_redraw = false);
 
+            /** @brief Create a window in memory instead of on the screen.
+             */
+            void setOffScreenRendering();
+
+            /** @brief Remove all lights from the current scene.
+            */
+            void removeAllLights();
+
+            /** @brief Add a light in the scene.
+
+            @param position The position of the light.
+            @param focalPoint The point at which the light is shining
+            @param color The color of the light
+            @param diffuseColor The diffuse color of the light
+            @param ambientColor The ambient color of the light
+            @param specularColor The specular color of the light
+             */
+            void addLight(Vec3d position, Vec3d focalPoint = Vec3d(0, 0, 0), Color color = Color::white(),
+                          Color diffuseColor = Color::white(), Color ambientColor = Color::black(), Color specularColor = Color::white());
+
             /** @brief Returns whether the event loop has been stopped.
             */
             bool wasStopped() const;
@@ -250,22 +275,22 @@ namespace cv
             @param property Property that will be modified.
             @param value The new value of the property.
 
-            **Rendering property** can be one of the following:
+            Rendering property can be one of the following:
             -   **POINT_SIZE**
             -   **OPACITY**
             -   **LINE_WIDTH**
             -   **FONT_SIZE**
-            -
-            **REPRESENTATION**: Expected values are
+
+            REPRESENTATION: Expected values are
             -   **REPRESENTATION_POINTS**
             -   **REPRESENTATION_WIREFRAME**
             -   **REPRESENTATION_SURFACE**
-            -
-            **IMMEDIATE_RENDERING**:
+
+            IMMEDIATE_RENDERING:
             -   Turn on immediate rendering by setting the value to 1.
             -   Turn off immediate rendering by setting the value to 0.
-            -
-            **SHADING**: Expected values are
+
+            SHADING: Expected values are
             -   **SHADING_FLAT**
             -   **SHADING_GOURAUD**
             -   **SHADING_PHONG**
@@ -276,22 +301,22 @@ namespace cv
             @param id Id of the widget.
             @param property Property.
 
-            **Rendering property** can be one of the following:
+            Rendering property can be one of the following:
             -   **POINT_SIZE**
             -   **OPACITY**
             -   **LINE_WIDTH**
             -   **FONT_SIZE**
-            -
-            **REPRESENTATION**: Expected values are
+
+            REPRESENTATION: Expected values are
             -   **REPRESENTATION_POINTS**
             -   **REPRESENTATION_WIREFRAME**
             -   **REPRESENTATION_SURFACE**
-            -
-            **IMMEDIATE_RENDERING**:
+
+            IMMEDIATE_RENDERING:
             -   Turn on immediate rendering by setting the value to 1.
             -   Turn off immediate rendering by setting the value to 0.
-            -
-            **SHADING**: Expected values are
+
+            SHADING: Expected values are
             -   **SHADING_FLAT**
             -   **SHADING_GOURAUD**
             -   **SHADING_PHONG**

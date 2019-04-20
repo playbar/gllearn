@@ -43,8 +43,7 @@
 #include "test_precomp.hpp"
 #include "opencv2/imgproc/imgproc_c.h"
 
-using namespace cv;
-using namespace std;
+namespace opencv_test { namespace {
 
 class CV_DefaultNewCameraMatrixTest : public cvtest::ArrayTest
 {
@@ -67,7 +66,7 @@ private:
 
     static const int MAX_X = 2048;
     static const int MAX_Y = 2048;
-    static const int MAX_VAL = 10000;
+    //static const int MAX_VAL = 10000;
 };
 
 CV_DefaultNewCameraMatrixTest::CV_DefaultNewCameraMatrixTest()
@@ -411,7 +410,7 @@ void CV_UndistortPointsTest::prepare_to_validation(int /*test_case_idx*/)
     {
         if (useDstMat)
         {
-            CvMat temp = dst_points_mat;
+            CvMat temp = cvMat(dst_points_mat);
             for (int i=0;i<N_POINTS*2;i++)
             {
                 points[i] = temp.data.fl[i];
@@ -470,14 +469,14 @@ void CV_UndistortPointsTest::run_func()
     }
     else
     {
-        CvMat _input0 = test_mat[INPUT][0], _input1 = test_mat[INPUT][1], _input2, _input3, _input4;
-        CvMat _output = test_mat[TEMP][0];
+        CvMat _input0 = cvMat(test_mat[INPUT][0]), _input1 = cvMat(test_mat[INPUT][1]), _input2, _input3, _input4;
+        CvMat _output = cvMat(test_mat[TEMP][0]);
         if(!zero_distortion)
-            _input2 = test_mat[INPUT][2];
+            _input2 = cvMat(test_mat[INPUT][2]);
         if(!zero_R)
-            _input3 = test_mat[INPUT][3];
+            _input3 = cvMat(test_mat[INPUT][3]);
         if(!zero_new_cam)
-            _input4 = test_mat[INPUT][4];
+            _input4 = cvMat(test_mat[INPUT][4]);
         cvUndistortPoints(&_input0, &_output, &_input1,
                           zero_distortion ? 0 : &_input2,
                           zero_R ? 0 : &_input3,
@@ -854,10 +853,10 @@ void CV_InitUndistortRectifyMapTest::prepare_to_validation(int/* test_case_idx*/
     CvMat _new_cam = cvMat(test_mat[INPUT][4].rows,test_mat[INPUT][4].cols,CV_64F,new_cam);
     CvMat _points= cvMat(test_mat[INPUT][0].rows,test_mat[INPUT][0].cols,CV_64FC2,points);
 
-    CvMat _input1 = test_mat[INPUT][1];
-    CvMat _input2 = test_mat[INPUT][2];
-    CvMat _input3 = test_mat[INPUT][3];
-    CvMat _input4 = test_mat[INPUT][4];
+    CvMat _input1 = cvMat(test_mat[INPUT][1]);
+    CvMat _input2 = cvMat(test_mat[INPUT][2]);
+    CvMat _input3 = cvMat(test_mat[INPUT][3]);
+    CvMat _input4 = cvMat(test_mat[INPUT][4]);
 
     cvtest::convert(cvarrToMat(&_input1), cvarrToMat(&_camera), -1);
     cvtest::convert(cvarrToMat(&_input2), cvarrToMat(&_distort), -1);
@@ -872,8 +871,8 @@ void CV_InitUndistortRectifyMapTest::prepare_to_validation(int/* test_case_idx*/
     }
     cv::Mat map1,map2;
     cv::convertMaps(mapx,mapy,map1,map2,CV_32FC1);
-    CvMat _map1 = map1;
-    CvMat _map2 = map2;
+    CvMat _map1 = cvMat(map1);
+    CvMat _map2 = cvMat(map2);
     for (int i=0;i<N_POINTS;i++)
     {
         double u = test_mat[INPUT][0].ptr<double>()[2*i];
@@ -887,7 +886,7 @@ void CV_InitUndistortRectifyMapTest::prepare_to_validation(int/* test_case_idx*/
     cvUndistortPoints(&_points,&ref_points,&_camera,
                       zero_distortion ? 0 : &_distort, zero_R ? 0 : &_rot, zero_new_cam ? &_camera : &_new_cam);
     //cvTsDistortPoints(&_points,&ref_points,&_camera,&_distort,&_rot,&_new_cam);
-    CvMat dst = test_mat[REF_OUTPUT][0];
+    CvMat dst = cvMat(test_mat[REF_OUTPUT][0]);
     cvtest::convert(cvarrToMat(&ref_points), cvarrToMat(&dst), -1);
 
     cvtest::copy(test_mat[INPUT][0],test_mat[OUTPUT][0]);
@@ -913,13 +912,13 @@ void CV_InitUndistortRectifyMapTest::run_func()
     }
     else
     {
-        CvMat input1 = test_mat[INPUT][1], input2, input3, input4;
+        CvMat input1 = cvMat(test_mat[INPUT][1]), input2, input3, input4;
         if( !zero_distortion )
-            input2 = test_mat[INPUT][2];
+            input2 = cvMat(test_mat[INPUT][2]);
         if( !zero_R )
-            input3 = test_mat[INPUT][3];
+            input3 = cvMat(test_mat[INPUT][3]);
         if( !zero_new_cam )
-            input4 = test_mat[INPUT][4];
+            input4 = cvMat(test_mat[INPUT][4]);
         cvInitUndistortRectifyMap(&input1,
                                   zero_distortion ? 0 : &input2,
                                   zero_R ? 0 : &input3,
@@ -938,3 +937,5 @@ double CV_InitUndistortRectifyMapTest::get_success_error_level( int /*test_case_
 TEST(Calib3d_DefaultNewCameraMatrix, accuracy) { CV_DefaultNewCameraMatrixTest test; test.safe_run(); }
 TEST(Calib3d_UndistortPoints, accuracy) { CV_UndistortPointsTest test; test.safe_run(); }
 TEST(Calib3d_InitUndistortRectifyMap, accuracy) { CV_InitUndistortRectifyMapTest test; test.safe_run(); }
+
+}} // namespace

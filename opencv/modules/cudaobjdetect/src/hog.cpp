@@ -51,40 +51,82 @@ Ptr<cuda::HOG> cv::cuda::HOG::create(Size, Size, Size, Size, int) { throw_no_cud
 
 #else
 
+/****************************************************************************************\
+      The code below is implementation of HOG (Histogram-of-Oriented Gradients)
+      descriptor and object detection, introduced by Navneet Dalal and Bill Triggs.
+
+      The computed feature vectors are compatible with the
+      INRIA Object Detection and Localization Toolkit
+      (http://pascal.inrialpes.fr/soft/olt/)
+\****************************************************************************************/
+
 namespace cv { namespace cuda { namespace device
 {
     namespace hog
     {
-        void set_up_constants(int nbins, int block_stride_x, int block_stride_y,
-                              int nblocks_win_x, int nblocks_win_y);
+        void set_up_constants(int nbins,
+                              int block_stride_x, int block_stride_y,
+                              int nblocks_win_x, int nblocks_win_y,
+                              int ncells_block_x, int ncells_block_y,
+                              const cudaStream_t& stream);
 
-        void compute_hists(int nbins, int block_stride_x, int blovck_stride_y,
-                           int height, int width, const cv::cuda::PtrStepSzf& grad,
-                           const cv::cuda::PtrStepSzb& qangle, float sigma, float* block_hists);
+        void compute_hists(int nbins,
+                           int block_stride_x, int block_stride_y,
+                           int height, int width,
+                           const PtrStepSzf& grad, const PtrStepSzb& qangle,
+                           float sigma,
+                           float* block_hists,
+                           int cell_size_x, int cell_size_y,
+                           int ncells_block_x, int ncells_block_y,
+                           const cudaStream_t& stream);
 
-        void normalize_hists(int nbins, int block_stride_x, int block_stride_y,
-                             int height, int width, float* block_hists, float threshold);
+        void normalize_hists(int nbins,
+                             int block_stride_x, int block_stride_y,
+                             int height, int width,
+                             float* block_hists,
+                             float threshold,
+                             int cell_size_x, int cell_size_y,
+                             int ncells_block_x, int ncells_block_y,
+                             const cudaStream_t& stream);
 
         void classify_hists(int win_height, int win_width, int block_stride_y,
                             int block_stride_x, int win_stride_y, int win_stride_x, int height,
                             int width, float* block_hists, float* coefs, float free_coef,
-                            float threshold, unsigned char* labels);
+                            float threshold, int cell_size_x, int ncells_block_x, unsigned char* labels);
 
         void compute_confidence_hists(int win_height, int win_width, int block_stride_y, int block_stride_x,
-                           int win_stride_y, int win_stride_x, int height, int width, float* block_hists,
-                           float* coefs, float free_coef, float threshold, float *confidences);
+                                      int win_stride_y, int win_stride_x, int height, int width, float* block_hists,
+                                      float* coefs, float free_coef, float threshold, int cell_size_x, int ncells_block_x, float *confidences);
 
-        void extract_descrs_by_rows(int win_height, int win_width, int block_stride_y, int block_stride_x,
-                                    int win_stride_y, int win_stride_x, int height, int width, float* block_hists,
-                                    cv::cuda::PtrStepSzf descriptors);
-        void extract_descrs_by_cols(int win_height, int win_width, int block_stride_y, int block_stride_x,
-                                    int win_stride_y, int win_stride_x, int height, int width, float* block_hists,
-                                    cv::cuda::PtrStepSzf descriptors);
+        void extract_descrs_by_rows(int win_height, int win_width,
+                                    int block_stride_y, int block_stride_x,
+                                    int win_stride_y, int win_stride_x,
+                                    int height, int width,
+                                    float* block_hists,
+                                    int cell_size_x, int ncells_block_x,
+                                    cv::cuda::PtrStepSzf descriptors,
+                                    const cudaStream_t& stream);
+        void extract_descrs_by_cols(int win_height, int win_width,
+                                    int block_stride_y, int block_stride_x,
+                                    int win_stride_y, int win_stride_x,
+                                    int height, int width,
+                                    float* block_hists,
+                                    int cell_size_x, int ncells_block_x,
+                                    cv::cuda::PtrStepSzf descriptors,
+                                    const cudaStream_t& stream);
 
-        void compute_gradients_8UC1(int nbins, int height, int width, const cv::cuda::PtrStepSzb& img,
-                                    float angle_scale, cv::cuda::PtrStepSzf grad, cv::cuda::PtrStepSzb qangle, bool correct_gamma);
-        void compute_gradients_8UC4(int nbins, int height, int width, const cv::cuda::PtrStepSzb& img,
-                                    float angle_scale, cv::cuda::PtrStepSzf grad, cv::cuda::PtrStepSzb qangle, bool correct_gamma);
+        void compute_gradients_8UC1(int nbins,
+                                    int height, int width, const cv::cuda::PtrStepSzb& img,
+                                    float angle_scale,
+                                    cv::cuda::PtrStepSzf grad, cv::cuda::PtrStepSzb qangle,
+                                    bool correct_gamma,
+                                    const cudaStream_t& stream);
+        void compute_gradients_8UC4(int nbins,
+                                    int height, int width, const cv::cuda::PtrStepSzb& img,
+                                    float angle_scale,
+                                    cv::cuda::PtrStepSzf grad, cv::cuda::PtrStepSzb qangle,
+                                    bool correct_gamma,
+                                    const cudaStream_t& stream);
 
         void resize_8UC1(const cv::cuda::PtrStepSzb& src, cv::cuda::PtrStepSzb dst);
         void resize_8UC4(const cv::cuda::PtrStepSzb& src, cv::cuda::PtrStepSzb dst);
@@ -167,11 +209,12 @@ namespace
         double scale0_;
         int group_threshold_;
         int descr_format_;
+        Size cells_per_block_;
 
     private:
         int getTotalHistSize(Size img_size) const;
-        void computeBlockHistograms(const GpuMat& img, GpuMat& block_hists);
-        void computeGradient(const GpuMat& img, GpuMat& grad, GpuMat& qangle);
+        void computeBlockHistograms(const GpuMat& img, GpuMat& block_hists, Stream& stream);
+//        void computeGradient(const GpuMat& img, GpuMat& grad, GpuMat& qangle, Stream& stream);
 
         // Coefficients of the separating plane
         float free_coef_;
@@ -197,7 +240,8 @@ namespace
         win_stride_(block_stride),
         scale0_(1.05),
         group_threshold_(2),
-        descr_format_(DESCR_FORMAT_COL_BY_COL)
+        descr_format_(DESCR_FORMAT_COL_BY_COL),
+        cells_per_block_(block_size.width / cell_size.width, block_size.height / cell_size.height)
     {
         CV_Assert((win_size.width  - block_size.width ) % block_stride.width  == 0 &&
                   (win_size.height - block_size.height) % block_stride.height == 0);
@@ -205,12 +249,13 @@ namespace
         CV_Assert(block_size.width % cell_size.width == 0 &&
                   block_size.height % cell_size.height == 0);
 
-        CV_Assert(block_stride == cell_size);
+        // Navneet Dalal and Bill Triggs. Histograms of oriented gradients for
+        // human detection. In International Conference on Computer Vision and
+        // Pattern Recognition, volume 2, pages 886-893, June 2005
+        // http://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf (28.07.2015) [Figure 5]
+        CV_Assert(block_stride == (block_size / 2));
 
-        CV_Assert(cell_size == Size(8, 8));
-
-        Size cells_per_block(block_size.width / cell_size.width, block_size.height / cell_size.height);
-        CV_Assert(cells_per_block == Size(2, 2));
+        CV_Assert(cell_size.width == cell_size.height);
     }
 
     static int numPartsWithin(int size, int part_size, int stride)
@@ -231,8 +276,7 @@ namespace
 
     size_t HOG_Impl::getBlockHistogramSize() const
     {
-        Size cells_per_block(block_size_.width / cell_size_.width, block_size_.height / cell_size_.height);
-        return nbins_ * cells_per_block.area();
+        return nbins_ * cells_per_block_.area();
     }
 
     double HOG_Impl::getWinSigma() const
@@ -297,7 +341,7 @@ namespace
         BufferPool pool(Stream::Null());
 
         GpuMat block_hists = pool.getBuffer(1, getTotalHistSize(img.size()), CV_32FC1);
-        computeBlockHistograms(img, block_hists);
+        computeBlockHistograms(img, block_hists, Stream::Null());
 
         Size wins_per_img = numPartsWithin(img.size(), win_size_, win_stride_);
 
@@ -313,6 +357,7 @@ namespace
                                 detector_.ptr<float>(),
                                 (float)free_coef_,
                                 (float)hit_threshold_,
+                                cell_size_.width, cells_per_block_.width,
                                 labels.ptr());
 
             Mat labels_host;
@@ -339,6 +384,7 @@ namespace
                                           detector_.ptr<float>(),
                                           (float)free_coef_,
                                           (float)hit_threshold_,
+                                          cell_size_.width, cells_per_block_.width,
                                           labels.ptr<float>());
 
             Mat labels_host;
@@ -443,19 +489,16 @@ namespace
 
         CV_Assert( img.type() == CV_8UC1 || img.type() == CV_8UC4 );
         CV_Assert( win_stride_.width % block_stride_.width == 0 && win_stride_.height % block_stride_.height == 0 );
-        CV_Assert( !stream );
 
-        BufferPool pool(stream);
-
-        GpuMat block_hists = pool.getBuffer(1, getTotalHistSize(img.size()), CV_32FC1);
-        computeBlockHistograms(img, block_hists);
-
+        BufferPool   pool(stream);
+        GpuMat       block_hists     = pool.getBuffer(1, getTotalHistSize(img.size()), CV_32FC1);
+        Size         wins_per_img    = numPartsWithin(img.size(), win_size_, win_stride_);
+        Size         blocks_per_win  = numPartsWithin(win_size_, block_size_, block_stride_);
         const size_t block_hist_size = getBlockHistogramSize();
-        Size blocks_per_win = numPartsWithin(win_size_, block_size_, block_stride_);
-        Size wins_per_img   = numPartsWithin(img.size(), win_size_, win_stride_);
-
         _descriptors.create(wins_per_img.area(), static_cast<int>(blocks_per_win.area() * block_hist_size), CV_32FC1);
-        GpuMat descriptors = _descriptors.getGpuMat();
+        GpuMat       descriptors     = _descriptors.getGpuMat();
+
+        computeBlockHistograms(img, block_hists, stream);
 
         switch (descr_format_)
         {
@@ -465,7 +508,9 @@ namespace
                                         win_stride_.height, win_stride_.width,
                                         img.rows, img.cols,
                                         block_hists.ptr<float>(),
-                                        descriptors);
+                                        cell_size_.width, cells_per_block_.width,
+                                        descriptors,
+                                        StreamAccessor::getStream(stream));
             break;
         case DESCR_FORMAT_COL_BY_COL:
             hog::extract_descrs_by_cols(win_size_.height, win_size_.width,
@@ -473,7 +518,9 @@ namespace
                                         win_stride_.height, win_stride_.width,
                                         img.rows, img.cols,
                                         block_hists.ptr<float>(),
-                                        descriptors);
+                                        cell_size_.width, cells_per_block_.width,
+                                        descriptors,
+                                        StreamAccessor::getStream(stream));
             break;
         default:
             CV_Error(cv::Error::StsBadArg, "Unknown descriptor format");
@@ -487,48 +534,58 @@ namespace
         return static_cast<int>(block_hist_size * blocks_per_img.area());
     }
 
-    void HOG_Impl::computeBlockHistograms(const GpuMat& img, GpuMat& block_hists)
+    void HOG_Impl::computeBlockHistograms(const GpuMat& img, GpuMat& block_hists, Stream& stream)
     {
+        BufferPool pool(stream);
         cv::Size blocks_per_win = numPartsWithin(win_size_, block_size_, block_stride_);
-        hog::set_up_constants(nbins_, block_stride_.width, block_stride_.height, blocks_per_win.width, blocks_per_win.height);
+        float  angleScale = static_cast<float>(nbins_ / CV_PI);
+        GpuMat grad       = pool.getBuffer(img.size(), CV_32FC2);
+        GpuMat qangle     = pool.getBuffer(img.size(), CV_8UC2);
 
-        BufferPool pool(Stream::Null());
+        hog::set_up_constants(nbins_,
+                              block_stride_.width, block_stride_.height,
+                              blocks_per_win.width, blocks_per_win.height,
+                              cells_per_block_.width, cells_per_block_.height,
+                              StreamAccessor::getStream(stream));
 
-        GpuMat grad = pool.getBuffer(img.size(), CV_32FC2);
-        GpuMat qangle = pool.getBuffer(img.size(), CV_8UC2);
-        computeGradient(img, grad, qangle);
-
-        block_hists.create(1, getTotalHistSize(img.size()), CV_32FC1);
+        switch (img.type())
+        {
+            case CV_8UC1:
+                hog::compute_gradients_8UC1(nbins_,
+                                            img.rows, img.cols, img,
+                                            angleScale,
+                                            grad, qangle,
+                                            gamma_correction_,
+                                            StreamAccessor::getStream(stream));
+                break;
+            case CV_8UC4:
+                hog::compute_gradients_8UC4(nbins_,
+                                            img.rows, img.cols, img,
+                                            angleScale,
+                                            grad, qangle,
+                                            gamma_correction_,
+                                            StreamAccessor::getStream(stream));
+                break;
+        }
 
         hog::compute_hists(nbins_,
                            block_stride_.width, block_stride_.height,
                            img.rows, img.cols,
                            grad, qangle,
                            (float)getWinSigma(),
-                           block_hists.ptr<float>());
+                           block_hists.ptr<float>(),
+                           cell_size_.width, cell_size_.height,
+                           cells_per_block_.width, cells_per_block_.height,
+                           StreamAccessor::getStream(stream));
 
         hog::normalize_hists(nbins_,
                              block_stride_.width, block_stride_.height,
                              img.rows, img.cols,
                              block_hists.ptr<float>(),
-                             (float)threshold_L2hys_);
-    }
-
-    void HOG_Impl::computeGradient(const GpuMat& img, GpuMat& grad, GpuMat& qangle)
-    {
-        grad.create(img.size(), CV_32FC2);
-        qangle.create(img.size(), CV_8UC2);
-
-        float angleScale = (float)(nbins_ / CV_PI);
-        switch (img.type())
-        {
-            case CV_8UC1:
-                hog::compute_gradients_8UC1(nbins_, img.rows, img.cols, img, angleScale, grad, qangle, gamma_correction_);
-                break;
-            case CV_8UC4:
-                hog::compute_gradients_8UC4(nbins_, img.rows, img.cols, img, angleScale, grad, qangle, gamma_correction_);
-                break;
-        }
+                             (float)threshold_L2hys_,
+                             cell_size_.width, cell_size_.height,
+                             cells_per_block_.width, cells_per_block_.height,
+                             StreamAccessor::getStream(stream));
     }
 }
 

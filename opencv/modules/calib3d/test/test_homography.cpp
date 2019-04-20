@@ -12,6 +12,7 @@
 //
 // Copyright (C) 2000-2008, Intel Corporation, all rights reserved.
 // Copyright (C) 2009, Willow Garage Inc., all rights reserved.
+// Copyright (C) 2015, Itseez Inc., all rights reserved.
 // Third party copyrights are property of their respective owners.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -41,7 +42,8 @@
 //M*/
 
 #include "test_precomp.hpp"
-#include <time.h>
+
+namespace opencv_test { namespace {
 
 #define CALIB3D_HOMOGRAPHY_ERROR_MATRIX_SIZE 1
 #define CALIB3D_HOMOGRAPHY_ERROR_MATRIX_DIFF 2
@@ -564,6 +566,9 @@ void CV_HomographyTest::run(int)
             default: continue;
             }
         }
+
+        delete[]src_data;
+        src_data = NULL;
     }
 }
 
@@ -618,7 +623,7 @@ TEST(Calib3d_Homography, EKcase)
     Mat h = findHomography(p1, p2, RANSAC, 0.01, mask);
     ASSERT_TRUE(!h.empty());
 
-    transpose(mask, mask);
+    cv::transpose(mask, mask);
     Mat p3, mask2;
     int ninliers = countNonZero(mask);
     Mat nmask[] = { mask, mask };
@@ -627,7 +632,7 @@ TEST(Calib3d_Homography, EKcase)
     mask2 = mask2.reshape(1);
     p2 = p2.reshape(1);
     p3 = p3.reshape(1);
-    double err = norm(p2, p3, NORM_INF, mask2);
+    double err = cvtest::norm(p2, p3, NORM_INF, mask2);
 
     printf("ninliers: %d, inliers err: %.2g\n", ninliers, err);
     ASSERT_GE(ninliers, 10);
@@ -705,3 +710,5 @@ TEST(Calib3d_Homography, fromImages)
     ASSERT_TRUE(!H1.empty());
     ASSERT_GE(ninliers1, 80);
 }
+
+}} // namespace

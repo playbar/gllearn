@@ -12,7 +12,7 @@ Theory
 
 We know SIFT uses 128-dim vector for descriptors. Since it is using floating point numbers, it takes
 basically 512 bytes. Similarly SURF also takes minimum of 256 bytes (for 64-dim). Creating such a
-vector for thousands of features takes a lot of memory which are not feasible for resouce-constraint
+vector for thousands of features takes a lot of memory which are not feasible for resource-constraint
 applications especially for embedded systems. Larger the memory, longer the time it takes for
 matching.
 
@@ -48,18 +48,20 @@ BRIEF in OpenCV
 
 Below code shows the computation of BRIEF descriptors with the help of CenSurE detector. (CenSurE
 detector is called STAR detector in OpenCV)
+
+note, that you need [opencv contrib](https://github.com/opencv/opencv_contrib)) to use this.
 @code{.py}
 import numpy as np
-import cv2
+import cv2 as cv
 from matplotlib import pyplot as plt
 
-img = cv2.imread('simple.jpg',0)
+img = cv.imread('simple.jpg',0)
 
-# Initiate STAR detector
-star = cv2.FeatureDetector_create("STAR")
+# Initiate FAST detector
+star = cv.xfeatures2d.StarDetector_create()
 
 # Initiate BRIEF extractor
-brief = cv2.DescriptorExtractor_create("BRIEF")
+brief = cv.xfeatures2d.BriefDescriptorExtractor_create()
 
 # find the keypoints with STAR
 kp = star.detect(img,None)
@@ -67,10 +69,10 @@ kp = star.detect(img,None)
 # compute the descriptors with BRIEF
 kp, des = brief.compute(img, kp)
 
-print brief.getInt('bytes')
-print des.shape
+print( brief.descriptorSize() )
+print( des.shape )
 @endcode
-The function brief.getInt('bytes') gives the \f$n_d\f$ size used in bytes. By default it is 32. Next one
+The function brief.getDescriptorSize() gives the \f$n_d\f$ size used in bytes. By default it is 32. Next one
 is matching, which will be done in another chapter.
 
 Additional Resources
@@ -79,4 +81,4 @@ Additional Resources
 -#  Michael Calonder, Vincent Lepetit, Christoph Strecha, and Pascal Fua, "BRIEF: Binary Robust
     Independent Elementary Features", 11th European Conference on Computer Vision (ECCV), Heraklion,
     Crete. LNCS Springer, September 2010.
-2.  LSH (Locality Sensitive Hasing) at wikipedia.
+2.  [LSH (Locality Sensitive Hashing)](https://en.wikipedia.org/wiki/Locality-sensitive_hashing) at wikipedia.

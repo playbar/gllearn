@@ -114,6 +114,7 @@ double upnp::compute_pose(Mat& R, Mat& t)
   SVD::compute(MtM, D, Ut, Vt, SVD::MODIFY_A | SVD::FULL_UV);
   Mat(Ut.t()).copyTo(Ut);
   M->release();
+  delete M;
 
   double l_6x12[6 * 12], rho[6];
   Mat L_6x12 = Mat(6, 12, CV_64F, l_6x12);
@@ -174,7 +175,7 @@ void upnp::estimate_R_and_t(double R[3][3], double t[3])
     pw0[j] /= number_of_correspondences;
   }
 
-  double abt[3 * 3], abt_d[3], abt_u[3 * 3], abt_v[3 * 3];
+  double abt[3 * 3] = {0}, abt_d[3], abt_u[3 * 3], abt_v[3 * 3];
   Mat ABt   = Mat(3, 3, CV_64F, abt);
   Mat ABt_D = Mat(3, 1, CV_64F, abt_d);
   Mat ABt_U = Mat(3, 3, CV_64F, abt_u);
@@ -574,7 +575,7 @@ void upnp::gauss_newton(const Mat * L_6x12, const Mat * Rho, double betas[4], do
 {
   const int iterations_number = 50;
 
-  double a[6*4], b[6], x[4];
+  double a[6*4], b[6], x[4] = {0};
   Mat * A = new Mat(6, 4, CV_64F, a);
   Mat * B = new Mat(6, 1, CV_64F, b);
   Mat * X = new Mat(4, 1, CV_64F, x);
@@ -589,7 +590,16 @@ void upnp::gauss_newton(const Mat * L_6x12, const Mat * Rho, double betas[4], do
   }
 
   if (f[0] < 0) f[0] = -f[0];
-    fu = fv = f[0];
+  fu = fv = f[0];
+
+  A->release();
+  delete A;
+
+  B->release();
+  delete B;
+
+  X->release();
+  delete X;
 
 }
 
@@ -710,6 +720,8 @@ void upnp::qr_solve(Mat * A, Mat * b, Mat * X)
 {
   const int nr = A->rows;
   const int nc = A->cols;
+  if (nr <= 0 || nc <= 0)
+      return;
 
   if (max_nr != 0 && max_nr < nr)
   {
