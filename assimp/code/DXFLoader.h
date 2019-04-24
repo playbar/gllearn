@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -44,35 +46,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_DXFLOADER_H_INCLUDED
 #define AI_DXFLOADER_H_INCLUDED
 
-#include "BaseImporter.h"
+#include <assimp/BaseImporter.h>
 #include <map>
 
 namespace Assimp    {
-    namespace DXF {
 
-        class LineReader;
-        struct FileData;
-        struct PolyLine;
-        struct Block;
-        struct InsertBlock;
+// Forward declarations
+namespace DXF {
+    class LineReader;
+    struct FileData;
+    struct PolyLine;
+    struct Block;
+    struct InsertBlock;
 
-        typedef std::map<std::string, const DXF::Block*> BlockMap;
-    }
-
+    typedef std::map<std::string, const DXF::Block*> BlockMap;
+}
 
 // ---------------------------------------------------------------------------
-/** DXF importer implementation.
- *
-*/
-class DXFImporter : public BaseImporter
-{
+/** 
+ *  @brief  DXF importer implementation.
+ */
+class DXFImporter : public BaseImporter {
 public:
     DXFImporter();
     ~DXFImporter();
-
-
-
-public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
@@ -81,7 +78,6 @@ public:
         bool checkSig) const;
 
 protected:
-
     // -------------------------------------------------------------------
     /** Return importer meta information.
      * See #BaseImporter::GetInfo for the details*/

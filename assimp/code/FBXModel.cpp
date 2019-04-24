@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -76,13 +78,11 @@ Model::Model(uint64_t id, const Element& element, const Document& doc, const std
     ResolveLinks(element,doc);
 }
 
-
 // ------------------------------------------------------------------------------------------------
 Model::~Model()
 {
 
 }
-
 
 // ------------------------------------------------------------------------------------------------
 void Model::ResolveLinks(const Element& element, const Document& doc)
@@ -108,19 +108,19 @@ void Model::ResolveLinks(const Element& element, const Document& doc)
             continue;
         }
 
-        const Material* const mat = (const Material*)(ob);
+        const Material* const mat = dynamic_cast<const Material*>(ob);
         if(mat) {
             materials.push_back(mat);
             continue;
         }
 
-        const Geometry* const geo = (const Geometry*)(ob);
+        const Geometry* const geo = dynamic_cast<const Geometry*>(ob);
         if(geo) {
             geometry.push_back(geo);
             continue;
         }
 
-        const NodeAttribute* const att = (const NodeAttribute*)(ob);
+        const NodeAttribute* const att = dynamic_cast<const NodeAttribute*>(ob);
         if(att) {
             attributes.push_back(att);
             continue;
@@ -131,14 +131,13 @@ void Model::ResolveLinks(const Element& element, const Document& doc)
     }
 }
 
-
 // ------------------------------------------------------------------------------------------------
 bool Model::IsNull() const
 {
     const std::vector<const NodeAttribute*>& attrs = GetAttributes();
     for(const NodeAttribute* att : attrs) {
 
-        const Null* null_tag = (const Null*)(att);
+        const Null* null_tag = dynamic_cast<const Null*>(att);
         if(null_tag) {
             return true;
         }

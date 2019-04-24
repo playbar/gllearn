@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -44,10 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_MD3LOADER_H_INCLUDED
 #define AI_MD3LOADER_H_INCLUDED
 
-#include "BaseImporter.h"
-#include "ByteSwapper.h"
+#include <assimp/BaseImporter.h>
+#include <assimp/ByteSwapper.h>
 #include "MD3FileData.h"
-#include "StringComparison.h"
+#include <assimp/StringComparison.h>
 #include <assimp/types.h>
 
 #include <list>
@@ -123,7 +125,7 @@ enum AlphaTestFunc
  */
 struct ShaderMapBlock
 {
-    ShaderMapBlock()
+    ShaderMapBlock() AI_NO_EXCEPT
          :  blend_src   (BLEND_NONE)
          ,  blend_dest  (BLEND_NONE)
          ,  alpha_test  (AT_NONE)
@@ -148,7 +150,7 @@ struct ShaderMapBlock
  */
 struct ShaderDataBlock
 {
-    ShaderDataBlock()
+    ShaderDataBlock() AI_NO_EXCEPT
         :   cull    (CULL_CW)
     {}
 

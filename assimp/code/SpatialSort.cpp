@@ -3,7 +3,9 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 
 All rights reserved.
 
@@ -41,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** @file Implementation of the helper class to quickly find vertices close to a given position */
 
-#include "SpatialSort.h"
+#include <assimp/SpatialSort.h>
 #include <assimp/ai_assert.h>
 
 using namespace Assimp;
@@ -125,9 +127,8 @@ void SpatialSort::FindPositions( const aiVector3D& pPosition,
     const ai_real dist = pPosition * mPlaneNormal;
     const ai_real minDist = dist - pRadius, maxDist = dist + pRadius;
 
-    // clear the array in this strange fashion because a simple clear() would also deallocate
-    // the array which we want to avoid
-    poResults.erase( poResults.begin(), poResults.end());
+    // clear the array
+    poResults.clear();
 
     // quick check for positions outside the range
     if( mPositions.size() == 0)
@@ -222,7 +223,7 @@ namespace {
         if( (-42 == (~42 + 1)) && (binValue & 0x80000000))
             return BinFloat(1 << (CHAR_BIT * sizeof(BinFloat) - 1)) - binValue;
         // One's complement?
-        else if( (-42 == ~42) && (binValue & 0x80000000))
+        else if ( (-42 == ~42) && (binValue & 0x80000000))
             return BinFloat(-0) - binValue;
         // Sign-magnitude?
         else if( (-42 == (42 | (-0))) && (binValue & 0x80000000)) // -0 = 1000... binary
@@ -269,7 +270,7 @@ void SpatialSort::FindIdenticalPositions( const aiVector3D& pPosition,
 
     // clear the array in this strange fashion because a simple clear() would also deallocate
     // the array which we want to avoid
-    poResults.erase( poResults.begin(), poResults.end());
+    poResults.resize( 0 );
 
     // do a binary search for the minimal distance to start the iteration there
     unsigned int index = (unsigned int)mPositions.size() / 2;
@@ -293,7 +294,7 @@ void SpatialSort::FindIdenticalPositions( const aiVector3D& pPosition,
         index++;
 
     // Now start iterating from there until the first position lays outside of the distance range.
-    // Add all positions inside the distance range within the tolerance to the result aray
+    // Add all positions inside the distance range within the tolerance to the result array
     std::vector<Entry>::const_iterator it = mPositions.begin() + index;
     while( ToBinary(it->mDistance) < maxDistBinary)
     {

@@ -5,15 +5,20 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 # See http://www.cmake.org/cmake/help/v3.0/policy/CMP0048.html
 cmake_policy(PUSH)
 if(CMAKE_MAJOR_VERSION GREATER 2)
-	cmake_policy(SET CMP0048 OLD)
+	cmake_policy(SET CMP0048 NEW)
 endif()
 project(zlib C)
+SET (ZLIB_VERSION_MAJOR 1)
+SET (ZLIB_VERSION_MINOR 2)
+SET (ZLIB_VERSION_PATCH 11)
+SET (ZLIB_VERSION ${ZLIB_VERSION_MAJOR}.${ZLIB_VERSION_MINOR}.${ZLIB_VERSION_PATCH})
+SET (ZLIB_SOVERSION 1)
+SET (PROJECT_VERSION "${ZLIB_VERSION}")
 cmake_policy(POP)
 
-set(VERSION "1.2.8")
 
-option(ASM686 "Enable building i686 assembly implementation for zlib")
-option(AMD64 "Enable building amd64 assembly implementation for zlib")
+option(ASM686 "Enable building i686 assembly implementation")
+option(AMD64 "Enable building amd64 assembly implementation")
 
 #set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation directory for executables")
 #set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation directory for libraries")
@@ -73,12 +78,23 @@ if(MSVC)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
-
+if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
+    # If we're doing an out of source build and the user has a zconf.h
+    # in their source tree...
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
+        message(STATUS "Renaming")
+        message(STATUS "    ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h")
+        message(STATUS "to 'zconf.h.included' because this file is included with zlib")
+        message(STATUS "but CMake generates it automatically in the build directory.")
+        file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.included)
+  endif()
+endif()
 
 set(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/zlib.pc)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
 		${ZLIB_PC} @ONLY)
-
+configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
+		${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 
 
@@ -86,9 +102,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 # zlib
 #============================================================================
 
-
-add_definitions(-DZLIB_CONST)
-
+set(ZLIB_PUBLIC_HDRS
+    ${CMAKE_CURRENT_BINARY_DIR}/zconf.h
+    zlib.h
+)
 set(ZLIB_PRIVATE_HDRS
     crc32.h
     deflate.h
@@ -178,10 +195,13 @@ if(MINGW)
     set(ZLIB_DLL_SRCS ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
 endif(MINGW)
 
+add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
 add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
+set_target_properties(zlib PROPERTIES SOVERSION 1)
 
-#INSTALL( TARGETS zlibstatic
-#         LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
-#         ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
-#         RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
-#         COMPONENT ${LIBASSIMP_COMPONENT})
+INSTALL( TARGETS zlibstatic
+         LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+         ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+         RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
+         COMPONENT ${LIBASSIMP_COMPONENT})

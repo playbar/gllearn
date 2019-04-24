@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -46,8 +48,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_SMDLOADER_H_INCLUDED
 
 // internal headers
-#include "BaseImporter.h"
-#include "ParsingUtils.h"
+#include <assimp/BaseImporter.h>
+#include <assimp/ParsingUtils.h>
 
 // public Assimp headers
 #include <assimp/types.h>
@@ -60,17 +62,17 @@ struct aiNode;
 // STL headers
 #include <vector>
 
-namespace Assimp    {
-
-namespace SMD   {
+namespace Assimp {
+namespace SMD {
 
 // ---------------------------------------------------------------------------
 /** Data structure for a vertex in a SMD file
 */
-struct Vertex
-{
-    Vertex() : iParentNode(UINT_MAX)
-     {}
+struct Vertex {
+    Vertex() AI_NO_EXCEPT
+    : iParentNode(UINT_MAX) {
+        // empty
+    }
 
     //! Vertex position, normal and texture coordinate
     aiVector3D pos,nor,uv;
@@ -88,10 +90,12 @@ struct Vertex
 // ---------------------------------------------------------------------------
 /** Data structure for a face in a SMD file
 */
-struct Face
-{
-    Face() : iTexture(0x0)
-     {}
+struct Face {
+    Face() AI_NO_EXCEPT
+    : iTexture(0x0)
+    , avVertices{} {
+        // empty
+    }
 
     //! Texture index for the face
     unsigned int iTexture;
@@ -103,11 +107,12 @@ struct Face
 // ---------------------------------------------------------------------------
 /** Data structure for a bone in a SMD file
 */
-struct Bone
-{
+struct Bone {
     //! Default constructor
-    Bone() : iParent(UINT_MAX), bIsUsed(false)
-    {
+    Bone() AI_NO_EXCEPT
+    : iParent(UINT_MAX)
+    , bIsUsed(false) {
+        // empty
     }
 
     //! Destructor
@@ -122,12 +127,10 @@ struct Bone
     uint32_t iParent;
 
     //! Animation of the bone
-    struct Animation
-    {
+    struct Animation {
         //! Public default constructor
-        Animation()
-            : iFirstTimeKey()
-        {
+        Animation() AI_NO_EXCEPT
+        : iFirstTimeKey() {
             asKeys.reserve(20);
         }
 
@@ -216,6 +219,7 @@ protected:
     /** Parse the SMD file and create the output scene
     */
     void ParseFile();
+    void ReadSmd(const std::string &pFile, IOSystem* pIOHandler);
 
     // -------------------------------------------------------------------
     /** Parse the triangles section of the SMD file
@@ -287,13 +291,6 @@ protected:
     unsigned int GetTextureIndex(const std::string& filename);
 
     // -------------------------------------------------------------------
-    /** Computes absolute bone transformations
-     * All output transformations are in worldspace.
-     */
-    void ComputeAbsoluteBoneTransformations();
-
-
-    // -------------------------------------------------------------------
     /** Parse a line in the skeleton section
      */
     void ParseSkeletonElement(const char* szCurrent,
@@ -341,7 +338,9 @@ protected:
      */
     void CreateOutputMeshes();
     void CreateOutputNodes();
-    void CreateOutputAnimations();
+    void CreateOutputAnimations(const std::string &pFile, IOSystem* pIOHandler);
+    void CreateOutputAnimation(int index, const std::string &name);
+    void GetAnimationFileList(const std::string &pFile, IOSystem* pIOHandler, std::vector<std::tuple<std::string, std::string>>& outList);
     void CreateOutputMaterials();
 
 
@@ -410,6 +409,8 @@ private:
      */
     unsigned int iLineNumber;
 
+    bool bLoadAnimationList = true;
+    bool noSkeletonMesh = false;
 };
 
 } // end of namespace Assimp

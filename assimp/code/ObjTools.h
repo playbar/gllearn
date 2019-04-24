@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -44,8 +46,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef OBJ_TOOLS_H_INC
 #define OBJ_TOOLS_H_INC
 
-#include "fast_atof.h"
-#include "ParsingUtils.h"
+#include <assimp/fast_atof.h>
+#include <assimp/ParsingUtils.h>
 #include <vector>
 
 namespace Assimp {
@@ -78,8 +80,10 @@ inline Char_T getNextWord( Char_T pBuffer, Char_T pEnd )
 {
     while ( !isEndOfBuffer( pBuffer, pEnd ) )
     {
-        if( !IsSpaceOrNewLine( *pBuffer ) || IsLineEnd( *pBuffer ) )
-            break;
+        if ( !IsSpaceOrNewLine( *pBuffer ) || IsLineEnd( *pBuffer ) ) {
+            //if ( *pBuffer != '\\' )
+                break;
+        }
         pBuffer++;
     }
     return pBuffer;
@@ -113,14 +117,16 @@ inline char_t skipLine( char_t it, char_t end, unsigned int &uiLine ) {
     while( !isEndOfBuffer( it, end ) && !IsLineEnd( *it ) ) {
         ++it;
     }
-    if ( it != end )
-    {
+    
+    if ( it != end ) {
         ++it;
         ++uiLine;
     }
     // fix .. from time to time there are spaces at the beginning of a material line
-    while ( it != end && (*it == '\t' || *it == ' ') )
+    while ( it != end && ( *it == '\t' || *it == ' ' ) ) {
         ++it;
+    }
+
     return it;
 }
 

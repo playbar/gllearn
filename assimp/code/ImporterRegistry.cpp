@@ -3,7 +3,9 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 
 All rights reserved.
 
@@ -47,7 +49,7 @@ corresponding preprocessor flag to selectively disable formats.
 */
 
 #include <vector>
-#include "BaseImporter.h"
+#include <assimp/BaseImporter.h>
 
 // ------------------------------------------------------------------------------------------------
 // Importers
@@ -168,7 +170,7 @@ corresponding preprocessor flag to selectively disable formats.
 #   include "NDOLoader.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_IFC_IMPORTER
-#   include "IFCLoader.h"
+#   include "Importer/IFC/IFCLoader.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_XGL_IMPORTER
 #   include "XGLLoader.h"
@@ -181,6 +183,7 @@ corresponding preprocessor flag to selectively disable formats.
 #endif
 #ifndef ASSIMP_BUILD_NO_GLTF_IMPORTER
 #   include "glTFImporter.h"
+#   include "glTF2Importer.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_C4D_IMPORTER
 #   include "C4DImporter.h"
@@ -190,6 +193,12 @@ corresponding preprocessor flag to selectively disable formats.
 #endif
 #ifndef ASSIMP_BUILD_NO_X3D_IMPORTER
 #   include "X3DImporter.hpp"
+#endif
+#ifndef ASSIMP_BUILD_NO_MMD_IMPORTER
+#   include "MMDImporter.h"
+#endif
+#ifndef ASSIMP_BUILD_NO_STEP_IMPORTER
+#   include "Importer/StepFile/StepFileImporter.h"
 #endif
 
 namespace Assimp {
@@ -227,7 +236,9 @@ void GetImporterInstanceList(std::vector< BaseImporter* >& out)
     out.push_back( new MDLImporter());
 #endif
 #if (!defined ASSIMP_BUILD_NO_ASE_IMPORTER)
+  #if (!defined ASSIMP_BUILD_NO_3DS_IMPORTER)
     out.push_back( new ASEImporter());
+#  endif
 #endif
 #if (!defined ASSIMP_BUILD_NO_HMP_IMPORTER)
     out.push_back( new HMPImporter());
@@ -307,18 +318,18 @@ void GetImporterInstanceList(std::vector< BaseImporter* >& out)
 #if (!defined ASSIMP_BUILD_NO_COB_IMPORTER)
     out.push_back( new COBImporter());
 #endif
-//#if (!defined ASSIMP_BUILD_NO_BLEND_IMPORTER)
-//    out.push_back( new BlenderImporter());
-//#endif
-//#if (!defined ASSIMP_BUILD_NO_Q3BSP_IMPORTER)
-//    out.push_back( new Q3BSPFileImporter() );
-//#endif
-//#if (!defined ASSIMP_BUILD_NO_NDO_IMPORTER)
-//    out.push_back( new NDOImporter() );
-//#endif
-//#if (!defined ASSIMP_BUILD_NO_IFC_IMPORTER)
-//    out.push_back( new IFCImporter() );
-//#endif
+#if (!defined ASSIMP_BUILD_NO_BLEND_IMPORTER)
+    out.push_back( new BlenderImporter());
+#endif
+#if (!defined ASSIMP_BUILD_NO_Q3BSP_IMPORTER)
+    out.push_back( new Q3BSPFileImporter() );
+#endif
+#if (!defined ASSIMP_BUILD_NO_NDO_IMPORTER)
+    out.push_back( new NDOImporter() );
+#endif
+#if (!defined ASSIMP_BUILD_NO_IFC_IMPORTER)
+    out.push_back( new IFCImporter() );
+#endif
 #if ( !defined ASSIMP_BUILD_NO_XGL_IMPORTER )
     out.push_back( new XGLImporter() );
 #endif
@@ -330,15 +341,22 @@ void GetImporterInstanceList(std::vector< BaseImporter* >& out)
 #endif
 #if ( !defined ASSIMP_BUILD_NO_GLTF_IMPORTER )
     out.push_back( new glTFImporter() );
+    out.push_back( new glTF2Importer() );
 #endif
-//#if ( !defined ASSIMP_BUILD_NO_C4D_IMPORTER )
-//    out.push_back( new C4DImporter() );
-//#endif
+#if ( !defined ASSIMP_BUILD_NO_C4D_IMPORTER )
+    out.push_back( new C4DImporter() );
+#endif
 #if ( !defined ASSIMP_BUILD_NO_3MF_IMPORTER )
-    out.push_back(new D3MFImporter() );
+    out.push_back( new D3MFImporter() );
 #endif
 #ifndef ASSIMP_BUILD_NO_X3D_IMPORTER
     out.push_back( new X3DImporter() );
+#endif
+#ifndef ASSIMP_BUILD_NO_MMD_IMPORTER
+    out.push_back( new MMDImporter() );
+#endif
+#ifndef ASSIMP_BUILD_NO_STEP_IMPORTER
+    out.push_back(new StepFile::StepFileImporter());
 #endif
 }
 

@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -53,11 +55,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/importerdesc.h>
 #include <assimp/ProgressHandler.hpp>
 #include <assimp/types.h>
-#include "BaseImporter.h"
-#include "irrXMLWrapper.h"
+#include <assimp/BaseImporter.h>
+#include <assimp/irrXMLWrapper.h>
+#include "FIReader.hpp"
+//#include <regex>
 
-namespace Assimp
-{
+namespace Assimp {
 
 /// \class X3DImporter
 /// Class that holding scene graph which include: groups, geometry, metadata etc.
@@ -101,7 +104,7 @@ namespace Assimp
 ///		Navigation component:
 ///			"Billboard", "Collision", "LOD", "NavigationInfo", "OrthoViewpoint", "Viewpoint", "ViewpointGroup"
 ///		Networking component:
-///			"Anchor", "LoadSensor"
+///			"EXPORT", "IMPORT", "Anchor", "LoadSensor"
 ///		NURBS component:
 ///			"Contour2D", "ContourPolyline2D", "CoordinateDouble", "NurbsCurve", "NurbsCurve2D", "NurbsOrientationInterpolator", "NurbsPatchSurface",
 ///			"NurbsPositionInterpolator", "NurbsSet", "NurbsSurfaceInterpolator", "NurbsSweptSurface", "NurbsSwungSurface", "NurbsTextureCoordinate",
@@ -174,7 +177,7 @@ namespace Assimp
 /// Ignored attributes: "creaseAngle", "convex", "solid".
 ///
 /// Texture coordinates generating: only for Sphere, Cone, Cylinder. In all other case used PLANE mapping.
-///		It's better that Assimp main code has powerfull texture coordinates generator. Then is not needed to
+///		It's better that Assimp main code has powerful texture coordinates generator. Then is not needed to
 ///		duplicate this code in every importer.
 ///
 /// Lighting limitations.
@@ -199,9 +202,7 @@ public:
     /***********************************************/
 
     /// Default constructor.
-    X3DImporter()
-        : NodeElement_Cur( nullptr ), mReader( nullptr )
-    {}
+    X3DImporter();
 
     /// Default destructor.
     ~X3DImporter();
@@ -211,7 +212,7 @@ public:
     /***********************************************/
 
     /// Parse X3D file and fill scene graph. The function has no return value. Result can be found by analyzing the generated graph.
-    /// Also exception can be throwed if trouble will found.
+    /// Also exception can be thrown if trouble will found.
     /// \param [in] pFile - name of file to be parsed.
     /// \param [in] pIOHandler - pointer to IO helper object.
     void ParseFile( const std::string& pFile, IOSystem* pIOHandler );
@@ -401,10 +402,10 @@ private:
 	/************** Functions: XML set *************/
 	/***********************************************/
 
-	/// Chek if current node is empty: <node />. If not then exception will throwed.
+	/// Check if current node is empty: <node />. If not then exception will throwed.
 	void XML_CheckNode_MustBeEmpty();
 
-	/// Chek if current node name is equal to pNodeName.
+	/// Check if current node name is equal to pNodeName.
 	/// \param [in] pNodeName - name for checking.
 	/// return true if current node name is equal to pNodeName, else - false.
 	bool XML_CheckNode_NameEqual(const std::string& pNodeName) { return mReader->getNodeName() == pNodeName; }
@@ -451,33 +452,21 @@ private:
 	/// Read attribute value.
 	/// \param [in] pAttrIdx - attribute index (\ref mReader->getAttribute* set).
 	/// \param [out] pValue - read data.
-	void XML_ReadNode_GetAttrVal_AsListB(const int pAttrIdx, std::list<bool>& pValue);
-
-	/// \overload void XML_ReadNode_GetAttrVal_AsListBool(const int pAttrIdx, std::list<bool>& pValue)
 	void XML_ReadNode_GetAttrVal_AsArrB(const int pAttrIdx, std::vector<bool>& pValue);
 
 	/// Read attribute value.
 	/// \param [in] pAttrIdx - attribute index (\ref mReader->getAttribute* set).
 	/// \param [out] pValue - read data.
-	void XML_ReadNode_GetAttrVal_AsListI32(const int pAttrIdx, std::list<int32_t>& pValue);
-
-	/// \overload void XML_ReadNode_GetAttrVal_AsListI32(const int pAttrIdx, std::list<int32_t>& pValue)
 	void XML_ReadNode_GetAttrVal_AsArrI32(const int pAttrIdx, std::vector<int32_t>& pValue);
 
 	/// Read attribute value.
 	/// \param [in] pAttrIdx - attribute index (\ref mReader->getAttribute* set).
 	/// \param [out] pValue - read data.
-	void XML_ReadNode_GetAttrVal_AsListF(const int pAttrIdx, std::list<float>& pValue);
-
-    /// \overload void XML_ReadNode_GetAttrVal_AsListF(const int pAttrIdx, std::list<float>& pValue)
 	void XML_ReadNode_GetAttrVal_AsArrF(const int pAttrIdx, std::vector<float>& pValue);
 
     /// Read attribute value.
 	/// \param [in] pAttrIdx - attribute index (\ref mReader->getAttribute* set).
 	/// \param [out] pValue - read data.
-	void XML_ReadNode_GetAttrVal_AsListD(const int pAttrIdx, std::list<double>& pValue);
-
-	/// \overload void XML_ReadNode_GetAttrVal_AsListD(const int pAttrIdx, std::list<double>& pValue)
 	void XML_ReadNode_GetAttrVal_AsArrD(const int pAttrIdx, std::vector<double>& pValue);
 
 	/// Read attribute value.
@@ -533,7 +522,7 @@ private:
 	/// \param [in] pStartAngle - angle in radians of start of the arc.
 	/// \param [in] pEndAngle - angle in radians of end of the arc.
 	/// \param [in] pRadius - radius of the arc.
-	/// \param [out] pNumSegments - number of segments in arc. In other words - tesselation factor.
+	/// \param [out] pNumSegments - number of segments in arc. In other words - tessellation factor.
 	/// \param [out] pVertices - generated vertices.
 	void GeometryHelper_Make_Arc2D(const float pStartAngle, const float pEndAngle, const float pRadius, size_t pNumSegments, std::list<aiVector3D>& pVertices);
 
@@ -556,7 +545,7 @@ private:
 	/// \param [in] pCoordIdx - vertices indices divided by delimiter "-1".
 	/// \param [in] pFaces - created faces array.
 	/// \param [in] pPrimitiveTypes - type of primitives in faces.
-	void GeometryHelper_CoordIdxStr2FacesArr(const std::list<int32_t>& pCoordIdx, std::vector<aiFace>& pFaces, unsigned int& pPrimitiveTypes) const;
+	void GeometryHelper_CoordIdxStr2FacesArr(const std::vector<int32_t>& pCoordIdx, std::vector<aiFace>& pFaces, unsigned int& pPrimitiveTypes) const;
 
 	/// Add colors to mesh.
 	/// a. If colorPerVertex is FALSE, colours are applied to each face, as follows:
@@ -575,11 +564,11 @@ private:
 	/// then pColorIdx contain color indices for every faces and must not contain delimiter "-1".
 	/// \param [in] pColors - defined colors.
 	/// \param [in] pColorPerVertex - if \ref pColorPerVertex is true then color in \ref pColors defined for every vertex, if false - for every face.
-	void MeshGeometry_AddColor(aiMesh& pMesh, const std::list<int32_t>& pCoordIdx, const std::list<int32_t>& pColorIdx,
+	void MeshGeometry_AddColor(aiMesh& pMesh, const std::vector<int32_t>& pCoordIdx, const std::vector<int32_t>& pColorIdx,
 								const std::list<aiColor4D>& pColors, const bool pColorPerVertex) const;
 
 	/// \overload void MeshGeometry_AddColor(aiMesh& pMesh, const std::list<int32_t>& pCoordIdx, const std::list<int32_t>& pColorIdx, const std::list<aiColor4D>& pColors, const bool pColorPerVertex) const;
-	void MeshGeometry_AddColor(aiMesh& pMesh, const std::list<int32_t>& pCoordIdx, const std::list<int32_t>& pColorIdx,
+	void MeshGeometry_AddColor(aiMesh& pMesh, const std::vector<int32_t>& pCoordIdx, const std::vector<int32_t>& pColorIdx,
 								const std::list<aiColor3D>& pColors, const bool pColorPerVertex) const;
 
 	/// Add colors to mesh.
@@ -592,14 +581,14 @@ private:
 	void MeshGeometry_AddColor(aiMesh& pMesh, const std::list<aiColor3D>& pColors, const bool pColorPerVertex) const;
 
 	/// Add normals to mesh. Function work similar to \ref MeshGeometry_AddColor;
-	void MeshGeometry_AddNormal(aiMesh& pMesh, const std::list<int32_t>& pCoordIdx, const std::list<int32_t>& pNormalIdx,
+	void MeshGeometry_AddNormal(aiMesh& pMesh, const std::vector<int32_t>& pCoordIdx, const std::vector<int32_t>& pNormalIdx,
 								const std::list<aiVector3D>& pNormals, const bool pNormalPerVertex) const;
 
 	/// Add normals to mesh. Function work similar to \ref MeshGeometry_AddColor;
 	void MeshGeometry_AddNormal(aiMesh& pMesh, const std::list<aiVector3D>& pNormals, const bool pNormalPerVertex) const;
 
     /// Add texture coordinates to mesh. Function work similar to \ref MeshGeometry_AddColor;
-	void MeshGeometry_AddTexCoord(aiMesh& pMesh, const std::list<int32_t>& pCoordIdx, const std::list<int32_t>& pTexCoordIdx,
+	void MeshGeometry_AddTexCoord(aiMesh& pMesh, const std::vector<int32_t>& pCoordIdx, const std::vector<int32_t>& pTexCoordIdx,
 								const std::list<aiVector2D>& pTexCoords) const;
 
     /// Add texture coordinates to mesh. Function work similar to \ref MeshGeometry_AddColor;
@@ -609,7 +598,7 @@ private:
 	/// \param [in] pCoordIdx - vertices indices divided by delimiter "-1".
 	/// \param [in] pVertices - vertices of mesh.
 	/// \return created mesh.
-	aiMesh* GeometryHelper_MakeMesh(const std::list<int32_t>& pCoordIdx, const std::list<aiVector3D>& pVertices) const;
+	aiMesh* GeometryHelper_MakeMesh(const std::vector<int32_t>& pCoordIdx, const std::list<aiVector3D>& pVertices) const;
 
 	/***********************************************/
 	/******** Functions: parse set private *********/
@@ -828,13 +817,16 @@ private:
     /****************** Constants ******************/
     /***********************************************/
     static const aiImporterDesc Description;
+    //static const std::regex pattern_nws;
+    //static const std::regex pattern_true;
+
 
     /***********************************************/
     /****************** Variables ******************/
     /***********************************************/
     CX3DImporter_NodeElement* NodeElement_Cur;///< Current element.
-    irr::io::IrrXMLReader* mReader;///< Pointer to XML-reader object
-    std::string mFileDir;
+    std::unique_ptr<FIReader> mReader;///< Pointer to XML-reader object
+    IOSystem *mpIOHandler;
 };// class X3DImporter
 
 }// namespace Assimp

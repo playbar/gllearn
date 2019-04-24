@@ -79,9 +79,11 @@ void ModelAssimp::PerformGLInits() {
 //    }
 
     std::string objFilename = "astroboy/astroboy_walk.dae";
-    std::string texFilename = "astroboy/seymour.jpg";
+    std::string outFileName = "astroboy/test.obj";
 
     modelObject->Load3DModel(objFilename);
+
+    modelObject->Export3DModel(outFileName);
 
     CheckGLError("ModelAssimp::PerformGLInits");
     initsDone = true;

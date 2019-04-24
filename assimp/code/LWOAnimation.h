@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -47,11 +49,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_LWO_ANIMATION_INCLUDED
 #define AI_LWO_ANIMATION_INCLUDED
 
-#include <assimp/anim.h>
+//
 #include <vector>
 #include <list>
 
 struct aiNodeAnim;
+struct aiVectorKey;
 
 namespace Assimp {
 namespace LWO {
@@ -110,14 +113,14 @@ enum PrePostBehaviour
 // ---------------------------------------------------------------------------
 /** \brief Data structure for a LWO animation keyframe
  */
-struct Key
-{
-    Key()
-        : time(),
-        value(),
-        inter   (IT_LINE),
-        params()
-    {}
+struct Key {
+    Key() AI_NO_EXCEPT 
+    : time()
+    , value()
+    , inter(IT_LINE)
+    , params() {
+        // empty
+    }
 
     //! Current time
     double time;
@@ -141,17 +144,16 @@ struct Key
 // ---------------------------------------------------------------------------
 /** \brief Data structure for a LWO animation envelope
  */
-struct Envelope
-{
-    Envelope()
-        :   index()
-        ,   type    (EnvelopeType_Unknown)
-        ,   pre     (PrePostBehaviour_Constant)
-        ,   post    (PrePostBehaviour_Constant)
-
-        ,   old_first (0)
-        ,   old_last  (0)
-    {}
+struct Envelope {
+    Envelope() AI_NO_EXCEPT
+    : index()
+    , type(EnvelopeType_Unknown)
+    , pre(PrePostBehaviour_Constant)
+    , post(PrePostBehaviour_Constant)
+    , old_first(0)
+    , old_last(0) {
+        // empty
+    }
 
     //! Index of this envelope
     unsigned int index;
@@ -159,12 +161,11 @@ struct Envelope
     //! Type of envelope
     EnvelopeType type;
 
-    //! Pre and post-behaviour
+    //! Pre- and post-behavior
     PrePostBehaviour pre,post;
 
     //! Keyframes for this envelope
     std::vector<Key> keys;
-
 
     // temporary data for AnimResolver
     size_t old_first,old_last;
@@ -197,8 +198,7 @@ public:
      *  @param Output tick rate, per second
      *  @note The input envelopes are possibly modified.
      */
-    AnimResolver(std::list<Envelope>& envelopes,
-        double tick);
+    AnimResolver(std::list<Envelope>& envelopes, double tick);
 
 public:
 

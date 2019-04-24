@@ -25,6 +25,7 @@
  */
 AssimpLoader::AssimpLoader() {
     importerPtr = new Assimp::Importer;
+    exporterPtr = new Assimp::Exporter;
     scene = NULL;
     isObjectLoaded = false;
 
@@ -48,6 +49,11 @@ AssimpLoader::~AssimpLoader() {
     if(importerPtr) {
         delete importerPtr;
         importerPtr = NULL;
+    }
+    if( exporterPtr )
+    {
+        delete exporterPtr;
+        exporterPtr = NULL;
     }
     scene = NULL; // gets deleted along with importerPtr
 }
@@ -254,6 +260,11 @@ bool AssimpLoader::Load3DModel(std::string modelFilename) {
 
     isObjectLoaded = true;
     return true;
+}
+
+bool AssimpLoader::Export3DModel(std::string modelFilename)
+{
+    exporterPtr->Export(scene, "obj", modelFilename);
 }
 
 /**

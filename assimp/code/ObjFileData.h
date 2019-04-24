@@ -2,7 +2,9 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2016, assimp team
+Copyright (c) 2006-2019, assimp team
+
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -279,6 +281,8 @@ struct Model {
     std::string m_strActiveGroup;
     //! Vector with generated texture coordinates
     std::vector<aiVector3D> m_TextureCoord;
+    //! Maximum dimension of texture coordinates
+    unsigned int m_TextureCoordDim;
     //! Current mesh instance
     Mesh *m_pCurrentMesh;
     //! Vector with stored meshes
@@ -294,6 +298,7 @@ struct Model {
         m_pDefaultMaterial(NULL),
         m_pGroupFaceIDs(NULL),
         m_strActiveGroup(""),
+        m_TextureCoordDim(0),
         m_pCurrentMesh(NULL)
     {
         // empty
