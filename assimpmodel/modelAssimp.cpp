@@ -78,11 +78,11 @@ void ModelAssimp::PerformGLInits() {
 //        return;
 //    }
 
-//    std::string objFilename = "amenemhat/test.obj";
-    std::string objFilename = "astroboy/astroboy_walk.dae";
+    std::string objFilename = "amenemhat/amenemhat.obj";
+//    std::string objFilename = "astroboy/astroboy_walk.dae";
 //    std::string objFilename = "astroboy/test.obj";
 
-    std::string outFileName = "astroboy/test.obj";
+    std::string outFileName = "amenemhat/test.obj";
 
 
 

@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fexceptions")
 add_subdirectory(opencv)
 add_subdirectory(assimp)
 add_subdirectory(glfw)
+add_subdirectory(proj4)
 add_subdirectory(assimpmodel)
 
 

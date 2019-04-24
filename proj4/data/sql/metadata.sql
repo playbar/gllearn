@@ -1,0 +1,2 @@
+INSERT INTO "metadata" VALUES('EPSG.VERSION', 'v9.6.1');
+INSERT INTO "metadata" VALUES('EPSG.DATE', '2019-03-25');
