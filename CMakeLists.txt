@@ -8,5 +8,5 @@ add_subdirectory(assimp)
 add_subdirectory(glfw)
 add_subdirectory(proj4)
 add_subdirectory(assimpmodel)
-
+add_subdirectory(utm)
 
