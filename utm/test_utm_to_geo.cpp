@@ -9,15 +9,15 @@
 
 int main(int argc, char** argv)
 {
-  double N = 3544404.13;
-  double E = 216577.22;
-  GridZone zone = UTM_ZONE_11;
-  Hemisphere hemi = HEMI_NORTH;
-  double lat;
-  double lon;
-  Ellipse* e = standard_ellipse(ELLIPSE_WGS84);
-  grid_to_geographic(e->a, e->e2, zone, hemi, N, E, &lat, &lon);
-  std::cout << std::fixed << std::setprecision(6)
-            << lat/M_PI*180.0 << ' ' << lon/M_PI*180.0 << ' ' << std::endl;
-  free_ellipse(e);
+    double N = 3544404.13;
+    double E = 216577.22;
+    GridZone zone = UTM_ZONE_11;
+    Hemisphere hemi = HEMI_NORTH;
+    double lat;
+    double lon;
+    Ellipse* e = standard_ellipse(ELLIPSE_WGS84);
+    grid_to_geographic(e->a, e->e2, zone, hemi, N, E, &lat, &lon);
+    std::cout << std::fixed << std::setprecision(6)
+              << lat/M_PI*180.0 << ' ' << lon/M_PI*180.0 << ' ' << std::endl;
+    free_ellipse(e);
 }
