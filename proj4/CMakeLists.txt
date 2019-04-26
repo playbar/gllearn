@@ -228,6 +228,8 @@ set(CMAKECONFIGDIR "${DEFAULT_CMAKEDIR}"
 # Build configured components
 ################################################################################
 include_directories(${PROJ4_SOURCE_DIR}/src)
+include_directories(${PROJ4_SOURCE_DIR}/include)
+
 
 message(STATUS "")
 add_subdirectory(data)

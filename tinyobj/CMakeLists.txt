@@ -24,6 +24,13 @@ set(tinyobjloader-examples-objsticher
   ${TINYOBJLOADEREXAMPLES_DIR}/obj_sticher/obj_sticher.cc
   )
 
+set(tinyobjloader-examples-viewer
+    ${TINYOBJLOADEREXAMPLES_DIR}/viewer/stb_image.h
+    ${TINYOBJLOADEREXAMPLES_DIR}/viewer/trackball.h
+    ${TINYOBJLOADEREXAMPLES_DIR}/viewer/trackball.cc
+    ${TINYOBJLOADEREXAMPLES_DIR}/viewer/viewer.cc
+    )
+
 #Install destinations
 include(GNUInstallDirs)
 
@@ -56,20 +63,20 @@ target_include_directories(tinyobjloader INTERFACE
 export(TARGETS tinyobjloader FILE ${PROJECT_NAME}-targets.cmake)
 
 if(TINYOBJLOADER_BUILD_TEST_LOADER)
-  add_executable(test_loader ${tinyobjloader-Example-Source})
-  target_link_libraries(test_loader tinyobjloader)
+  add_executable(tinyobj_loader ${tinyobjloader-Example-Source})
+  target_link_libraries(tinyobj_loader tinyobjloader)
 endif()
 
 option(TINYOBJLOADER_BUILD_OBJ_STICHER "Build OBJ Sticher Application" ON)
 if(TINYOBJLOADER_BUILD_OBJ_STICHER)
-  add_executable(obj_sticher ${tinyobjloader-examples-objsticher})
-  target_link_libraries(obj_sticher tinyobjloader)
+  add_executable(tinyobj_sticher ${tinyobjloader-examples-objsticher})
+  target_link_libraries(tinyobj_sticher tinyobjloader)
+endif()
 
-  install(TARGETS
-    obj_sticher
-    DESTINATION
-    ${TINYOBJLOADER_RUNTIME_DIR}
-    )
+option(TINYOBJLOADER_BUILD_OBJ_VIEWER "Build OBJ Viewer Application" ON)
+if(TINYOBJLOADER_BUILD_OBJ_VIEWER)
+    add_executable(tinyobj_viewer ${tinyobjloader-examples-viewer})
+    target_link_libraries(tinyobj_viewer tinyobjloader)
 endif()
 
 #Write CMake package config files
