@@ -67,16 +67,23 @@ if(TINYOBJLOADER_BUILD_TEST_LOADER)
   target_link_libraries(tinyobj_loader tinyobjloader)
 endif()
 
-option(TINYOBJLOADER_BUILD_OBJ_STICHER "Build OBJ Sticher Application" ON)
+option(TINYOBJLOADER_BUILD_OBJ_STICHER "Build OBJ Sticher Application" OFF)
 if(TINYOBJLOADER_BUILD_OBJ_STICHER)
   add_executable(tinyobj_sticher ${tinyobjloader-examples-objsticher})
   target_link_libraries(tinyobj_sticher tinyobjloader)
 endif()
 
-option(TINYOBJLOADER_BUILD_OBJ_VIEWER "Build OBJ Viewer Application" ON)
+option(TINYOBJLOADER_BUILD_OBJ_VIEWER "Build OBJ Viewer Application" OFF)
 if(TINYOBJLOADER_BUILD_OBJ_VIEWER)
-    add_executable(tinyobj_viewer ${tinyobjloader-examples-viewer})
-    target_link_libraries(tinyobj_viewer tinyobjloader)
+    set(GLAD "${GLFW_SOURCE_DIR}/deps/glad/glad.h"
+            "${GLFW_SOURCE_DIR}/deps/glad.c")
+    add_executable(tinyobj_viewer
+            ${tinyobjloader-examples-viewer}
+            ${GLAD})
+    target_link_libraries(tinyobj_viewer tinyobjloader glfw)
+    target_include_directories(tinyobj_viewer PRIVATE
+            ./../glfw/include
+            ./../glfw/deps)
 endif()
 
 #Write CMake package config files

@@ -12,15 +12,16 @@
 #include <string>
 #include <vector>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
+#include "GLFW/glfw3.h"
+
+
 
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
 #include <GL/glu.h>
 #endif
-
-#include <GLFW/glfw3.h>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "../../tiny_obj_loader.h"
@@ -642,8 +643,8 @@ int main(int argc, char** argv) {
   glfwSetMouseButtonCallback(window, clickFunc);
   glfwSetCursorPosCallback(window, motionFunc);
 
-  glewExperimental = true;
-  if (glewInit() != GLEW_OK) {
+//  glewExperimental = true;
+  if (glfwInit() != GLFW_TRUE) {
     std::cerr << "Failed to initialize GLEW." << std::endl;
     return -1;
   }

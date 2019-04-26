@@ -73,7 +73,7 @@ bool WriteObj(const std::string& filename, const std::vector<tinyobj::shape_t>& 
     // facevarying vtx
     for (size_t k = 0; k < shapes[i].mesh.indices.size() / 3; k++) {
       for (int j = 0; j < 3; j++) {
-        int idx = shapes[i].mesh.indices[3*k+j];
+        int idx = (int)shapes[i].mesh.indices[3*k+j];
         if (coordTransform) {
           fprintf(fp, "v %f %f %f\n",
             shapes[i].mesh.positions[3*idx+0],
