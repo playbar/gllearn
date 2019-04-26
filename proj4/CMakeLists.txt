@@ -191,6 +191,11 @@ if(MSVC OR CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_DEBUG_POSTFIX _d)
 endif()
 
+option(PROJ_TESTS "Enable build of collection of PROJ tests" OFF)
+boost_report_value(PROJ_TESTS)
+if(PROJ_TESTS)
+  enable_testing()
+endif()
 include(ProjTest)
 
 # Put the libraries and binaries that get built into directories at the
@@ -223,7 +228,6 @@ set(CMAKECONFIGDIR "${DEFAULT_CMAKEDIR}"
 # Build configured components
 ################################################################################
 include_directories(${PROJ4_SOURCE_DIR}/src)
-include_directories(${PROJ4_SOURCE_DIR}/include)
 
 message(STATUS "")
 add_subdirectory(data)
@@ -231,4 +235,6 @@ add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(man)
 add_subdirectory(cmake)
-
+if(PROJ_TESTS)
+  add_subdirectory(test)
+endif()
