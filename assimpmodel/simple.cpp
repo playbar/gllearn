@@ -1,5 +1,3 @@
-#include "simple.h"
-
 #include "linmath.h"
 
 #include <stdlib.h>
