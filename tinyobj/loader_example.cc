@@ -100,34 +100,37 @@ static void PrintInfo(const tinyobj::attrib_t& attrib,
                       const std::vector<tinyobj::material_t>& materials) {
   std::cout << "# of vertices  : " << (attrib.vertices.size() / 3) << std::endl;
   std::cout << "# of normals   : " << (attrib.normals.size() / 3) << std::endl;
-  std::cout << "# of texcoords : " << (attrib.texcoords.size() / 2)
-            << std::endl;
+  std::cout << "# of texcoords : " << (attrib.texcoords.size() / 2) << std::endl;
 
   std::cout << "# of shapes    : " << shapes.size() << std::endl;
   std::cout << "# of materials : " << materials.size() << std::endl;
 
-  for (size_t v = 0; v < attrib.vertices.size() / 3; v++) {
+  for (size_t v = 0; v < attrib.vertices.size() / 3; v++)
+  {
     printf("  v[%ld] = (%f, %f, %f)\n", static_cast<long>(v),
            static_cast<const double>(attrib.vertices[3 * v + 0]),
            static_cast<const double>(attrib.vertices[3 * v + 1]),
            static_cast<const double>(attrib.vertices[3 * v + 2]));
   }
 
-  for (size_t v = 0; v < attrib.normals.size() / 3; v++) {
+  for (size_t v = 0; v < attrib.normals.size() / 3; v++)
+  {
     printf("  n[%ld] = (%f, %f, %f)\n", static_cast<long>(v),
            static_cast<const double>(attrib.normals[3 * v + 0]),
            static_cast<const double>(attrib.normals[3 * v + 1]),
            static_cast<const double>(attrib.normals[3 * v + 2]));
   }
 
-  for (size_t v = 0; v < attrib.texcoords.size() / 2; v++) {
+  for (size_t v = 0; v < attrib.texcoords.size() / 2; v++)
+  {
     printf("  uv[%ld] = (%f, %f)\n", static_cast<long>(v),
            static_cast<const double>(attrib.texcoords[2 * v + 0]),
            static_cast<const double>(attrib.texcoords[2 * v + 1]));
   }
 
   // For each shape
-  for (size_t i = 0; i < shapes.size(); i++) {
+  for (size_t i = 0; i < shapes.size(); i++)
+  {
     printf("shape[%ld].name = %s\n", static_cast<long>(i),
            shapes[i].name.c_str());
     printf("Size of shape[%ld].indices: %lu\n", static_cast<long>(i),
@@ -408,11 +411,10 @@ int main(int argc, char** argv) {
     }
     assert(true == TestLoadObj(argv[1], basepath));
   } else {
-    // assert(true == TestLoadObj("cornell_box.obj"));
-    // assert(true == TestLoadObj("cube.obj"));
-    assert(true == TestStreamLoadObj());
-    assert(true ==
-           TestLoadObj("models/catmark_torus_creases0.obj", "models/", false));
+     assert(true == TestLoadObj("amenemhat/out.obj", "amenemhat/"));
+//     assert(true == TestLoadObj("cube.obj"));
+//    assert(true == TestStreamLoadObj());
+//    assert(true == TestLoadObj("models/catmark_torus_creases0.obj", "models/", false));
   }
 
   return 0;

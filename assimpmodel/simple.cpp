@@ -2,10 +2,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "modelAssimp.h"
+#include "AssimpModel.h"
 
 
-ModelAssimp *gAssimpObject =NULL;
+AssimpModel *gAssimpObject =NULL;
 bool bleftpress = false;
 bool brightpress = false;
 
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 
     // NOTE: OpenGL error checks have been omitted for brevity
 
-    gAssimpObject = new ModelAssimp();
+    gAssimpObject = new AssimpModel();
     gAssimpObject->PerformGLInits();
     gAssimpObject->SetViewport( gWidth * 2, gHeith * 2 );
 

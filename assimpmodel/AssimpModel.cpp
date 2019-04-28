@@ -1,21 +1,5 @@
-/*
- *    Copyright 2016 Anand Muralidhar
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 #include "myShader.h"
-#include "modelAssimp.h"
+#include "AssimpModel.h"
 
 
 #include "assimp/Importer.hpp"
@@ -24,9 +8,9 @@
 /**
  * Class constructor
  */
-ModelAssimp::ModelAssimp() {
+AssimpModel::AssimpModel() {
 
-    printf("ModelAssimp::ModelAssimp");
+    printf("AssimpModel::AssimpModel");
     initsDone = false;
 
     // create MyGLCamera object and set default position for the object
@@ -38,9 +22,9 @@ ModelAssimp::ModelAssimp() {
     modelObject = NULL;
 }
 
-ModelAssimp::~ModelAssimp() {
+AssimpModel::~AssimpModel() {
 
-    printf("ModelAssimp::ModelAssimpssimp");
+    printf("AssimpModel::AssimpModelssimp");
     if (myGLCamera) {
         delete myGLCamera;
     }
@@ -52,9 +36,9 @@ ModelAssimp::~ModelAssimp() {
 /**
  * Perform inits and load the triangle's vertices/colors to GLES
  */
-void ModelAssimp::PerformGLInits() {
+void AssimpModel::PerformGLInits() {
 
-    printf("ModelAssimp::PerformGLInits");
+    printf("AssimpModel::PerformGLInits");
 
     MyGLInits();
 
@@ -90,7 +74,7 @@ void ModelAssimp::PerformGLInits() {
 
     modelObject->Export3DModel(outFileName);
 
-    CheckGLError("ModelAssimp::PerformGLInits");
+    CheckGLError("AssimpModel::PerformGLInits");
     initsDone = true;
 }
 
@@ -98,7 +82,7 @@ void ModelAssimp::PerformGLInits() {
 /**
  * Render to the display
  */
-void ModelAssimp::Render() {
+void AssimpModel::Render() {
 
     // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,14 +90,14 @@ void ModelAssimp::Render() {
     glm::mat4 mvpMat = myGLCamera->GetMVP();
     modelObject->Render3DModel(&mvpMat);
 
-    CheckGLError("ModelAssimp::Render");
+    CheckGLError("AssimpModel::Render");
 
 }
 
 /**
  * set the viewport, function is also called when user changes device orientation
  */
-void ModelAssimp::SetViewport(int width, int height) {
+void AssimpModel::SetViewport(int width, int height) {
 
     screenHeight = height;
     screenWidth = width;
@@ -127,7 +111,7 @@ void ModelAssimp::SetViewport(int width, int height) {
 /**
  * reset model's position in double-tap
  */
-void ModelAssimp::DoubleTapAction() {
+void AssimpModel::DoubleTapAction() {
 
     myGLCamera->SetModelPosition(modelDefaultPosition);
 }
@@ -135,7 +119,7 @@ void ModelAssimp::DoubleTapAction() {
 /**
  * rotate the model if user scrolls with one finger
  */
-void ModelAssimp::ScrollAction(float distanceX, float distanceY, float positionX, float positionY) {
+void AssimpModel::ScrollAction(float distanceX, float distanceY, float positionX, float positionY) {
 
     myGLCamera->RotateModel(distanceX, distanceY, positionX, positionY);
 }
@@ -143,7 +127,7 @@ void ModelAssimp::ScrollAction(float distanceX, float distanceY, float positionX
 /**
  * pinch-zoom: move the model closer or farther away
  */
-void ModelAssimp::ScaleAction(float scaleFactor) {
+void AssimpModel::ScaleAction(float scaleFactor) {
 
     myGLCamera->ScaleModel(scaleFactor);
 }
@@ -151,7 +135,7 @@ void ModelAssimp::ScaleAction(float scaleFactor) {
 /**
  * two-finger drag: displace the model by changing its x-y coordinates
  */
-void ModelAssimp::MoveAction(float distanceX, float distanceY) {
+void AssimpModel::MoveAction(float distanceX, float distanceY) {
 
     myGLCamera->TranslateModel(distanceX, distanceY);
 }

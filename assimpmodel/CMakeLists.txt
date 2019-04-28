@@ -35,12 +35,12 @@ set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
 
 add_executable(assimpmodel
         simple.cpp
-        assimpLoader.cpp
+        AssimpLoader.cpp
+        AssimpModel.cpp
         misc.cpp
         myGLCamera.cpp
         myGLFunctions.cpp
         myShader.cpp
-        modelAssimp.cpp
         ${ICON}
         ${GLAD})
 
