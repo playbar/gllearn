@@ -43,35 +43,10 @@ void AssimpModel::PerformGLInits() {
     MyGLInits();
 
     modelObject = new AssimpLoader();
-
-    // extract the OBJ and companion files from assets
-//    std::string objFilename, texFilename;
-
-    // load obj model
-//    bool isFilesPresent  =
-//            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.obj", objFilename) &&
-//            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.mtl", mtlFilename) &&
-//            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.jpg", texFilename);
-
-//    // load dae model
-//    bool isFilesPresent  =
-//            gHelperObject->ExtractAssetReturnFilename("astroboy/astroboy_walk.dae", objFilename) &&
-//            gHelperObject->ExtractAssetReturnFilename("astroboy/seymour.jpg", texFilename);
-//    if( !isFilesPresent ) {
-//        printf("Model %s does not exist!", objFilename.c_str());
-//        return;
-//    }
-
     std::string objFilename = "amenemhat/amenemhat.obj";
-//    std::string objFilename = "astroboy/astroboy_walk.dae";
-//    std::string objFilename = "astroboy/test.obj";
-
     std::string outFileName = "amenemhat/test.obj";
 
-
-
     modelObject->Load3DModel(objFilename);
-
     modelObject->Export3DModel(outFileName);
 
     CheckGLError("AssimpModel::PerformGLInits");

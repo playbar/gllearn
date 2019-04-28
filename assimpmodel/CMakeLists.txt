@@ -35,6 +35,7 @@ set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
 
 add_executable(assimpmodel
         glfwmodel.cpp
+        ModelLoader.cpp
         AssimpLoader.cpp
         AssimpModel.cpp
         ModelUtil.cpp

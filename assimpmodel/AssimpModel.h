@@ -30,7 +30,7 @@ private:
 
     std::vector<float> modelDefaultPosition;
     ModelCamera * mModelCamera;
-    AssimpLoader * modelObject;
+    ModelLoader * modelObject;
 };
 
 #endif //MODELASSIMP_H
