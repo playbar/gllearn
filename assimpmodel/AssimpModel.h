@@ -3,7 +3,7 @@
 
 #include "myGLFunctions.h"
 #include "myGLCamera.h"
-#include "AssimpLoader.h"
+#include "AssimpLoad.h"
 #include <sstream>
 #include <iostream>
 #include <stdio.h>
