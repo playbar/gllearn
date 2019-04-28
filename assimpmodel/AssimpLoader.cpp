@@ -1,4 +1,4 @@
-#include "AssimpLoad.h"
+#include "AssimpLoader.h"
 #include "myShader.h"
 #include "misc.h"
 #include <opencv2/opencv.hpp>
