@@ -1,5 +1,5 @@
-#ifndef ASSIMPMODEL_H
-#define ASSIMPMODEL_H
+#ifndef MODELOBJECT_H
+#define MODELOBJECT_H
 
 #include "ModelShader.h"
 #include "ModelCamera.h"
@@ -10,10 +10,10 @@
 #include <string>
 
 
-class AssimpModel {
+class ModelObject {
 public:
-    AssimpModel();
-    ~AssimpModel();
+    ModelObject();
+    ~ModelObject();
     void    PerformGLInits();
     void    Render();
     void    SetViewport(int width, int height);

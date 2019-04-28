@@ -2,10 +2,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "AssimpModel.h"
+#include "ModelObject.h"
 
 
-AssimpModel *gAssimpObject =NULL;
+ModelObject *gModelObject =NULL;
 bool bleftpress = false;
 bool brightpress = false;
 
@@ -66,21 +66,21 @@ void cursor_position_callback(GLFWwindow* window, double x, double y)
 
 
     if( bleftpress ) {
-        float posx = dx * 2 / gAssimpObject->GetScreenWidth();
-        float posy = -dy * 2 / gAssimpObject->GetScreenHeight();
+        float posx = dx * 2 / gModelObject->GetScreenWidth();
+        float posy = -dy * 2 / gModelObject->GetScreenHeight();
 
         printf("dx =%f, dy = %f \n", posx, posy);
-        gAssimpObject->MoveAction(posx, posy);
+        gModelObject->MoveAction(posx, posy);
     }
     if( brightpress )
     {
-        float dX = -(float) dx / gAssimpObject->GetScreenWidth();
-        float dY = (float) dy / gAssimpObject->GetScreenHeight();
-        float posX = 2* x / gAssimpObject->GetScreenWidth() - 1.0;
-        float posY = -2* y / gAssimpObject->GetScreenHeight() + 1.0;
+        float dX = -(float) dx / gModelObject->GetScreenWidth();
+        float dY = (float) dy / gModelObject->GetScreenHeight();
+        float posX = 2* x / gModelObject->GetScreenWidth() - 1.0;
+        float posY = -2* y / gModelObject->GetScreenHeight() + 1.0;
         posX = fmax(-1., fmin(1., posX));
         posY = fmax(-1., fmin(1., posY));
-        gAssimpObject->ScrollAction(dX, dY, posX, posY);
+        gModelObject->ScrollAction(dX, dY, posX, posY);
     }
     return;
 }
@@ -98,7 +98,7 @@ void scroll_callback(GLFWwindow* window, double x, double y)
       scale = 0.89;
     }
 
-    gAssimpObject->ScaleAction(scale);
+    gModelObject->ScaleAction(scale);
     return;
 }
 
@@ -133,16 +133,16 @@ int main(int argc, char **argv)
 
     // NOTE: OpenGL error checks have been omitted for brevity
 
-    gAssimpObject = new AssimpModel();
-    gAssimpObject->PerformGLInits();
-    gAssimpObject->SetViewport( gWidth * 2, gHeith * 2 );
+    gModelObject = new ModelObject();
+    gModelObject->PerformGLInits();
+    gModelObject->SetViewport( gWidth * 2, gHeith * 2 );
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
 
 
-        gAssimpObject->Render();
+        gModelObject->Render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -1,5 +1,5 @@
 #include "ModelShader.h"
-#include "AssimpModel.h"
+#include "ModelObject.h"
 
 
 #include "assimp/Importer.hpp"
@@ -8,9 +8,9 @@
 /**
  * Class constructor
  */
-AssimpModel::AssimpModel() {
+ModelObject::ModelObject() {
 
-    printf("AssimpModel::AssimpModel\n");
+    printf("ModelObject::ModelObject\n");
     initsDone = false;
 
     // create MyGLCamera object and set default position for the object
@@ -22,9 +22,9 @@ AssimpModel::AssimpModel() {
     modelObject = NULL;
 }
 
-AssimpModel::~AssimpModel() {
+ModelObject::~ModelObject() {
 
-    printf("AssimpModel::AssimpModelssimp\n");
+    printf("ModelObject::ModelObjectssimp\n");
     if (mModelCamera) {
         delete mModelCamera;
     }
@@ -36,9 +36,9 @@ AssimpModel::~AssimpModel() {
 /**
  * Perform inits and load the triangle's vertices/colors to GLES
  */
-void AssimpModel::PerformGLInits() {
+void ModelObject::PerformGLInits() {
 
-    printf("AssimpModel::PerformGLInits\n");
+    printf("ModelObject::PerformGLInits\n");
 
     MyGLInits();
 
@@ -49,7 +49,7 @@ void AssimpModel::PerformGLInits() {
     modelObject->Load3DModel(objFilename);
     modelObject->Export3DModel(outFileName);
 
-    CheckGLError("AssimpModel::PerformGLInits");
+    CheckGLError("ModelObject::PerformGLInits");
     initsDone = true;
 }
 
@@ -57,7 +57,7 @@ void AssimpModel::PerformGLInits() {
 /**
  * Render to the display
  */
-void AssimpModel::Render() {
+void ModelObject::Render() {
 
     // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -65,14 +65,14 @@ void AssimpModel::Render() {
     glm::mat4 mvpMat = mModelCamera->GetMVP();
     modelObject->Render3DModel(&mvpMat);
 
-    CheckGLError("AssimpModel::Render");
+    CheckGLError("ModelObject::Render");
 
 }
 
 /**
  * set the viewport, function is also called when user changes device orientation
  */
-void AssimpModel::SetViewport(int width, int height) {
+void ModelObject::SetViewport(int width, int height) {
 
     screenHeight = height;
     screenWidth = width;
@@ -86,7 +86,7 @@ void AssimpModel::SetViewport(int width, int height) {
 /**
  * reset model's position in double-tap
  */
-void AssimpModel::DoubleTapAction() {
+void ModelObject::DoubleTapAction() {
 
     mModelCamera->SetModelPosition(modelDefaultPosition);
 }
@@ -94,7 +94,7 @@ void AssimpModel::DoubleTapAction() {
 /**
  * rotate the model if user scrolls with one finger
  */
-void AssimpModel::ScrollAction(float distanceX, float distanceY, float positionX, float positionY) {
+void ModelObject::ScrollAction(float distanceX, float distanceY, float positionX, float positionY) {
 
     mModelCamera->RotateModel(distanceX, distanceY, positionX, positionY);
 }
@@ -102,7 +102,7 @@ void AssimpModel::ScrollAction(float distanceX, float distanceY, float positionX
 /**
  * pinch-zoom: move the model closer or farther away
  */
-void AssimpModel::ScaleAction(float scaleFactor) {
+void ModelObject::ScaleAction(float scaleFactor) {
 
     mModelCamera->ScaleModel(scaleFactor);
 }
@@ -110,7 +110,7 @@ void AssimpModel::ScaleAction(float scaleFactor) {
 /**
  * two-finger drag: displace the model by changing its x-y coordinates
  */
-void AssimpModel::MoveAction(float distanceX, float distanceY) {
+void ModelObject::MoveAction(float distanceX, float distanceY) {
 
     mModelCamera->TranslateModel(distanceX, distanceY);
 }
