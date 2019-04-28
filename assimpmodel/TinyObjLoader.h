@@ -14,6 +14,7 @@
 #include "ModelUtil.h"
 #include "ModelShader.h"
 #include "ModelLoader.h"
+#include "tiny_obj_loader.h"
 
 
 class TinyObjLoader : public ModelLoader
@@ -32,10 +33,10 @@ private:
     void GenerateGLBuffers();
     bool LoadTexturesToGL(std::string modelFilename);
 
+    void PrintInfo();
+
+
     std::vector<struct MeshInfo> modelMeshes;       // contains one struct for every mesh in model
-    Assimp::Importer *importerPtr;
-    Assimp::Exporter *exporterPtr;
-    const aiScene* scene;                           // assimp's output data structure
     bool isObjectLoaded;
 
     std::map<std::string, GLuint> textureNameMap;   // (texture filename, texture name in GL)
@@ -43,6 +44,11 @@ private:
     GLuint  vertexAttribute, vertexUVAttribute;     // attributes for shader variables
     GLuint  shaderProgramID;
     GLint   mvpLocation, textureSamplerLocation;    // location of MVP in the shader
+
+
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
 
 };
 

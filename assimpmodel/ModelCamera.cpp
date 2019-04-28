@@ -18,21 +18,26 @@
 #include "ModelCamera.h"
 #include "math.h"
 
-ModelCamera::ModelCamera(
-        float FOV,
-        float zPosition,
-        float nearPlaneDistance,
-        float farPlaneDistance) {
+ModelCamera::ModelCamera()
+{
+
+    mModelDefaultPosition[0] = 0.0f;
+    mModelDefaultPosition[1] = 0;//-10.0f;
+    mModelDefaultPosition[2] = 0;//-10.0f;
+    mModelDefaultPosition[3] = 0.0f;
+    mModelDefaultPosition[4] = 0.0f;
+    mModelDefaultPosition[5] = 0.0f;
+    // camera position is fixed
 
     // camera position is fixed
-    glm::vec3 cameraPosition = glm::vec3(0, 0, zPosition);
+    glm::vec3 cameraPosition = glm::vec3(0, 0, 10);
     viewMat = glm::lookAt(cameraPosition,        // Camera location in World Space
                           glm::vec3(0, 0, -100),   // direction in which camera it is pointed
                           glm::vec3(0, 1, 0));   // camera is pointing up
 
-    this->nearPlaneDistance = nearPlaneDistance;
-    this->farPlaneDistance = farPlaneDistance;
-    this->FOV       = FOV;
+    this->nearPlaneDistance = 1.0f;
+    this->farPlaneDistance = 2000.0f;
+    this->FOV       = 45;
 
     // 6DOF describing model's position
     deltaX = deltaY = deltaZ = 0;                  // translations
@@ -64,14 +69,14 @@ void ModelCamera::SetAspectRatio(float aspect) {
  * 3 for alpha-beta-gamma Euler angles
  * Convert euler angles to quaternion and update MVP
  */
-void ModelCamera::SetModelPosition(std::vector<float> modelPosition) {
-
-    deltaX = modelPosition[0];
-    deltaY = modelPosition[1];
-    deltaZ = modelPosition[2];
-    float pitchAngle = modelPosition[3];
-    float yawAngle   = modelPosition[4];
-    float rollAngle  = modelPosition[5];
+void ModelCamera::SetModelPosition()
+{
+    deltaX = mModelDefaultPosition[0];
+    deltaY = mModelDefaultPosition[1];
+    deltaZ = mModelDefaultPosition[2];
+    float pitchAngle = mModelDefaultPosition[3];
+    float yawAngle   = mModelDefaultPosition[4];
+    float rollAngle  = mModelDefaultPosition[5];
 
     modelQuaternion = glm::quat(glm::vec3(pitchAngle, yawAngle, rollAngle));
     rotateMat = glm::toMat4(modelQuaternion);

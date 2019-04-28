@@ -28,9 +28,8 @@ private:
     bool    initsDone;
     int     screenWidth, screenHeight;
 
-    std::vector<float> modelDefaultPosition;
     ModelCamera * mModelCamera;
-    ModelLoader * modelObject;
+    ModelLoader * mModelLoader;
 };
 
 #endif //MODELASSIMP_H

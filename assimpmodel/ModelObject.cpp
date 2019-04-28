@@ -1,5 +1,6 @@
 #include "ModelShader.h"
 #include "ModelObject.h"
+#include "TinyObjLoader.h"
 
 
 #include "assimp/Importer.hpp"
@@ -15,11 +16,9 @@ ModelObject::ModelObject() {
 
     // create MyGLCamera object and set default position for the object
     mModelCamera = new ModelCamera();
-    float pos[]={0.0, -10.0, -10.0, 0.0, 0.0, 0.0};
-    std::copy(&pos[0], &pos[5], std::back_inserter(modelDefaultPosition));
-    mModelCamera->SetModelPosition(modelDefaultPosition);
+    mModelCamera->SetModelPosition();
 
-    modelObject = NULL;
+    mModelLoader = NULL;
 }
 
 ModelObject::~ModelObject() {
@@ -28,8 +27,8 @@ ModelObject::~ModelObject() {
     if (mModelCamera) {
         delete mModelCamera;
     }
-    if (modelObject) {
-        delete modelObject;
+    if (mModelLoader) {
+        delete mModelLoader;
     }
 }
 
@@ -42,12 +41,13 @@ void ModelObject::PerformGLInits() {
 
     MyGLInits();
 
-    modelObject = new AssimpLoader();
-    std::string objFilename = "amenemhat/amenemhat.obj";
-    std::string outFileName = "amenemhat/test.obj";
+    mModelLoader = new AssimpLoader();
+//    mModelLoader = new TinyObjLoader();
+    std::string objFilename = "tinyobj.obj";
+    mModelLoader->Load3DModel(objFilename);
 
-    modelObject->Load3DModel(objFilename);
-    modelObject->Export3DModel(outFileName);
+//    std::string outFileName = "amenemhat/test.obj";
+//    mModelLoader->Export3DModel(outFileName);
 
     CheckGLError("ModelObject::PerformGLInits");
     initsDone = true;
@@ -63,7 +63,7 @@ void ModelObject::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 mvpMat = mModelCamera->GetMVP();
-    modelObject->Render3DModel(&mvpMat);
+    mModelLoader->Render3DModel(&mvpMat);
 
     CheckGLError("ModelObject::Render");
 
@@ -88,7 +88,7 @@ void ModelObject::SetViewport(int width, int height) {
  */
 void ModelObject::DoubleTapAction() {
 
-    mModelCamera->SetModelPosition(modelDefaultPosition);
+    mModelCamera->SetModelPosition();
 }
 
 /**

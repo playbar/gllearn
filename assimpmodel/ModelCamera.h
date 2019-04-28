@@ -12,13 +12,8 @@
 
 class ModelCamera {
 public:
-    ModelCamera(
-            float FOV = 45,          // in degrees
-            float zPosition = 10,    // camera's location on Z axis
-            float nearPlaneDistance = 1.0f, // as large as possible
-            float farPlaneDistance = 2000.0f // as small as possible
-    );
-    void        SetModelPosition(std::vector<float> modelPosition);
+    ModelCamera();
+    void        SetModelPosition();
     void        SetAspectRatio(float aspect);
     glm::mat4   GetMVP(){ return mvpMat; }
     void        RotateModel(float distanceX, float distanceY, float endPositionX, float endPositionY);
@@ -28,6 +23,7 @@ public:
 private:
     void        ComputeMVPMatrix();
 
+    float       mModelDefaultPosition[6];
     float       FOV;
     float       nearPlaneDistance, farPlaneDistance;
 
