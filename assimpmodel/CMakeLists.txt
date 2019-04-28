@@ -37,9 +37,9 @@ add_executable(assimpmodel
         glfwmodel.cpp
         AssimpLoader.cpp
         AssimpModel.cpp
-        misc.cpp
-        myGLCamera.cpp
-        myShader.cpp
+        ModelUtil.cpp
+        ModelCamera.cpp
+        ModelShader.cpp
         ${ICON}
         ${GLAD})
 

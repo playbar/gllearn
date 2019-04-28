@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-#ifndef MY_SHADER_H
-#define MY_SHADER_H
+#ifndef MODELSHADER_H
+#define MODELSHADER_H
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

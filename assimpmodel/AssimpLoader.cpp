@@ -1,6 +1,6 @@
 #include "AssimpLoader.h"
-#include "myShader.h"
-#include "misc.h"
+#include "ModelShader.h"
+#include "ModelUtil.h"
 #include <opencv2/opencv.hpp>
 
 

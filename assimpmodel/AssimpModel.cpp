@@ -1,4 +1,4 @@
-#include "myShader.h"
+#include "ModelShader.h"
 #include "AssimpModel.h"
 
 
@@ -14,7 +14,7 @@ AssimpModel::AssimpModel() {
     initsDone = false;
 
     // create MyGLCamera object and set default position for the object
-    myGLCamera = new MyGLCamera();
+    myGLCamera = new ModelCamera();
     float pos[]={0.0, -10.0, -10.0, 0.0, 0.0, 0.0};
     std::copy(&pos[0], &pos[5], std::back_inserter(modelDefaultPosition));
     myGLCamera->SetModelPosition(modelDefaultPosition);

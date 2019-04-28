@@ -15,10 +15,10 @@
  */
 
 
-#include "myGLCamera.h"
+#include "ModelCamera.h"
 #include "math.h"
 
-MyGLCamera::MyGLCamera(
+ModelCamera::ModelCamera(
         float FOV,
         float zPosition,
         float nearPlaneDistance,
@@ -47,7 +47,7 @@ MyGLCamera::MyGLCamera(
 /**
  * Use the display's aspect ratio to compute projection matrix
  */
-void MyGLCamera::SetAspectRatio(float aspect) {
+void ModelCamera::SetAspectRatio(float aspect) {
 
     glm::mat4 projectionMat;
     projectionMat = glm::perspective(FOV * float(M_PI / 180), // camera's field-of-view
@@ -64,7 +64,7 @@ void MyGLCamera::SetAspectRatio(float aspect) {
  * 3 for alpha-beta-gamma Euler angles
  * Convert euler angles to quaternion and update MVP
  */
-void MyGLCamera::SetModelPosition(std::vector<float> modelPosition) {
+void ModelCamera::SetModelPosition(std::vector<float> modelPosition) {
 
     deltaX = modelPosition[0];
     deltaY = modelPosition[1];
@@ -84,7 +84,7 @@ void MyGLCamera::SetModelPosition(std::vector<float> modelPosition) {
  * quaternion describing the rotation
  * MVP = Projection * View * (Translation * Rotation)
  */
-void MyGLCamera::ComputeMVPMatrix() {
+void ModelCamera::ComputeMVPMatrix() {
 
     translateMat = glm::mat4(1, 0, 0, 0,                  // col0
                              0, 1, 0, 0,	              // col1
@@ -98,7 +98,7 @@ void MyGLCamera::ComputeMVPMatrix() {
 /**
  * Simulate change in scale by pushing or pulling the model along Z axis
  */
-void MyGLCamera::ScaleModel(float scaleFactor) {
+void ModelCamera::ScaleModel(float scaleFactor) {
 
     deltaZ += SCALE_TO_Z_TRANSLATION * (scaleFactor - 1);
     ComputeMVPMatrix();
@@ -108,7 +108,7 @@ void MyGLCamera::ScaleModel(float scaleFactor) {
  * Finger drag movements are converted to rotation of model by deriving a
  * quaternion from the drag movement
  */
-void MyGLCamera::RotateModel(float distanceX, float distanceY,
+void ModelCamera::RotateModel(float distanceX, float distanceY,
                              float endPositionX, float endPositionY) {
 
     // algo in brief---
@@ -153,7 +153,7 @@ void MyGLCamera::RotateModel(float distanceX, float distanceY,
 /**
  * displace model by changing x-y coordinates
  */
-void MyGLCamera::TranslateModel(float distanceX, float distanceY) {
+void ModelCamera::TranslateModel(float distanceX, float distanceY) {
 
     deltaX += XY_TRANSLATION_FACTOR * distanceX;
     deltaY += XY_TRANSLATION_FACTOR * distanceY;

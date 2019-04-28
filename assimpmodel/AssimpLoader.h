@@ -27,8 +27,8 @@
 #include <assimp/postprocess.h>
 #include <vector>
 
-#include "myGLM.h"
-#include "myShader.h"
+#include "ModelUtil.h"
+#include "ModelShader.h"
 
 // info used to render a mesh
 struct MeshInfo {

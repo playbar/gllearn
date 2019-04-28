@@ -1,8 +1,8 @@
 #ifndef ASSIMPMODEL_H
 #define ASSIMPMODEL_H
 
-#include "myShader.h"
-#include "myGLCamera.h"
+#include "ModelShader.h"
+#include "ModelCamera.h"
 #include "AssimpLoader.h"
 #include <sstream>
 #include <iostream>
@@ -29,7 +29,7 @@ private:
     int     screenWidth, screenHeight;
 
     std::vector<float> modelDefaultPosition;
-    MyGLCamera * myGLCamera;
+    ModelCamera * myGLCamera;
     AssimpLoader * modelObject;
 };
 
