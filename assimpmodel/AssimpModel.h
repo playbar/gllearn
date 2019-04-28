@@ -29,7 +29,7 @@ private:
     int     screenWidth, screenHeight;
 
     std::vector<float> modelDefaultPosition;
-    ModelCamera * myGLCamera;
+    ModelCamera * mModelCamera;
     AssimpLoader * modelObject;
 };
 

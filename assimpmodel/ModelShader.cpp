@@ -34,14 +34,14 @@ void MyGLInits() {
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LEQUAL);
 
-    printf("OpenGL %s, GLSL %s", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+    printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     // check if the device supports GLES 3 or GLES 2
     const char* versionStr = (const char*)glGetString(GL_VERSION);
     if (strstr(versionStr, "OpenGL ES 3.")) {
-        printf("Device supports GLES 3");
+        printf("Device supports GLES 3\n");
     } else {
-        printf("Device supports GLES 2");
+        printf("Device supports GLES 2\n");
     }
 
     CheckGLError("MyGLInits");
@@ -62,27 +62,27 @@ void CheckGLError(std::string funcName){
     switch(err) {
 
         case GL_INVALID_ENUM:
-            printf("GL_INVALID_ENUM: GLenum argument out of range");
+            printf("GL_INVALID_ENUM: GLenum argument out of range\n");
             break;
 
         case GL_INVALID_VALUE:
-            printf("GL_INVALID_VALUE: numeric argument out of range");
+            printf("GL_INVALID_VALUE: numeric argument out of range\n");
             break;
 
         case GL_INVALID_OPERATION:
-            printf("GL_INVALID_OPERATION: operation illegal in current state");
+            printf("GL_INVALID_OPERATION: operation illegal in current state\n");
             break;
 
         case GL_INVALID_FRAMEBUFFER_OPERATION:
-            printf("GL_INVALID_FRAMEBUFFER_OPERATION: framebuffer object is not complete");
+            printf("GL_INVALID_FRAMEBUFFER_OPERATION: framebuffer object is not complete\n");
             break;
 
         case GL_OUT_OF_MEMORY:
-            printf( "GL_OUT_OF_MEMORY: not enough memory left to execute command");
+            printf( "GL_OUT_OF_MEMORY: not enough memory left to execute command\n");
             break;
 
         default:
-            printf("unlisted error");
+            printf("unlisted error\n");
             break;
     }
 }
@@ -92,7 +92,7 @@ void CheckGLError(std::string funcName){
  */
 bool ReadShaderCode(std::string & shaderCode, std::string & shaderFileName) {
 
-    printf("Reading shader: %s", shaderFileName.c_str());
+    printf("Reading shader: %s\n", shaderFileName.c_str());
 
     std::ifstream shaderStream(shaderFileName.c_str(), std::ios::in);
     if (shaderStream.is_open()) {
@@ -102,11 +102,11 @@ bool ReadShaderCode(std::string & shaderCode, std::string & shaderFileName) {
         }
         shaderStream.close();
     } else {
-        printf("Cannot open %s", shaderFileName.c_str());
+        printf("Cannot open %s\n", shaderFileName.c_str());
         return false;
     }
 
-    printf("Read successfully");
+    printf("Read successfully\n");
     return true;
 }
 
@@ -119,7 +119,7 @@ bool CompileShader(GLuint & shaderID, const GLenum shaderType, std::string shade
     shaderID = glCreateShader(shaderType);
 
     // Compile Shader
-    printf("Compiling shader");
+    printf("Compiling shader\n");
     char const * sourcePointer = shaderCode.c_str();
     glShaderSource(shaderID, 1, &sourcePointer, NULL);
     glCompileShader(shaderID);
@@ -131,7 +131,7 @@ bool CompileShader(GLuint & shaderID, const GLenum shaderType, std::string shade
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
     glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
     if (result == 0) {
-        printf("Failed to compile shader");
+        printf("Failed to compile shader\n");
         char *szError = new char[infoLogLength + 1];
         glGetShaderInfoLog(shaderID, infoLogLength, NULL, szError);
         printf("%s", szError);
@@ -139,7 +139,7 @@ bool CompileShader(GLuint & shaderID, const GLenum shaderType, std::string shade
         return false;
     }
     else{
-        printf("Compiled shader successfully");
+        printf("Compiled shader successfully\n");
     }
 
     return true;
@@ -153,7 +153,7 @@ bool LinkProgram(GLuint programID, GLuint vertexShaderID,
     GLint result = GL_FALSE;
     int infoLogLength;
 
-    printf("Linking program");
+    printf("Linking program\n");
 
     glAttachShader(programID, vertexShaderID);
     glAttachShader(programID, fragmentShaderID);
@@ -172,7 +172,7 @@ bool LinkProgram(GLuint programID, GLuint vertexShaderID,
     }
 
     if (result == 0) {
-        printf("Failed to link program: %d", programID);
+        printf("Failed to link program: %d\n", programID);
         std::vector<char> programErrorMessage(infoLogLength + 1);
         glGetProgramInfoLog(programID, infoLogLength, NULL,
                             &programErrorMessage[0]);
@@ -182,7 +182,7 @@ bool LinkProgram(GLuint programID, GLuint vertexShaderID,
         }
         return false;
     }
-    printf("Linked successfully");
+    printf("Linked successfully\n");
 
     return true;
 }
@@ -199,28 +199,28 @@ GLuint LoadShaders(std::string vertexShaderFilename,
     // read and compile the vertex shader
     std::string vertexShaderCode;
     if (!ReadShaderCode(vertexShaderCode, vertexShaderFilename)) {
-        printf("Error in reading Vertex shader");
+        printf("Error in reading Vertex shader\n");
         return 0;
     }
     if (!CompileShader(vertexShaderID, GL_VERTEX_SHADER, vertexShaderCode)) {
-        printf("Error in compiling Vertex shader");
+        printf("Error in compiling Vertex shader\n");
         return 0;
     }
 
     // read and compile the fragment shader
     std::string fragmentShaderCode;
     if (!ReadShaderCode(fragmentShaderCode, fragmentShaderFilename)) {
-        printf("Error in reading Fragment shader");
+        printf("Error in reading Fragment shader\n");
         return 0;
     }
     if (!CompileShader(fragmentShaderID, GL_FRAGMENT_SHADER, fragmentShaderCode)) {
-        printf("Error in compiling fragment shader");
+        printf("Error in compiling fragment shader\n");
         return 0;
     }
 
     // Link both the shaders together
     if (!LinkProgram(programID, vertexShaderID, fragmentShaderID)) {
-        printf("Error in linking shaders");
+        printf("Error in linking shaders\n");
         return 0;
     }
 
@@ -234,7 +234,7 @@ GLuint GetAttributeLocation(GLuint programID, std::string variableName) {
 
     GLint loc = glGetAttribLocation(programID, variableName.c_str());
     if (loc == -1) {
-        printf("Error in getting attribute: %s", variableName.c_str());
+        printf("Error in getting attribute: %s\n", variableName.c_str());
         return (0);
     } else {
         return ((GLuint) loc);
@@ -248,7 +248,7 @@ GLint GetUniformLocation(GLuint programID, std::string uniformName) {
 
     GLint loc = glGetUniformLocation(programID, uniformName.c_str());
     if (loc == -1) {
-        printf("error in uniform: %s", uniformName.c_str());
+        printf("error in uniform: %s\n", uniformName.c_str());
     } else {
         return loc;
     }

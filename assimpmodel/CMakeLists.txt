@@ -40,6 +40,7 @@ add_executable(assimpmodel
         ModelUtil.cpp
         ModelCamera.cpp
         ModelShader.cpp
+        tiny_obj_loader.cc
         ${ICON}
         ${GLAD})
 

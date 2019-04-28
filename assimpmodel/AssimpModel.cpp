@@ -10,23 +10,23 @@
  */
 AssimpModel::AssimpModel() {
 
-    printf("AssimpModel::AssimpModel");
+    printf("AssimpModel::AssimpModel\n");
     initsDone = false;
 
     // create MyGLCamera object and set default position for the object
-    myGLCamera = new ModelCamera();
+    mModelCamera = new ModelCamera();
     float pos[]={0.0, -10.0, -10.0, 0.0, 0.0, 0.0};
     std::copy(&pos[0], &pos[5], std::back_inserter(modelDefaultPosition));
-    myGLCamera->SetModelPosition(modelDefaultPosition);
+    mModelCamera->SetModelPosition(modelDefaultPosition);
 
     modelObject = NULL;
 }
 
 AssimpModel::~AssimpModel() {
 
-    printf("AssimpModel::AssimpModelssimp");
-    if (myGLCamera) {
-        delete myGLCamera;
+    printf("AssimpModel::AssimpModelssimp\n");
+    if (mModelCamera) {
+        delete mModelCamera;
     }
     if (modelObject) {
         delete modelObject;
@@ -38,7 +38,7 @@ AssimpModel::~AssimpModel() {
  */
 void AssimpModel::PerformGLInits() {
 
-    printf("AssimpModel::PerformGLInits");
+    printf("AssimpModel::PerformGLInits\n");
 
     MyGLInits();
 
@@ -87,7 +87,7 @@ void AssimpModel::Render() {
     // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 mvpMat = myGLCamera->GetMVP();
+    glm::mat4 mvpMat = mModelCamera->GetMVP();
     modelObject->Render3DModel(&mvpMat);
 
     CheckGLError("AssimpModel::Render");
@@ -104,7 +104,7 @@ void AssimpModel::SetViewport(int width, int height) {
     glViewport(0, 0, width, height);
     CheckGLError("Cube::SetViewport");
 
-    myGLCamera->SetAspectRatio((float) width / height);
+    mModelCamera->SetAspectRatio((float) width / height);
 }
 
 
@@ -113,7 +113,7 @@ void AssimpModel::SetViewport(int width, int height) {
  */
 void AssimpModel::DoubleTapAction() {
 
-    myGLCamera->SetModelPosition(modelDefaultPosition);
+    mModelCamera->SetModelPosition(modelDefaultPosition);
 }
 
 /**
@@ -121,7 +121,7 @@ void AssimpModel::DoubleTapAction() {
  */
 void AssimpModel::ScrollAction(float distanceX, float distanceY, float positionX, float positionY) {
 
-    myGLCamera->RotateModel(distanceX, distanceY, positionX, positionY);
+    mModelCamera->RotateModel(distanceX, distanceY, positionX, positionY);
 }
 
 /**
@@ -129,7 +129,7 @@ void AssimpModel::ScrollAction(float distanceX, float distanceY, float positionX
  */
 void AssimpModel::ScaleAction(float scaleFactor) {
 
-    myGLCamera->ScaleModel(scaleFactor);
+    mModelCamera->ScaleModel(scaleFactor);
 }
 
 /**
@@ -137,5 +137,5 @@ void AssimpModel::ScaleAction(float scaleFactor) {
  */
 void AssimpModel::MoveAction(float distanceX, float distanceY) {
 
-    myGLCamera->TranslateModel(distanceX, distanceY);
+    mModelCamera->TranslateModel(distanceX, distanceY);
 }

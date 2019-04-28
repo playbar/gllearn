@@ -159,7 +159,7 @@ bool AssimpLoader::LoadTexturesToGL(std::string modelFilename) {
     }
 
     int numTextures = (int) textureNameMap.size();
-    printf("Total number of textures is %d ", numTextures);
+    printf("Total number of textures is %d \n", numTextures);
 
     // create and fill array with texture names in GL
     GLuint * textureGLNames = new GLuint[numTextures];
@@ -179,7 +179,7 @@ bool AssimpLoader::LoadTexturesToGL(std::string modelFilename) {
         (*textureIterator).second = textureGLNames[i];	  // save texture id for filename in map
 
         // load the texture using OpenCV
-        printf("Loading texture %s", textureFullPath.c_str());
+        printf("Loading texture %s\n", textureFullPath.c_str());
         cv::Mat textureImage = cv::imread(textureFullPath);
         if (!textureImage.empty()) {
 
@@ -202,7 +202,7 @@ bool AssimpLoader::LoadTexturesToGL(std::string modelFilename) {
 
         } else {
 
-            printf("Couldn't load texture %s", textureFilename.c_str());
+            printf("Couldn't load texture %s\n", textureFilename.c_str());
 
             //Cleanup and return
             delete[] textureGLNames;
@@ -222,25 +222,25 @@ bool AssimpLoader::LoadTexturesToGL(std::string modelFilename) {
  */
 bool AssimpLoader::Load3DModel(std::string modelFilename) {
 
-    printf("Scene will be imported now");
+    printf("Scene will be imported now\n");
     scene = importerPtr->ReadFile(modelFilename, aiProcessPreset_TargetRealtime_Quality);
 
     // Check if import failed
     if (!scene) {
         std::string errorString = importerPtr->GetErrorString();
-        printf("Scene import failed: %s", errorString.c_str());
+        printf("Scene import failed: %s\n", errorString.c_str());
         return false;
     }
-    printf("Imported %s successfully.", modelFilename.c_str());
+    printf("Imported %s successfully.\n", modelFilename.c_str());
 
     if(!LoadTexturesToGL(modelFilename)) {
-        printf("Unable to load textures");
+        printf("Unable to load textures\n");
         return false;
     }
-    printf("Loaded textures successfully");
+    printf("Loaded textures successfully\n");
 
     GenerateGLBuffers();
-    printf("Loaded vertices and texture coords successfully");
+    printf("Loaded vertices and texture coords successfully\n");
 
     isObjectLoaded = true;
     return true;
@@ -262,7 +262,7 @@ void AssimpLoader::Delete3DModel() {
 //        }
         modelMeshes.clear();
 
-        printf("Deleted Assimp object");
+        printf("Deleted Assimp object\n");
         isObjectLoaded = false;
     }
 }
