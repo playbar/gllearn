@@ -1,7 +1,5 @@
 # GLEW - The OpenGL Extension Wrangler Library
 
-The OpenGL Extension Wrangler Library (GLEW) is a cross-platform open-source C/C++ extension loading library. GLEW provides efficient run-time mechanisms for determining which OpenGL extensions are supported on the target platform. OpenGL core and extension functionality is exposed in a single header file. GLEW has been tested on a variety of operating systems, including Windows, Linux, Mac OS X, FreeBSD, Irix, and Solaris.
-
 ![](http://glew.sourceforge.net/glew.png)
 
 http://glew.sourceforge.net/
@@ -17,7 +15,7 @@ https://github.com/nigels-com/glew
 Current release is [2.1.0](https://sourceforge.net/projects/glew/files/glew/2.1.0/).
 [(Change Log)](http://glew.sourceforge.net/log.html)
 
-Sources available as
+Sources available as 
 [ZIP](https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.zip/download) or
 [TGZ](https://sourceforge.net/projects/glew/files/glew/2.1.0/glew-2.1.0.tgz/download).
 
@@ -26,8 +24,6 @@ Windows binaries for [32-bit and 64-bit](https://sourceforge.net/projects/glew/f
 ### Recent snapshots
 
 Snapshots may contain new features, bug-fixes or new OpenGL extensions ahead of tested, official releases.
-
-[glew-20181010.tgz](https://sourceforge.net/projects/glew/files/glew/snapshots/glew-20181010.tgz/download) *GLEW 2.2.0 RC1: New extensions, bug fixes*
 
 ## Build
 
@@ -41,11 +37,9 @@ For most end-users of GLEW the official releases are the best choice, with first
 
 ##### Install build tools
 
-Debian/Ubuntu/Mint:    `$ sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev`
+Debian/Ubuntu/Mint:    `$ sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev libosmesa-dev`
 
 RedHat/CentOS/Fedora:  `$ sudo yum install libXmu-devel libXi-devel libGL-devel`
-
-FreeBSD: `# pkg install xorg lang/gcc git cmake gmake bash python perl5`
 
 ##### Build
 
@@ -57,23 +51,7 @@ Targets:    `all, glew.lib (sub-targets: glew.lib.shared, glew.lib.static), glew
 
 Variables:  `SYSTEM=linux-clang, GLEW_DEST=/usr/local, STRIP=`
 
-_Note: you may need to call `make` in the  **auto** folder first_
-
-##### Linux EGL
-
-	$ sudo apt install libegl1-mesa-dev
-	$ make SYSTEM=linux-egl
-
-##### Linux OSMesa
-
-	$ sudo apt install libosmesa-dev
-	$ make SYSTEM=linux-osmesa
-
-##### Linux mingw-w64
-
-	$ sudo apt install mingw-w64
-	$ make SYSTEM=linux-mingw32
-	$ make SYSTEM=linux-mingw64
+_Note: may need to make **auto** folder_
 
 #### Using cmake
 
@@ -81,14 +59,14 @@ _Note: you may need to call `make` in the  **auto** folder first_
 
 ##### Install build tools
 
-Debian/Ubuntu/Mint:   `$ sudo apt-get install build-essential libxmu-dev libxi-dev libgl-dev cmake git`
+Debian/Ubuntu/Mint:   `$ sudo apt-get install build-essential libXmu-dev libXi-dev libgl-dev cmake`
 
-RedHat/CentOS/Fedora: `$ sudo yum install libXmu-devel libXi-devel libGL-devel cmake git`
+RedHat/CentOS/Fedora: `$ sudo yum install libXmu-devel libXi-devel libGL-devel cmake`
 
 ##### Build
 
 	$ cd build
-	$ cmake ./cmake
+	$ cmake ./cmake 
 	$ make -j4
 
 | Target     | Description |
@@ -112,9 +90,9 @@ RedHat/CentOS/Fedora: `$ sudo yum install libXmu-devel libXi-devel libGL-devel c
 
 #### Visual Studio
 
-Use the provided Visual Studio project file in build/vc15/
+Use the provided Visual Studio project file in build/vc12/
 
-Projects for vc6, vc10, vc12 and vc14 are also provided
+Projects for vc6 and vc10 are also provided
 
 #### MSYS/Mingw
 
@@ -134,7 +112,7 @@ Available from [Msys2](http://msys2.github.io/) and/or [Mingw-w64](http://mingw-
 
 Requirements: bash, make, gcc
 
-	$ pacman -S gcc make  mingw-w64-i686-gcc mingw-w64-x86_64-gcc
+	$ pacman -S gcc make  mingw-w64-i686-gcc mingw-w64-x86_64-gcc 
 	$ make
 	$ make install
 	$ make install.all
@@ -145,7 +123,7 @@ Alternative toolchain:  `SYSTEM=msys, SYSTEM=msys-win32, SYSTEM=msys-win64`
 
 `glewinfo` is a command-line tool useful for inspecting the capabilities of an
 OpenGL implementation and GLEW support for that.  Please include `glewinfo.txt`
-with bug reports, as appropriate.
+with bug reports, as appropriate.	
 
 	---------------------------
 	    GLEW Extension Info
@@ -165,7 +143,7 @@ with bug reports, as appropriate.
 	  glDrawRangeElements:                                         OK
 	  glTexImage3D:                                                OK
 	  glTexSubImage3D:                                             OK
-
+	
 	...
 
 ## Code Generation
@@ -193,35 +171,20 @@ with bug fixes, new OpenGL extension support and new releases.
 GLEW was developed by [Milan Ikits](http://www.cs.utah.edu/~ikits/)
 and [Marcelo Magallon](http://wwwvis.informatik.uni-stuttgart.de/~magallon/).
 Aaron Lefohn, Joe Kniss, and Chris Wyman were the first users and also
-assisted with the design and debugging process.
+assisted with the design and debugging process.  
 
 The acronym GLEW originates from Aaron Lefohn.
 Pasi K&auml;rkk&auml;inen identified and fixed several problems with
 GLX and SDL.  Nate Robins created the `wglinfo` utility, to
-which modifications were made by Michael Wimmer.
-
-## Contributions
-
-GLEW welcomes community contributions.  Typically these are co-ordinated
-via [Issues](https://github.com/nigels-com/glew/issues) or
-[Pull Requests](https://github.com/nigels-com/glew/pulls) in the
-GitHub web interface.
-
-Be sure to mention platform and compiler toolchain details when filing
-a bug report.  The output of `glewinfo` can be quite useful for discussion
-also.
-
-Generally GLEW is released once a year, around the time of the Siggraph
-computer graphics conference.  If you're not using the current release
-version of GLEW, be sure to check if the issue or bug is fixed there.
+which modifications were made by Michael Wimmer.  
 
 ## Copyright and Licensing
 
 GLEW is originally derived from the EXTGL project by Lev Povalahev.
-The source code is licensed under the
-[Modified BSD License](http://glew.sourceforge.net/glew.txt), the
+The source code is licensed under the 
+[Modified BSD License](http://glew.sourceforge.net/glew.txt), the 
 [Mesa 3-D License](http://glew.sourceforge.net/mesa.txt) (MIT) and the
 [Khronos License](http://glew.sourceforge.net/khronos.txt) (MIT).
 
-The automatic code generation scripts are released under the
+The automatic code generation scripts are released under the 
 [GNU GPL](http://glew.sourceforge.net/gpl.txt).
