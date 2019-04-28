@@ -30,9 +30,8 @@ ModelCamera::ModelCamera()
     // camera position is fixed
 
     // camera position is fixed
-    glm::vec3 cameraPosition = glm::vec3(0, 0, 10);
-    viewMat = glm::lookAt(cameraPosition,        // Camera location in World Space
-                          glm::vec3(0, 0, -100),   // direction in which camera it is pointed
+    viewMat = glm::lookAt(glm::vec3(0, 0, 10),        // Camera location in World Space
+                          glm::vec3(0, 0, -10),   // direction in which camera it is pointed
                           glm::vec3(0, 1, 0));   // camera is pointing up
 
     this->nearPlaneDistance = 1.0f;

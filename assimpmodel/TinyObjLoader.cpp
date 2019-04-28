@@ -43,22 +43,36 @@ void TinyObjLoader::GenerateGLBuffers() {
     {
 
         auto mesh = shapes[n].mesh;
-        newMeshInfo.numberOfFaces = mesh.num_face_vertices.size();
-        unsigned int *faceArray = new unsigned int[mesh.num_face_vertices.size() * 3];
 
-        unsigned int faceIndex = 0;
-        size_t index_offset = 0;
-        for (unsigned int t = 0; t < mesh.num_face_vertices.size(); ++t)
+        int vertexCount = mesh.indices.size();
+        newMeshInfo.numberOfFaces = vertexCount / 3;
+        unsigned int *indexData = new unsigned int[vertexCount];
+        float *vertexData = new float[vertexCount * 3];
+        float *textureCoords = new float[vertexCount * 2];
+
+        unsigned int verIndex = 0;
+        unsigned int texIndex = 0;
+
+        for (unsigned int t = 0; t < vertexCount; ++t)
         {
-            size_t fnum = mesh.num_face_vertices[t];
-            for( size_t v = 0; v < fnum; ++v ) {
-                tinyobj::index_t idx = mesh.indices[index_offset + v];
-                unsigned int *pdata = faceArray + faceIndex;
-                pdata[v] = idx.texcoord_index;
-            }
+            tinyobj::index_t idx = mesh.indices[t];
+            indexData[t] = idx.vertex_index;
 
-            faceIndex += fnum;
-            index_offset += fnum;
+            printf("index = %d, texcoord = %d,  ", idx.vertex_index, idx.texcoord_index);
+
+            float *pverdata = vertexData + verIndex;
+            pverdata[0] = attrib.vertices[ idx.vertex_index * 3 + 0];
+            pverdata[1] = attrib.vertices[ idx.vertex_index * 3 + 1];
+            pverdata[2] = attrib.vertices[ idx.vertex_index * 3 + 2];
+            verIndex += 3;
+            printf("vertex[%d], %06f, %06f, %06f,   ", t,  pverdata[0], pverdata[1], pverdata[2]);
+
+            float *ptexdata = textureCoords + texIndex;
+            ptexdata[0] = attrib.texcoords[idx.texcoord_index * 2 + 0];
+            ptexdata[1] = attrib.texcoords[idx.texcoord_index * 2 + 1];
+            texIndex += 2;
+            printf("%06f, %06f \n", ptexdata[0], ptexdata[1] );
+
         }
 
         // buffer for faces
@@ -68,50 +82,67 @@ void TinyObjLoader::GenerateGLBuffers() {
             glGenBuffers(1, &buffer);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         sizeof(unsigned int) * mesh.num_face_vertices.size() * 3, faceArray,
+                         sizeof(unsigned int) * newMeshInfo.numberOfFaces * 3, indexData,
                          GL_STATIC_DRAW);
             newMeshInfo.faceBuffer = buffer;
 
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER,
+                         sizeof(unsigned int) * newMeshInfo.numberOfFaces * 3 * 3, vertexData,
+                         GL_STATIC_DRAW);
+            newMeshInfo.vertexBuffer = buffer;
+
+
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER,
+                         sizeof(float) * newMeshInfo.numberOfFaces * 3 * 2, textureCoords,
+                         GL_STATIC_DRAW);
+            newMeshInfo.textureCoordBuffer = buffer;
+
         }
-        delete[] faceArray;
+        delete[] indexData;
+        delete[] vertexData;
+        delete[] textureCoords;
 
         // buffer for vertex positions
         if (attrib.vertices.size() > 0 )
         {
-            glGenBuffers(1, &buffer);
-            glBindBuffer(GL_ARRAY_BUFFER, buffer);
-            glBufferData(GL_ARRAY_BUFFER,
-                         sizeof(float) * 3 * attrib.vertices.size(), attrib.vertices.data(),
-                         GL_STATIC_DRAW);
-            newMeshInfo.vertexBuffer = buffer;
+            int vtxindex = 0;
+            for( int i = 0; i < attrib.vertices.size() / 3; ++ i )
+            {
+                printf("vertices[%d], %f/%f/%f \n", i, attrib.vertices[vtxindex + 0],
+                       attrib.vertices[vtxindex + 1],
+                       attrib.vertices[vtxindex + 2]);
+                vtxindex += 3;
+            }
 
         }
 
         // buffer for vertex texture coordinates
         // ***ASSUMPTION*** -- handle only one texture for each mesh
-        if (attrib.texcoords.size() > 0 )
-        {
-
-
-            glGenBuffers(1, &buffer);
-            glBindBuffer(GL_ARRAY_BUFFER, buffer);
-            glBufferData(GL_ARRAY_BUFFER,
-                         sizeof(float) * 2 * attrib.texcoords.size(), attrib.texcoords.data(),
-                         GL_STATIC_DRAW);
-            newMeshInfo.textureCoordBuffer = buffer;
-
+        if (attrib.texcoords.size() > 0 ) {
+            int texindex = 0;
+            for (int i = 0; i < attrib.vertices.size() / 2; ++i) {
+                printf("vertices[%d], %f/%f \n", i, attrib.vertices[texindex + 0],
+                       attrib.vertices[texindex + 1]);
+                texindex += 2;
+            }
 
         }
+
 
         // unbind buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+        auto mid = shapes[n].mesh.material_ids;
+        auto materi =  materials[0].diffuse_texname;
 
-        std::string texName = shapes[n].name;
-        if( !texName.empty() )
+        if( !materi.empty() )
         {
-            unsigned int textureId = textureNameMap[texName];
+            unsigned int textureId = textureNameMap[materi];
             newMeshInfo.textureIndex = textureId;
         } else {
             newMeshInfo.textureIndex = 0;
@@ -204,7 +235,7 @@ bool TinyObjLoader::Load3DModel(std::string modelFilename) {
 
     std::string err;
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, modelFilename.c_str(),
-                                "./", true);
+                                "./", false);
 
     if( !ret )
     {
@@ -218,10 +249,8 @@ bool TinyObjLoader::Load3DModel(std::string modelFilename) {
         printf("Unable to load textures\n");
         return false;
     }
-//    printf("Loaded textures successfully\n");
-//
+
     GenerateGLBuffers();
-//    printf("Loaded vertices and texture coords successfully\n");
 
     isObjectLoaded = true;
     return true;
@@ -288,7 +317,9 @@ void TinyObjLoader::Render3DModel(glm::mat4 *mvpMat) {
         glEnableVertexAttribArray(vertexUVAttribute);
         glVertexAttribPointer(vertexUVAttribute, 2, GL_FLOAT, 0, 0, 0);
 
-        glDrawElements(GL_TRIANGLES, modelMeshes[n].numberOfFaces * 3, GL_UNSIGNED_INT, 0);
+//        glDrawElements(GL_TRIANGLES, modelMeshes[n].numberOfFaces * 3, GL_UNSIGNED_INT, 0);
+
+        glDrawArrays(GL_TRIANGLES, 0, modelMeshes[n].numberOfFaces * 9);
 
         // unbind buffers
         glBindBuffer(GL_ARRAY_BUFFER, 0);
