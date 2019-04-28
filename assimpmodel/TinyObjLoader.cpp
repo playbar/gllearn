@@ -1,6 +1,7 @@
 #include "TinyObjLoader.h"
 #include "ModelShader.h"
 #include "ModelUtil.h"
+#include "tiny_obj_loader.h"
 #include <opencv2/opencv.hpp>
 
 /**
@@ -36,88 +37,91 @@ void TinyObjLoader::GenerateGLBuffers() {
     struct MeshInfo newMeshInfo; // this struct is updated for each mesh in the model
     GLuint buffer;
 
-//    // For every mesh -- load face indices, vertex positions, vertex texture coords
-//    // also copy texture index for mesh into newMeshInfo.textureIndex
-//    for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
-//
-//        const aiMesh *mesh = scene->mMeshes[n]; // read the n-th mesh
-//
-//        // create array with faces
-//        // convert from Assimp's format to array for GLES
-//        unsigned int *faceArray = new unsigned int[mesh->mNumFaces * 3];
-//        unsigned int faceIndex = 0;
-//        for (unsigned int t = 0; t < mesh->mNumFaces; ++t) {
-//
-//            // read a face from assimp's mesh and copy it into faceArray
-//            const aiFace *face = &mesh->mFaces[t];
-//            memcpy(&faceArray[faceIndex], face->mIndices, 3 * sizeof(unsigned int));
-//            faceIndex += 3;
-//
-//        }
-//        newMeshInfo.numberOfFaces = scene->mMeshes[n]->mNumFaces;
-//
-//        // buffer for faces
-//        if (newMeshInfo.numberOfFaces) {
-//
-//            glGenBuffers(1, &buffer);
-//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-//            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-//                         sizeof(unsigned int) * mesh->mNumFaces * 3, faceArray,
-//                         GL_STATIC_DRAW);
-//            newMeshInfo.faceBuffer = buffer;
-//
-//        }
-//        delete[] faceArray;
-//
-//        // buffer for vertex positions
-//        if (mesh->HasPositions()) {
-//
-//            glGenBuffers(1, &buffer);
-//            glBindBuffer(GL_ARRAY_BUFFER, buffer);
-//            glBufferData(GL_ARRAY_BUFFER,
-//                         sizeof(float) * 3 * mesh->mNumVertices, mesh->mVertices,
-//                         GL_STATIC_DRAW);
-//            newMeshInfo.vertexBuffer = buffer;
-//
-//        }
-//
-//        // buffer for vertex texture coordinates
-//        // ***ASSUMPTION*** -- handle only one texture for each mesh
-//        if (mesh->HasTextureCoords(0)) {
-//
-//            float * textureCoords = new float[2 * mesh->mNumVertices];
-//            for (unsigned int k = 0; k < mesh->mNumVertices; ++k) {
-//                textureCoords[k * 2] = mesh->mTextureCoords[0][k].x;
-//                textureCoords[k * 2 + 1] = mesh->mTextureCoords[0][k].y;
-//            }
-//            glGenBuffers(1, &buffer);
-//            glBindBuffer(GL_ARRAY_BUFFER, buffer);
-//            glBufferData(GL_ARRAY_BUFFER,
-//                         sizeof(float) * 2 * mesh->mNumVertices, textureCoords,
-//                         GL_STATIC_DRAW);
-//            newMeshInfo.textureCoordBuffer = buffer;
-//            delete[] textureCoords;
-//
-//        }
-//
-//        // unbind buffers
-//        glBindBuffer(GL_ARRAY_BUFFER, 0);
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//
-//        // copy texture index (= texture name in GL) for the mesh from textureNameMap
-//        aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
-//        aiString texturePath;	//contains filename of texture
-//        if (AI_SUCCESS == mtl->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath)) {
-//            unsigned int textureId = textureNameMap[texturePath.data];
-//            newMeshInfo.textureIndex = textureId;
-//        } else {
-//            newMeshInfo.textureIndex = 0;
-//        }
-//
-//        modelMeshes.push_back(newMeshInfo);
-//    }
+    // For every mesh -- load face indices, vertex positions, vertex texture coords
+    // also copy texture index for mesh into newMeshInfo.textureIndex
+    for (unsigned int n = 0; n < shapes.size(); ++n)
+    {
+
+        auto mesh = shapes[n].mesh;
+        newMeshInfo.numberOfFaces = mesh.num_face_vertices.size();
+        unsigned int *faceArray = new unsigned int[mesh.num_face_vertices.size() * 3];
+
+        unsigned int faceIndex = 0;
+        size_t index_offset = 0;
+        for (unsigned int t = 0; t < mesh.num_face_vertices.size(); ++t)
+        {
+            size_t fnum = mesh.num_face_vertices[t];
+            for( size_t v = 0; v < fnum; ++v ) {
+                tinyobj::index_t idx = mesh.indices[index_offset + v];
+                unsigned int *pdata = faceArray + faceIndex;
+                pdata[v] = idx.texcoord_index;
+            }
+
+            faceIndex += fnum;
+            index_offset += fnum;
+        }
+
+        // buffer for faces
+        if (newMeshInfo.numberOfFaces)
+        {
+
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                         sizeof(unsigned int) * mesh.num_face_vertices.size() * 3, faceArray,
+                         GL_STATIC_DRAW);
+            newMeshInfo.faceBuffer = buffer;
+
+        }
+        delete[] faceArray;
+
+        // buffer for vertex positions
+        if (attrib.vertices.size() > 0 )
+        {
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER,
+                         sizeof(float) * 3 * attrib.vertices.size(), attrib.vertices.data(),
+                         GL_STATIC_DRAW);
+            newMeshInfo.vertexBuffer = buffer;
+
+        }
+
+        // buffer for vertex texture coordinates
+        // ***ASSUMPTION*** -- handle only one texture for each mesh
+        if (attrib.texcoords.size() > 0 )
+        {
+
+
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER,
+                         sizeof(float) * 2 * attrib.texcoords.size(), attrib.texcoords.data(),
+                         GL_STATIC_DRAW);
+            newMeshInfo.textureCoordBuffer = buffer;
+
+
+        }
+
+        // unbind buffers
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+        std::string texName = shapes[n].name;
+        if( !texName.empty() )
+        {
+            unsigned int textureId = textureNameMap[texName];
+            newMeshInfo.textureIndex = textureId;
+        } else {
+            newMeshInfo.textureIndex = 0;
+        }
+
+        modelMeshes.push_back(newMeshInfo);
+    }
 
 }
+
 
 /**
  * Read textures associated with all materials and load images to GL
@@ -127,23 +131,10 @@ bool TinyObjLoader::LoadTexturesToGL(std::string modelFilename) {
     // read names of textures associated with all materials
     textureNameMap.clear();
 
-//    for (unsigned int m = 0; m < scene->mNumMaterials; ++m) {
-//
-//        int textureIndex = 0;
-//        aiString textureFilename;
-//        aiReturn isTexturePresent = scene->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE,
-//                                                                     textureIndex,
-//                                                                     &textureFilename);
-//        while (isTexturePresent == AI_SUCCESS) {
-//            //fill map with textures, OpenGL image ids set to 0
-//            textureNameMap.insert(std::pair<std::string, GLuint>(textureFilename.data, 0));
-//
-//            // more textures? more than one texture could be associated with a material
-//            textureIndex++;
-//            isTexturePresent = scene->mMaterials[m]->GetTexture(aiTextureType_DIFFUSE,
-//                                                                textureIndex, &textureFilename);
-//        }
-//    }
+    for (unsigned int m = 0; m < materials.size(); ++m)
+    {
+        textureNameMap.insert(std::pair<std::string, GLuint>(materials[m].diffuse_texname, 0));
+    }
 
     int numTextures = (int) textureNameMap.size();
     printf("Total number of textures is %d \n", numTextures);
@@ -213,7 +204,7 @@ bool TinyObjLoader::Load3DModel(std::string modelFilename) {
 
     std::string err;
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, modelFilename.c_str(),
-                                "amenemhat/", true);
+                                "./", true);
 
     if( !ret )
     {
@@ -223,21 +214,13 @@ bool TinyObjLoader::Load3DModel(std::string modelFilename) {
 
     PrintInfo();
 
-//    // Check if import failed
-//    if (!scene) {
-//        std::string errorString = importerPtr->GetErrorString();
-//        printf("Scene import failed: %s\n", errorString.c_str());
-//        return false;
-//    }
-//    printf("Imported %s successfully.\n", modelFilename.c_str());
-//
-//    if(!LoadTexturesToGL(modelFilename)) {
-//        printf("Unable to load textures\n");
-//        return false;
-//    }
+    if(!LoadTexturesToGL(modelFilename)) {
+        printf("Unable to load textures\n");
+        return false;
+    }
 //    printf("Loaded textures successfully\n");
 //
-//    GenerateGLBuffers();
+    GenerateGLBuffers();
 //    printf("Loaded vertices and texture coords successfully\n");
 
     isObjectLoaded = true;
