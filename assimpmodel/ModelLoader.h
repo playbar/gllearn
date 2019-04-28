@@ -32,18 +32,6 @@ public:
     virtual bool Export3DModel(std::string modelFilename);
     virtual void Delete3DModel();
 
-protected:
-    std::vector<struct MeshInfo> modelMeshes;       // contains one struct for every mesh in model
-    Assimp::Importer *importerPtr;
-    Assimp::Exporter *exporterPtr;
-    const aiScene* scene;                           // assimp's output data structure
-    bool isObjectLoaded;
-
-    std::map<std::string, GLuint> textureNameMap;   // (texture filename, texture name in GL)
-
-    GLuint  vertexAttribute, vertexUVAttribute;     // attributes for shader variables
-    GLuint  shaderProgramID;
-    GLint   mvpLocation, textureSamplerLocation;    // location of MVP in the shader
 };
 
 #endif //ASSIMPLOADER_H

@@ -1,21 +1,5 @@
-/*
- *    Copyright 2016 Anand Muralidhar
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
-#ifndef ASSIMPLOADER_H
-#define ASSIMPLOADER_H
+#ifndef TINYOBJLOADER_H
+#define TINYOBJLOADER_H
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -32,12 +16,12 @@
 #include "ModelLoader.h"
 
 
-class AssimpLoader : public ModelLoader
+class TinyObjLoader : public ModelLoader
 {
 
 public:
-    AssimpLoader();
-    ~AssimpLoader();
+    TinyObjLoader();
+    ~TinyObjLoader();
 
     void Render3DModel(glm::mat4 *MVP);
     bool Load3DModel(std::string modelFilename);
@@ -47,7 +31,6 @@ public:
 private:
     void GenerateGLBuffers();
     bool LoadTexturesToGL(std::string modelFilename);
-
 
     std::vector<struct MeshInfo> modelMeshes;       // contains one struct for every mesh in model
     Assimp::Importer *importerPtr;
