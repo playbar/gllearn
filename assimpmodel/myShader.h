@@ -16,8 +16,15 @@
 
 #ifndef MY_SHADER_H
 #define MY_SHADER_H
-#include "myGLFunctions.h"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <stdio.h>
 #include <string>
+
+void MyGLInits();
+void CheckGLError(std::string functionName);
 
 GLuint LoadShaders(std::string vertexShaderCode, std::string fragmentShaderCode);
 GLuint GetAttributeLocation(GLuint programID, std::string variableName);

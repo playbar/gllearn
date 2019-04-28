@@ -28,7 +28,7 @@
 #include <vector>
 
 #include "myGLM.h"
-#include "myGLFunctions.h"
+#include "myShader.h"
 
 // info used to render a mesh
 struct MeshInfo {

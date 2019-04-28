@@ -1,7 +1,7 @@
 #ifndef ASSIMPMODEL_H
 #define ASSIMPMODEL_H
 
-#include "myGLFunctions.h"
+#include "myShader.h"
 #include "myGLCamera.h"
 #include "AssimpLoader.h"
 #include <sstream>

@@ -39,7 +39,6 @@ add_executable(assimpmodel
         AssimpModel.cpp
         misc.cpp
         myGLCamera.cpp
-        myGLFunctions.cpp
         myShader.cpp
         ${ICON}
         ${GLAD})
