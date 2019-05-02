@@ -877,11 +877,10 @@ int main(int argc, char **argv) {
 
 #ifdef _WIN32
 #ifdef _DEBUG
-  std::string input_filename(argv[1] ? argv[1]
-                                     : "../../../models/Cube/Cube.gltf");
+  std::string input_filename(argv[1] ? argv[1]: "Cube/Cube.gltf");
 #endif
 #else
-  std::string input_filename(argv[1] ? argv[1] : "../../models/Cube/Cube.gltf");
+  std::string input_filename(argv[1] ? argv[1] : "Cube/Cube.gltf");
 #endif
 
   std::string ext = GetFilePathExtension(input_filename);
