@@ -58,20 +58,20 @@ void TinyObjLoader::GenerateGLBuffers() {
             tinyobj::index_t idx = mesh.indices[t];
             indexData[t] = idx.vertex_index;
 
-            printf("index = %d, texcoord = %d,  ", idx.vertex_index, idx.texcoord_index);
+//            printf("index = %d, texcoord = %d,  ", idx.vertex_index, idx.texcoord_index);
 
             float *pverdata = vertexData + verIndex;
             pverdata[0] = attrib.vertices[ idx.vertex_index * 3 + 0];
             pverdata[1] = attrib.vertices[ idx.vertex_index * 3 + 1];
             pverdata[2] = attrib.vertices[ idx.vertex_index * 3 + 2];
             verIndex += 3;
-            printf("vertex[%d], %06f, %06f, %06f,   ", t,  pverdata[0], pverdata[1], pverdata[2]);
+//            printf("vertex[%d], %06f, %06f, %06f,   ", t,  pverdata[0], pverdata[1], pverdata[2]);
 
             float *ptexdata = textureCoords + texIndex;
             ptexdata[0] = attrib.texcoords[idx.texcoord_index * 2 + 0];
             ptexdata[1] = attrib.texcoords[idx.texcoord_index * 2 + 1];
             texIndex += 2;
-            printf("%06f, %06f \n", ptexdata[0], ptexdata[1] );
+//            printf("%06f, %06f \n", ptexdata[0], ptexdata[1] );
 
         }
 
@@ -112,9 +112,7 @@ void TinyObjLoader::GenerateGLBuffers() {
             int vtxindex = 0;
             for( int i = 0; i < attrib.vertices.size() / 3; ++ i )
             {
-                printf("vertices[%d], %f/%f/%f \n", i, attrib.vertices[vtxindex + 0],
-                       attrib.vertices[vtxindex + 1],
-                       attrib.vertices[vtxindex + 2]);
+//                printf("vertices[%d], %f/%f/%f \n", i, attrib.vertices[vtxindex + 0], attrib.vertices[vtxindex + 1], attrib.vertices[vtxindex + 2]);
                 vtxindex += 3;
             }
 
@@ -125,8 +123,7 @@ void TinyObjLoader::GenerateGLBuffers() {
         if (attrib.texcoords.size() > 0 ) {
             int texindex = 0;
             for (int i = 0; i < attrib.vertices.size() / 2; ++i) {
-                printf("vertices[%d], %f/%f \n", i, attrib.vertices[texindex + 0],
-                       attrib.vertices[texindex + 1]);
+//                printf("vertices[%d], %f/%f \n", i, attrib.vertices[texindex + 0], attrib.vertices[texindex + 1]);
                 texindex += 2;
             }
 

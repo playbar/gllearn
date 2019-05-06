@@ -43,7 +43,7 @@ void ModelObject::PerformGLInits() {
 
 //    mModelLoader = new AssimpLoader();
     mModelLoader = new TinyObjLoader();
-    std::string objFilename = "tinyobj.obj";
+    std::string objFilename = "amenemhat.obj";
     mModelLoader->Load3DModel(objFilename);
 
 //    std::string outFileName = "amenemhat/test.obj";

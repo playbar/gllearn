@@ -69,7 +69,7 @@ void cursor_position_callback(GLFWwindow* window, double x, double y)
         float posx = dx * 2 / gModelObject->GetScreenWidth();
         float posy = -dy * 2 / gModelObject->GetScreenHeight();
 
-        printf("dx =%f, dy = %f \n", posx, posy);
+//        printf("dx =%f, dy = %f \n", posx, posy);
         gModelObject->MoveAction(posx, posy);
     }
     if( brightpress )
