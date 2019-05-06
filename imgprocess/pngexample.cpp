@@ -197,7 +197,7 @@ int write_png_file(char *file_name , pic_data *graph)
       if( graph->flag == HAVE_ALPHA)
       {
          for( j = 0; j < temp; j += 4) {
-            row_pointers[i][j] = graph->rgba[pos * 4 + 0]; // red
+            row_pointers[i][j + 0] = graph->rgba[pos * 4 + 0]; // red
             row_pointers[i][j + 1] = graph->rgba[pos * 4 + 1]; // green
             row_pointers[i][j + 2] = graph->rgba[pos * 4 + 2];   // blue
             row_pointers[i][j + 3] = graph->rgba[pos * 4 + 3]; // alpha
@@ -205,7 +205,7 @@ int write_png_file(char *file_name , pic_data *graph)
          }
       }else{
          for(j = 0; j < temp; j += 3) {
-            row_pointers[i][j] = graph->rgba[pos * 3 + 0]; // red
+            row_pointers[i][j + 0] = graph->rgba[pos * 3 + 0]; // red
             row_pointers[i][j + 1] = graph->rgba[pos * 3 + 1]; // green
             row_pointers[i][j + 2] = graph->rgba[pos * 3 + 2];   // blue
             ++pos;

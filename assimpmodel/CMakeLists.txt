@@ -9,7 +9,24 @@ include_directories(${glfw_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../glm
         ${CMAKE_CURRENT_SOURCE_DIR}/../assimp/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/opencv
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/calib3d/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/core/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/dnn/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/features2d/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/flann/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/highgui/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/imgcodecs/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/imgproc/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/ml/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/objdetect/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/photo/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/shape/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/stitching/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/superres/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/videoio/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/video/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/videostab/include
         )
 
 if (MATH_LIBRARY)
