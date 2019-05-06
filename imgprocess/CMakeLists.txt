@@ -4,6 +4,7 @@ link_libraries(opencv_core)
 link_libraries(opencv_imgproc)
 link_libraries(opencv_imgcodecs)
 link_libraries(opencv_highgui)
+link_libraries(libpng)
 
 
 include_directories(${glfw_INCLUDE_DIRS}
@@ -41,3 +42,7 @@ if (APPLE)
     set_target_properties(img_process PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "img_process")
 endif()
 
+
+add_executable(pngexample
+        pngexample.cpp
+        )
