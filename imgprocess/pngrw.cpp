@@ -221,3 +221,57 @@ int write_png_file(char *file_name , pic_data *graph)
 }
 
 
+
+/* 功能：将LCUI_Graph结构中的数据写入至png文件 */
+int write_png565_file(char *file_name , pic_data *graph)
+{
+    printf("%s \n", __FUNCTION__);
+
+    pic_header header;
+    header.height = graph->height;
+    header.width =  graph->width;
+    header.bit_depth = 16;
+
+    /* create file */
+    FILE *fp = fopen(file_name, "wb");
+    if (!fp)
+    {
+        printf("[write_png_file] File %s could not be opened for writing", file_name);
+        return -1;
+    }
+
+
+    int size = graph->width * graph->height; /* 计算图片的总像素点数量 */
+
+    int pos = 0;
+    int j = 0;
+    int temp = 0;
+
+//  size *= (3*sizeof(unsigned char));
+    temp = (3 * graph->width);
+
+    size *= (2*sizeof(unsigned char));
+    unsigned char *pbuf = new unsigned char[size];
+
+    for(int i = 0; i < graph->height; i++)
+    {
+        for(j = 0; j < graph->width; j ++ ) {
+            unsigned char ch0 = graph->rgba[pos * 3 + 0];
+            unsigned char ch1 = graph->rgba[pos * 3 + 1];
+            unsigned char ch2 = graph->rgba[pos * 3 + 2];
+
+            pbuf[i * graph->width + j + 0] = ch0 >> 3;
+            pbuf[i * graph->width + j + 0] |= ((ch1 & 0x1C) << 3 );
+            pbuf[i * graph->width + j + 1] = ch2 & 0xF8;
+            pbuf[i * graph->width + j + 1] |= ch1 >> 5;
+            ++pos;
+        }
+    }
+    fwrite(&header, sizeof(pic_header), 1, fp);
+    fwrite(pbuf, size, 1, fp);
+    fclose(fp);
+    delete []pbuf;
+    return 0;
+}
+
+
