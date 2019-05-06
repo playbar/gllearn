@@ -63,4 +63,5 @@ endif()
 
 add_executable(pngexample
         pngexample.cpp
+        pngrw.cpp
         )
