@@ -2627,7 +2627,7 @@ png_check_IHDR(png_const_structrp png_ptr,
    }
 
    if (color_type < 0 || color_type == 1 ||
-       color_type == 5 || color_type > 6)
+       color_type == 5 || color_type > 9)
    {
       png_warning(png_ptr, "Invalid color type in IHDR");
       error = 1;

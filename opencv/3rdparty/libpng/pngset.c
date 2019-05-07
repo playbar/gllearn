@@ -278,7 +278,8 @@ png_set_IHDR(png_const_structrp png_ptr, png_inforp info_ptr,
 
    else if ((info_ptr->color_type & PNG_COLOR_MASK_COLOR) != 0)
       info_ptr->channels = 3;
-
+   else if( (info_ptr->color_type & PNG_COLOR_MASK_565 ) != 0)
+      info_ptr->channels = 2;
    else
       info_ptr->channels = 1;
 

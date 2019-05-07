@@ -663,6 +663,7 @@ typedef png_unknown_chunk * * png_unknown_chunkpp;
 #define PNG_COLOR_MASK_PALETTE    1
 #define PNG_COLOR_MASK_COLOR      2
 #define PNG_COLOR_MASK_ALPHA      4
+#define PNG_COLOR_MASK_565        8
 
 /* color types.  Note that not all combinations are legal */
 #define PNG_COLOR_TYPE_GRAY 0
