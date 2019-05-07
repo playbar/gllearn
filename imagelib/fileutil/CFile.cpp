@@ -21,17 +21,10 @@ std::string CFile::getPath()const
     return path;
 }
 
-std::string CFile::getName() const
+std::string CFile::getSuffix() const
 {
-    return mFileName;
+    int pos = mFileName.find_last_of('.');
+    std::string suffix = mFileName.substr(pos + 1, mFileName.length() - (pos + 1));
+    return suffix;
 }
 
-void CFile::write(const uchar *data, size_t len)
-{
-    fwrite(data, len, 1, mpFile);
-}
-
-void CFile::close()
-{
-    fclose(mpFile);
-}
