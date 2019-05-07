@@ -52,6 +52,7 @@ set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
 
 
 add_library(imagelib STATIC
+        cutil/CRGBName.cpp
         fileutil/CFile.cpp
         fileutil/CFileBase.cpp
         src/CImage.cpp
@@ -63,8 +64,9 @@ add_library(imagelib STATIC
         )
 
 target_include_directories(imagelib PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmath
+        ${CMAKE_CURRENT_SOURCE_DIR}/cutil
         ${CMAKE_CURRENT_SOURCE_DIR}/fileutil
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
