@@ -59,12 +59,19 @@ add_library(imagelib STATIC
         fileutil/CFileUtil.cpp
         fileutil/CImageFileUtil.cpp
         fileutil/CSoundFileUtil.cpp
+        fileutil/CTextFileUtil.cpp
         src/CImage.cpp
         src/CImageAnim.cpp
+        src/CImageColorDef.cpp
         src/CImageConvert.cpp
+        src/CImageFile.cpp
         src/CImageFilter.cpp
         src/CImageGen.cpp
+        src/CImageGIF.cpp
+        src/CImageMgr.cpp
         src/CImageState.cpp
+        src/CImageXBM.cpp
+        src/CImageXPM.cpp
         strutil/CPrintF.cpp
         strutil/CStrUtil.cpp
         )

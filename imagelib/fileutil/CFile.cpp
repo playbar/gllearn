@@ -28,3 +28,13 @@ std::string CFile::getSuffix() const
     return suffix;
 }
 
+CFileData *CFile::readAll()
+{
+    CFileData *pdat = new CFileData();
+    pdat->mlength = getSize();
+    pdat->mpdata = new uchar[pdat->mlength + 1 ];
+    pdat->mpdata[pdat->mlength] = '\0';
+    fread(pdat->mpdata, pdat->mlength, 1, mpFile );
+    return pdat;
+}
+

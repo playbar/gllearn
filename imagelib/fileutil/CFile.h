@@ -7,6 +7,7 @@
 
 #include "CFileBase.h"
 
+
 class CFile : public CFileBase
 {
 public:
@@ -14,6 +15,8 @@ public:
     CFile(std::string name);
     std::string getPath() const;
     std::string getSuffix() const;
+
+    CFileData *readAll();
 
 private:
 
