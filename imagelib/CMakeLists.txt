@@ -57,6 +57,7 @@ add_library(imagelib STATIC
         src/CImage.cpp
         src/CImageAnim.cpp
         src/CImageConvert.cpp
+        src/CImageFilter.cpp
         src/CImageGen.cpp
         src/CImageState.cpp
         )
