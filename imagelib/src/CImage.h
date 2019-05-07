@@ -1,6 +1,7 @@
 #ifndef CIMAGE_H
 #define CIMAGE_H
 
+#include "CRGB.h"
 #include <CRGBA.h>
 #include <CRGBACombineDef.h>
 #include <CAlignType.h>

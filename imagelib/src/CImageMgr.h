@@ -8,6 +8,7 @@
 #include <CImagePtr.h>
 
 #include <map>
+#include "list"
 
 class CImage;
 class CImageFile;

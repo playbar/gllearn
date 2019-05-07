@@ -5,8 +5,15 @@
 #ifndef IMAGELIB_CTEMPFILE_H
 #define IMAGELIB_CTEMPFILE_H
 
+#include "CFile.h"
 
 class CTempFile {
+public:
+    CTempFile();
+    CFile *getFile();
+
+private:
+    CFile mFile;
 
 };
 
