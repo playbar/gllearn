@@ -5,6 +5,7 @@ link_libraries(opencv_imgproc)
 link_libraries(opencv_imgcodecs)
 link_libraries(opencv_highgui)
 link_libraries(libpng)
+link_libraries(libjpeg-turbo)
 
 
 include_directories(${glfw_INCLUDE_DIRS}
@@ -14,6 +15,7 @@ include_directories(${glfw_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/../pb
         ${CMAKE_CURRENT_SOURCE_DIR}/../assimp/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/3rdparty/libpng
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/3rdparty/libjpeg-turbo
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/calib3d/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/core/include
@@ -60,8 +62,15 @@ if (APPLE)
     set_target_properties(img_process PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "img_process")
 endif()
 
+add_executable(jpgexample
+        jpgexample.cpp
+        jpgrw.cpp
+        )
+
 
 add_executable(pngexample
         pngexample.cpp
         pngrw.cpp
         )
+
+
