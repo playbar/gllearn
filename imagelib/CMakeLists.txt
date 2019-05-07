@@ -40,7 +40,7 @@ if (MATH_LIBRARY)
     link_libraries("${MATH_LIBRARY}")
 endif()
 
-set(ICON glfw.icns)
+
 set_source_files_properties(glfw.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 set(GLAD "${GLFW_SOURCE_DIR}/deps/glad/glad.h"
@@ -51,30 +51,23 @@ set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
                 "${GLFW_SOURCE_DIR}/deps/tinycthread.c")
 
 
-add_executable(img_process
-        imgmain.cpp
-        pic_process.cpp
-        ${ICON}
+add_library(imagelib STATIC
+        src/CImage.cpp
+        src/CImageAnim.cpp
+        src/CImageGen.cpp
+        )
+
+target_include_directories(imagelib PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        )
+
+add_executable(CImageColorReplace
+        test/CImageColorReplace.cpp
         ${GLAD})
 
+target_link_libraries(CImageColorReplace imagelib)
 
-if (APPLE)
-    set_target_properties(img_process PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "img_process")
-endif()
 
-add_executable(jpgexample
-        jpgexample.cpp
-        jpgrw.cpp
-        )
-
-add_executable(jpg_codec
-        Jpeg.cpp
-        codec_jpeg.cpp
-        )
-
-add_executable(pngexample
-        pngexample.cpp
-        pngrw.cpp
-        )
 
 
