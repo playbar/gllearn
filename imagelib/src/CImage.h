@@ -2,7 +2,6 @@
 #define CIMAGE_H
 
 #include <CRGBA.h>
-#include <CRGB.h>
 #include <CRGBACombineDef.h>
 #include <CAlignType.h>
 #include <CISize2D.h>
@@ -15,11 +14,12 @@
 #include <vector>
 
 typedef unsigned char uchar;
+typedef unsigned int  uint;
 
 //--------------------
 
-typedef uint   CIMAGE_INT32;
-typedef ushort CIMAGE_INT16;
+typedef unsigned int   CIMAGE_INT32;
+typedef unsigned short CIMAGE_INT16;
 typedef uchar  CIMAGE_INT8;
 
 enum CImageResizeType {

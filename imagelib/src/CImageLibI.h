@@ -2,8 +2,6 @@
 #include <CTempFile.h>
 #include <CStrUtil.h>
 #include <CRGBA.h>
-#include <CRGB.h>
-#include <CThrow.h>
 #include <CFileUtil.h>
 #include <CImageLib.h>
 #include <CImageFmt.h>
