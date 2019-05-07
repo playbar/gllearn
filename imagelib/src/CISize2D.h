@@ -6,7 +6,15 @@
 #define IMAGELIB_CISIZE2D_H
 
 
-class CISize2D {
+struct CIPoint2D
+{
+    int x;
+    int y;
+};
+
+struct CISize2D {
+    float x;
+    float y;
 
 };
 

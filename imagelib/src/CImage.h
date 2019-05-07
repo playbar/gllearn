@@ -15,6 +15,7 @@
 
 typedef unsigned char uchar;
 typedef unsigned int  uint;
+typedef unsigned long ulong;
 
 //--------------------
 
@@ -133,7 +134,8 @@ class CImage {
    private:
     struct current {
       const CImage *image;
-      uint          pos1, pos2;
+      uint          pos1;
+      uint          pos2;
       uint          width;
 
       current() :

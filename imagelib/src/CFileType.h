@@ -6,8 +6,8 @@
 #define IMAGELIB_CFILETYPE_H
 
 
-class CFileType {
-
+enum CFileType {
+    CFILE_TYPE_NONE,
 };
 
 
