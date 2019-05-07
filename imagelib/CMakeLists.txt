@@ -61,6 +61,7 @@ add_library(imagelib STATIC
         src/CImageFilter.cpp
         src/CImageGen.cpp
         src/CImageState.cpp
+        strutil/CStrUtil.cpp
         )
 
 target_include_directories(imagelib PUBLIC
@@ -68,6 +69,7 @@ target_include_directories(imagelib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/cutil
         ${CMAKE_CURRENT_SOURCE_DIR}/fileutil
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/strutil
         )
 
 add_executable(CImageColorReplace

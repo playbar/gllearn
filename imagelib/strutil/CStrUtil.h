@@ -7,6 +7,8 @@
 #include <cstdarg>
 #include <sys/types.h>
 
+typedef unsigned long ulong;
+
 class CRegExp;
 
 enum CPrintFFlags {
