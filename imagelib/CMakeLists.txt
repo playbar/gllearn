@@ -77,6 +77,7 @@ set(imagelib_src
         src/CImageAnim.cpp
         src/CImageBMP.cpp
         src/CImageColorDef.cpp
+        src/CImageCombine.cpp
         src/CImageConvert.cpp
         src/CImageCopy.cpp
         src/CImageDiff.cpp
@@ -87,9 +88,15 @@ set(imagelib_src
         src/CImageFloodFill.cpp
         src/CImageGen.cpp
         src/CImageGIF.cpp
+        src/CImageGradient.cpp
+        src/CImageGrayScale.cpp
         src/CImageICO.cpp
         src/CImageIFF.cpp
+        src/CImageInvert.cpp
         src/CImageJPG.cpp
+        src/CImageLineArt.cpp
+        src/CImageMask.cpp
+        src/CImageMerge.cpp
         src/CImageMgr.cpp
         src/CImagePCX.cpp
         src/CImagePNG.cpp
