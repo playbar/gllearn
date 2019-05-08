@@ -5,18 +5,18 @@ link_libraries(opencv_imgproc)
 link_libraries(opencv_imgcodecs)
 link_libraries(opencv_highgui)
 link_libraries(libpng)
-link_libraries(libjpeg-turbo)
+link_libraries(jpeg)
 
 add_definitions(-DIMAGE_PNG)
+add_definitions(-DIMAGE_JPEG)
+
+add_subdirectory(libjpeg)
 
 include_directories(${glfw_INCLUDE_DIRS}
         "${GLFW_SOURCE_DIR}/deps"
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../glm
-        ${CMAKE_CURRENT_SOURCE_DIR}/../pb
-        ${CMAKE_CURRENT_SOURCE_DIR}/../assimp/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/libjpeg
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/3rdparty/libpng
-        ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/3rdparty/libjpeg-turbo
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/calib3d/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/modules/core/include

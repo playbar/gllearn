@@ -6,7 +6,7 @@
 
 #ifdef IMAGE_JPEG
 extern "C" {
-#include <jpeglib.h>
+#include "jpeglib.h"
 }
 #endif
 
