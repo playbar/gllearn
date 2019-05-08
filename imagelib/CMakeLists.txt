@@ -51,29 +51,28 @@ set(GETOPT "${GLFW_SOURCE_DIR}/deps/getopt.h"
 set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
                 "${GLFW_SOURCE_DIR}/deps/tinycthread.c")
 
-
-add_library(imagelib STATIC
+set(cfile_src
         cfile/CDir.cpp
         cfile/CFile.cpp
         cfile/CFileBase.cpp
         cfile/CFileDevice.cpp
-        cfile/CFileParse.cpp
-        cfile/CTempFile.cpp
-        cmath/CMathRound.cpp
-        cos/COSFile.cpp
-        cos/COSUser.cpp
-        cutil/CRegExp.cpp
-        cutil/CRGBName.cpp
+        cfile/CFileParse.cpp)
+
+set(fileutil_src
         fileutil/CFileUtil.cpp
         fileutil/CImageFileUtil.cpp
         fileutil/CSoundFileUtil.cpp
-        fileutil/CTextFileUtil.cpp
+        fileutil/CTextFileUtil.cpp)
+
+set(regex_src
         regex/src/c_regex_traits.cpp
         regex/src/regex.cpp
         regex/src/posix_api.cpp
         regex/src/regex_raw_buffer.cpp
         regex/src/regex_traits_defaults.cpp
-        regex/src/wc_regex_traits.cpp
+        regex/src/wc_regex_traits.cpp)
+
+set(imagelib_src
         src/CImage.cpp
         src/CImageAnim.cpp
         src/CImageBMP.cpp
@@ -109,7 +108,19 @@ add_library(imagelib STATIC
         src/CImageUtil.cpp
         src/CImageXBM.cpp
         src/CImageXPM.cpp
-        src/CImageXWD.cpp
+        src/CImageXWD.cpp)
+
+add_library(imagelib STATIC
+        ${cfile_src}
+        cfile/CTempFile.cpp
+        cmath/CMathRound.cpp
+        cos/COSFile.cpp
+        cos/COSUser.cpp
+        cutil/CRegExp.cpp
+        cutil/CRGBName.cpp
+        ${fileutil_src}
+        ${regex_src}
+        ${imagelib_src}
         strutil/CPrintF.cpp
         strutil/CStrUtil.cpp
         )
