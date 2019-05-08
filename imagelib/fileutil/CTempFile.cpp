@@ -12,5 +12,6 @@ CTempFile::CTempFile()
 
 CFile *CTempFile::getFile()
 {
+    assert(false);
     return &mFile;
 }

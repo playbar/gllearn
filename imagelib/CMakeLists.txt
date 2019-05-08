@@ -52,6 +52,7 @@ set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
 
 
 add_library(imagelib STATIC
+        cmath/CMathRound.cpp
         cutil/CRegExp.cpp
         cutil/CRGBName.cpp
         fileutil/CFile.cpp
@@ -59,16 +60,20 @@ add_library(imagelib STATIC
         fileutil/CFileUtil.cpp
         fileutil/CImageFileUtil.cpp
         fileutil/CSoundFileUtil.cpp
+        fileutil/CTempFile.cpp
         fileutil/CTextFileUtil.cpp
         src/CImage.cpp
         src/CImageAnim.cpp
         src/CImageColorDef.cpp
         src/CImageConvert.cpp
+        src/CImageCopy.cpp
+        src/CImageDraw.cpp
         src/CImageFile.cpp
         src/CImageFilter.cpp
         src/CImageGen.cpp
         src/CImageGIF.cpp
         src/CImageMgr.cpp
+        src/CImageResize.cpp
         src/CImageState.cpp
         src/CImageXBM.cpp
         src/CImageXPM.cpp
