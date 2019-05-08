@@ -7,6 +7,7 @@ link_libraries(opencv_highgui)
 link_libraries(libpng)
 link_libraries(libjpeg-turbo)
 
+add_definitions(-DIMAGE_PNG)
 
 include_directories(${glfw_INCLUDE_DIRS}
         "${GLFW_SOURCE_DIR}/deps"
@@ -52,29 +53,46 @@ set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
 
 
 add_library(imagelib STATIC
+        cfile/CFile.cpp
+        cfile/CFileBase.cpp
+        cfile/CTempFile.cpp
         cmath/CMathRound.cpp
         cutil/CRegExp.cpp
         cutil/CRGBName.cpp
-        fileutil/CFile.cpp
-        fileutil/CFileBase.cpp
         fileutil/CFileUtil.cpp
         fileutil/CImageFileUtil.cpp
         fileutil/CSoundFileUtil.cpp
-        fileutil/CTempFile.cpp
         fileutil/CTextFileUtil.cpp
         src/CImage.cpp
         src/CImageAnim.cpp
+        src/CImageBMP.cpp
         src/CImageColorDef.cpp
         src/CImageConvert.cpp
         src/CImageCopy.cpp
+        src/CImageDiff.cpp
         src/CImageDraw.cpp
         src/CImageFile.cpp
         src/CImageFilter.cpp
+        src/CImageFlip.cpp
+        src/CImageFloodFill.cpp
         src/CImageGen.cpp
         src/CImageGIF.cpp
+        src/CImageICO.cpp
+        src/CImageIFF.cpp
+        src/CImageJPG.cpp
         src/CImageMgr.cpp
+        src/CImagePCX.cpp
+        src/CImagePNG.cpp
+        src/CImagePPM.cpp
+        src/CImageProcess.cpp
+        src/CImagePSP.cpp
         src/CImageResize.cpp
+        src/CImageRotate.cpp
+        src/CImageScroll.cpp
+        src/CImageSGI.cpp
+        src/CImageSIX.cpp
         src/CImageState.cpp
+        src/CImageTGA.cpp
         src/CImageXBM.cpp
         src/CImageXPM.cpp
         strutil/CPrintF.cpp
@@ -83,7 +101,9 @@ add_library(imagelib STATIC
 
 target_include_directories(imagelib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/
+        ${CMAKE_CURRENT_SOURCE_DIR}/cfile
         ${CMAKE_CURRENT_SOURCE_DIR}/cmath
+        ${CMAKE_CURRENT_SOURCE_DIR}/cos
         ${CMAKE_CURRENT_SOURCE_DIR}/cutil
         ${CMAKE_CURRENT_SOURCE_DIR}/fileutil
         ${CMAKE_CURRENT_SOURCE_DIR}/regex/include
