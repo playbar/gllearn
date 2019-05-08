@@ -144,5 +144,9 @@ add_executable(CImageColorReplace
 target_link_libraries(CImageColorReplace imagelib)
 
 
+add_executable(CImageConvert
+        test/CImageConvert.cpp
+        ${GLAD})
 
+target_link_libraries(CImageConvert imagelib)
 

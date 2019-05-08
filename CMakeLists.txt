@@ -15,4 +15,4 @@ add_subdirectory(tinyobj)
 add_subdirectory(proj4)
 add_subdirectory(assimpmodel)
 add_subdirectory(utm)
-
+add_subdirectory(zpng)
