@@ -275,9 +275,7 @@ readHeader(CFile *file, CImagePtr &, TGAHeader *header)
   return true;
 }
 
-bool
-CImageTGA::
-write(CFile *, CImagePtr)
+bool CImageTGA::write(CFile *, CImagePtr)
 {
   return false;
 }
