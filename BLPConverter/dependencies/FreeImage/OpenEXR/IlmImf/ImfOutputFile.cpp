@@ -58,8 +58,8 @@
 #include <vector>
 #include <fstream>
 #include <assert.h>
-#include <algorithm>
 
+#include <algorithm>
 
 namespace Imf {
 

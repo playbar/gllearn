@@ -32,7 +32,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////
 
-
 //-----------------------------------------------------------------------------
 //
 //	Miscellaneous stuff related to tiled files
@@ -43,6 +42,7 @@
 #include "Iex.h"
 #include <ImfMisc.h>
 #include <ImfChannelList.h>
+
 #include <algorithm>
 
 namespace Imf {
