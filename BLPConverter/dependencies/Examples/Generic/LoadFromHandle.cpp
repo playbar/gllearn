@@ -2,7 +2,7 @@
 // Load From Handle Example
 //
 // Design and implementation by 
-// - Hervé Drolon
+// - HervÃ© Drolon
 //
 // This file is part of FreeImage 3
 //
@@ -120,7 +120,7 @@ main(int argc, char *argv[]) {
 			FIBITMAP *dib = FreeImage_LoadFromHandle(fif, &io, (fi_handle)file, 0);
 
 			// save the bitmap as a PNG ...
-			const char *output_filename = "test.png";
+			const char *output_filename = "test.tga";
 
 			// first, check the output format from the file name or file extension
 			FREE_IMAGE_FORMAT out_fif = FreeImage_GetFIFFromFilename(output_filename);
