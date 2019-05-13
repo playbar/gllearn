@@ -1,5 +1,11 @@
 # List the source files
-set(SRCS FreeImage/BitmapAccess.cpp
+
+add_definitions(-DINITGUID)
+add_definitions(-D__ANSI__)
+add_definitions(-DPLATFORM_ANSI)
+
+set(FREEIMAGE_SRC
+        FreeImage/BitmapAccess.cpp
         FreeImage/CacheFile.cpp
         FreeImage/ColorLookup.cpp
         FreeImage/Conversion.cpp
@@ -17,6 +23,7 @@ set(SRCS FreeImage/BitmapAccess.cpp
         FreeImage/GetType.cpp
         FreeImage/Halftoning.cpp
         FreeImage/J2KHelper.cpp
+        FreeImage/LFPQuantizer.cpp
         FreeImage/MemoryIO.cpp
         FreeImage/MNGHelper.cpp
         FreeImage/MultiPage.cpp
@@ -76,6 +83,18 @@ set(SRCS FreeImage/BitmapAccess.cpp
         FreeImageToolkit/MultigridPoissonSolver.cpp
         FreeImageToolkit/Rescale.cpp
         FreeImageToolkit/Resize.cpp
+        )
+
+file(GLOB LIBWEBP_SRC
+        LibWebP/src/dec/*.c
+        LibWebP/src/demux/*.c
+        LibWebP/src/dsp/*.c
+        LibWebP/src/enc/*.c
+        LibWebP/src/mux/*.c
+        LibWebP/src/utils/*.c
+        LibWebP/src/webp/*.c)
+
+set(SRCS
         Metadata/Exif.cpp
         Metadata/FIRational.cpp
         Metadata/FreeImageTag.cpp
@@ -130,6 +149,28 @@ set(SRCS FreeImage/BitmapAccess.cpp
         LibJPEG/jquant2.c
         LibJPEG/jutils.c
         LibJPEG/transupp.c
+        LibJXR/image/decode/decode.c
+        LibJXR/image/decode/JXRTranscode.c
+        LibJXR/image/decode/postprocess.c
+        LibJXR/image/decode/segdec.c
+        LibJXR/image/decode/strdec.c
+        LibJXR/image/decode/strInvTransform.c
+        LibJXR/image/decode/strPredQuantDec.c
+        LibJXR/image/encode/encode.c
+        LibJXR/image/encode/segenc.c
+        LibJXR/image/encode/strenc.c
+        LibJXR/image/encode/strFwdTransform.c
+        LibJXR/image/encode/strPredQuantEnc.c
+        LibJXR/image/sys/adapthuff.c
+        LibJXR/image/sys/image.c
+        LibJXR/image/sys/perfTimerANSI.c
+        LibJXR/image/sys/strcodec.c
+        LibJXR/image/sys/strPredQuant.c
+        LibJXR/image/sys/strTransform.c
+        LibJXR/jxrgluelib/JXRGlue.c
+        LibJXR/jxrgluelib/JXRGlueJxr.c
+        LibJXR/jxrgluelib/JXRGluePFC.c
+        LibJXR/jxrgluelib/JXRMeta.c
         LibOpenJPEG/bio.c
         LibOpenJPEG/cio.c
         LibOpenJPEG/dwt.c
@@ -170,6 +211,7 @@ set(SRCS FreeImage/BitmapAccess.cpp
         LibRawLite/src/libraw_datastream.cpp
         LibRawLite/internal/dcraw_common.cpp
         LibRawLite/internal/dcraw_fileio.cpp
+        LibRawLite/internal/demosaic_packs.cpp
         LibTIFF4/tif_aux.c
         LibTIFF4/tif_close.c
         LibTIFF4/tif_codec.c
@@ -240,6 +282,7 @@ set(SRCS FreeImage/BitmapAccess.cpp
         OpenEXR/IlmImf/ImfMisc.cpp
         OpenEXR/IlmImf/ImfOpaqueAttribute.cpp
         OpenEXR/IlmImf/ImfOutputFile.cpp
+        OpenEXR/IlmImf/ImfPartType.cpp
         OpenEXR/IlmImf/ImfPizCompressor.cpp
         OpenEXR/IlmImf/ImfPreviewImage.cpp
         OpenEXR/IlmImf/ImfPreviewImageAttribute.cpp
@@ -248,6 +291,7 @@ set(SRCS FreeImage/BitmapAccess.cpp
         OpenEXR/IlmImf/ImfRationalAttribute.cpp
         OpenEXR/IlmImf/ImfRgbaFile.cpp
         OpenEXR/IlmImf/ImfRgbaYca.cpp
+        OpenEXR/IlmImf/ImfRle.cpp
         OpenEXR/IlmImf/ImfRleCompressor.cpp
         OpenEXR/IlmImf/ImfDeepFrameBuffer.cpp
         OpenEXR/IlmImf/ImfScanLineInputFile.cpp
@@ -294,10 +338,28 @@ set(SRCS FreeImage/BitmapAccess.cpp
         )
 
 # List the include paths
-include_directories(. DeprecationManager LibRawLite OpenEXR OpenEXR/Half OpenEXR/Iex OpenEXR/IlmImf OpenEXR/Imath OpenEXR/IlmThread ZLib)
+include_directories(.
+        DeprecationManager
+        LibRawLite
+        OpenEXR
+        OpenEXR/Half
+        OpenEXR/Iex
+        OpenEXR/IlmImf
+        OpenEXR/Imath
+        OpenEXR/IlmThread
+        LibJXR/common/include
+        LibJXR/image/sys
+        LibJXR/jxrgluelib
+        LibWebP
+        ZLib
+        )
 
 # Declaration of the library
-add_library(freeimage STATIC ${SRCS})
+add_library(freeimage STATIC
+        ${FREEIMAGE_SRC}
+        ${LIBWEBP_SRC}
+        ${SRCS}
+        )
 
 # Compilation settings
 set_target_properties(freeimage PROPERTIES COMPILE_DEFINITIONS "FREEIMAGE_LIB;OPJ_STATIC;LIBRAW_NODLL;LIBRAW_LIBRARY_BUILD;NO_LCMS;_CRT_SECURE_NO_DEPRECATE")
