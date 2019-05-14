@@ -1,6 +1,7 @@
 #include "AssimpLoader.h"
 #include "ModelShader.h"
 #include "ModelUtil.h"
+#include "TgaLoader.h"
 #include <opencv2/opencv.hpp>
 
 
@@ -176,38 +177,47 @@ bool AssimpLoader::LoadTexturesToGL(std::string modelFilename) {
 
         std::string textureFilename = (*textureIterator).first;  // get filename
         std::string textureFullPath = modelDirectoryName + "/" + textureFilename;
-        (*textureIterator).second = textureGLNames[i];	  // save texture id for filename in map
 
-        // load the texture using OpenCV
-        printf("Loading texture %s\n", textureFullPath.c_str());
-        cv::Mat textureImage = cv::imread(textureFullPath);
-        if (!textureImage.empty()) {
+        if(false) {
+            TgaLoader tgaLoader;
+            tgaLoader.newTex2d("test.tga");
+            (*textureIterator).second = tgaLoader.newTex2d("test.tga");
+        }
+        else
+        {
+            (*textureIterator).second = textureGLNames[i];	  // save texture id for filename in map
 
-            // opencv reads textures in BGR format, change to RGB for GL
-            cv::cvtColor(textureImage, textureImage, CV_BGR2RGB);
-            // opencv reads image from top-left, while GL expects it from bottom-left
-            // vertically flip the image
-            cv::flip(textureImage, textureImage, 0);
+            // load the texture using OpenCV
+            printf("Loading texture %s\n", textureFullPath.c_str());
+            cv::Mat textureImage = cv::imread(textureFullPath);
+            if (!textureImage.empty())
+            {
+                // opencv reads textures in BGR format, change to RGB for GL
+                cv::cvtColor(textureImage, textureImage, CV_BGR2RGB);
+                // opencv reads image from top-left, while GL expects it from bottom-left
+                // vertically flip the image
+                cv::flip(textureImage, textureImage, 0);
 
-            // bind the texture
-            glBindTexture(GL_TEXTURE_2D, textureGLNames[i]);
-            // specify linear filtering
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            // load the OpenCV Mat into GLES
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureImage.cols,
-                         textureImage.rows, 0, GL_RGB, GL_UNSIGNED_BYTE,
-                         textureImage.data);
-            CheckGLError("AssimpLoader::loadGLTexGen");
+                // bind the texture
+                glBindTexture(GL_TEXTURE_2D, textureGLNames[i]);
+                // specify linear filtering
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                // load the OpenCV Mat into GLES
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureImage.cols,
+                             textureImage.rows, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                             textureImage.data);
+                CheckGLError("AssimpLoader::loadGLTexGen");
 
-        } else {
+            } else {
 
-            printf("Couldn't load texture %s\n", textureFilename.c_str());
+                printf("Couldn't load texture %s\n", textureFilename.c_str());
 
-            //Cleanup and return
-            delete[] textureGLNames;
-            return false;
+                //Cleanup and return
+                delete[] textureGLNames;
+                return false;
 
+            }
         }
     }
 
