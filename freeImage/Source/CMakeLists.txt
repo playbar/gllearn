@@ -3,6 +3,15 @@
 add_definitions(-DINITGUID)
 add_definitions(-D__ANSI__)
 add_definitions(-DPLATFORM_ANSI)
+add_definitions(-DINITGUID)
+
+macro(ocv_list_filterout lst regex)
+    foreach(item ${${lst}})
+        if(item MATCHES "${regex}")
+            list(REMOVE_ITEM ${lst} "${item}")
+        endif()
+    endforeach()
+endmacro()
 
 set(FREEIMAGE_SRC
         FreeImage/BitmapAccess.cpp
@@ -44,7 +53,7 @@ set(FREEIMAGE_SRC
         FreeImage/PluginJNG.cpp
         FreeImage/PluginJP2.cpp
         FreeImage/PluginJPEG.cpp
-        FreeImage/PluginJXR.cpp
+#        FreeImage/PluginJXR.cpp
         FreeImage/PluginKOALA.cpp
         FreeImage/PluginMNG.cpp
         FreeImage/PluginPCD.cpp
@@ -93,6 +102,49 @@ file(GLOB LIBWEBP_SRC
         LibWebP/src/mux/*.c
         LibWebP/src/utils/*.c
         LibWebP/src/webp/*.c)
+
+file(GLOB OPENEXR_SRC
+        OpenEXR/Half/half.cpp
+        OpenEXR/Iex/*.cpp
+        OpenEXR/IlmThread/*.cpp
+        OpenEXR/Imath/*.cpp
+        OpenEXR/IlmImf/*.cpp
+        )
+
+
+file(GLOB OPENEXR_HDRS
+        OpenEXR/Half/*.h
+        OpenEXR/Iex/Iex*.h
+        OpenEXR/IlmThread/IlmThread*.h
+        OpenEXR/Imath/Imath*.h
+        OpenEXR/IlmImf/*.h)
+ocv_list_filterout(OPENEXR_SRC IlmImf/b44ExpLogTable.cpp)
+ocv_list_filterout(OPENEXR_SRC Win32.cpp)
+
+
+file(GLOB LIBJXR_SRC
+        LibJXR/image/decode/decode.c
+        LibJXR/image/decode/JXRTranscode.c
+        LibJXR/image/decode/postprocess.c
+        LibJXR/image/decode/segdec.c
+        LibJXR/image/decode/strdec.c
+        LibJXR/image/decode/strInvTransform.c
+        LibJXR/image/decode/strPredQuantDec.c
+        LibJXR/image/encode/encode.c
+        LibJXR/image/encode/segenc.c
+        LibJXR/image/encode/strenc.c
+        LibJXR/image/encode/strFwdTransform.c
+        LibJXR/image/encode/strPredQuantEnc.c
+        LibJXR/image/sys/adapthuff.c
+        LibJXR/image/sys/image.c
+        LibJXR/image/sys/perfTimerANSI.c
+        LibJXR/image/sys/strcodec.c
+        LibJXR/image/sys/strPredQuant.c
+        LibJXR/image/sys/strTransform.c
+        LibJXR/jxrgluelib/JXRGlue.c
+        LibJXR/jxrgluelib/JXRGlueJxr.c
+        LibJXR/jxrgluelib/JXRGluePFC.c
+        LibJXR/jxrgluelib/JXRMeta.c)
 
 set(SRCS
         Metadata/Exif.cpp
@@ -149,28 +201,6 @@ set(SRCS
         LibJPEG/jquant2.c
         LibJPEG/jutils.c
         LibJPEG/transupp.c
-        LibJXR/image/decode/decode.c
-        LibJXR/image/decode/JXRTranscode.c
-        LibJXR/image/decode/postprocess.c
-        LibJXR/image/decode/segdec.c
-        LibJXR/image/decode/strdec.c
-        LibJXR/image/decode/strInvTransform.c
-        LibJXR/image/decode/strPredQuantDec.c
-        LibJXR/image/encode/encode.c
-        LibJXR/image/encode/segenc.c
-        LibJXR/image/encode/strenc.c
-        LibJXR/image/encode/strFwdTransform.c
-        LibJXR/image/encode/strPredQuantEnc.c
-        LibJXR/image/sys/adapthuff.c
-        LibJXR/image/sys/image.c
-        LibJXR/image/sys/perfTimerANSI.c
-        LibJXR/image/sys/strcodec.c
-        LibJXR/image/sys/strPredQuant.c
-        LibJXR/image/sys/strTransform.c
-        LibJXR/jxrgluelib/JXRGlue.c
-        LibJXR/jxrgluelib/JXRGlueJxr.c
-        LibJXR/jxrgluelib/JXRGluePFC.c
-        LibJXR/jxrgluelib/JXRMeta.c
         LibOpenJPEG/bio.c
         LibOpenJPEG/cio.c
         LibOpenJPEG/dwt.c
@@ -247,85 +277,6 @@ set(SRCS
         LibTIFF4/tif_warning.c
         LibTIFF4/tif_write.c
         LibTIFF4/tif_zip.c
-        OpenEXR/Half/half.cpp
-        OpenEXR/Iex/IexBaseExc.cpp
-        OpenEXR/Iex/IexThrowErrnoExc.cpp
-        OpenEXR/IlmImf/ImfAttribute.cpp
-        OpenEXR/IlmImf/ImfB44Compressor.cpp
-        OpenEXR/IlmImf/ImfBoxAttribute.cpp
-        OpenEXR/IlmImf/ImfCRgbaFile.cpp
-        OpenEXR/IlmImf/ImfDeepScanLineInputFile.cpp
-        OpenEXR/IlmImf/ImfChannelList.cpp
-        OpenEXR/IlmImf/ImfChannelListAttribute.cpp
-        OpenEXR/IlmImf/ImfChromaticities.cpp
-        OpenEXR/IlmImf/ImfChromaticitiesAttribute.cpp
-        OpenEXR/IlmImf/ImfCompositeDeepScanLine.cpp
-        OpenEXR/IlmImf/ImfCompressionAttribute.cpp
-        OpenEXR/IlmImf/ImfCompressor.cpp
-        OpenEXR/IlmImf/ImfConvert.cpp
-        OpenEXR/IlmImf/ImfDoubleAttribute.cpp
-        OpenEXR/IlmImf/ImfDwaCompressor.cpp
-        OpenEXR/IlmImf/ImfEnvmap.cpp
-        OpenEXR/IlmImf/ImfEnvmapAttribute.cpp
-        OpenEXR/IlmImf/ImfFastHuf.cpp
-        OpenEXR/IlmImf/ImfFloatAttribute.cpp
-        OpenEXR/IlmImf/ImfFrameBuffer.cpp
-        OpenEXR/IlmImf/ImfFramesPerSecond.cpp
-        OpenEXR/IlmImf/ImfHeader.cpp
-        OpenEXR/IlmImf/ImfHuf.cpp
-        OpenEXR/IlmImf/ImfIO.cpp
-        OpenEXR/IlmImf/ImfInputFile.cpp
-        OpenEXR/IlmImf/ImfIntAttribute.cpp
-        OpenEXR/IlmImf/ImfKeyCode.cpp
-        OpenEXR/IlmImf/ImfKeyCodeAttribute.cpp
-        OpenEXR/IlmImf/ImfLineOrderAttribute.cpp
-        OpenEXR/IlmImf/ImfLut.cpp
-        OpenEXR/IlmImf/ImfMatrixAttribute.cpp
-        OpenEXR/IlmImf/ImfMisc.cpp
-        OpenEXR/IlmImf/ImfOpaqueAttribute.cpp
-        OpenEXR/IlmImf/ImfOutputFile.cpp
-        OpenEXR/IlmImf/ImfPartType.cpp
-        OpenEXR/IlmImf/ImfPizCompressor.cpp
-        OpenEXR/IlmImf/ImfPreviewImage.cpp
-        OpenEXR/IlmImf/ImfPreviewImageAttribute.cpp
-        OpenEXR/IlmImf/ImfPxr24Compressor.cpp
-        OpenEXR/IlmImf/ImfRational.cpp
-        OpenEXR/IlmImf/ImfRationalAttribute.cpp
-        OpenEXR/IlmImf/ImfRgbaFile.cpp
-        OpenEXR/IlmImf/ImfRgbaYca.cpp
-        OpenEXR/IlmImf/ImfRle.cpp
-        OpenEXR/IlmImf/ImfRleCompressor.cpp
-        OpenEXR/IlmImf/ImfDeepFrameBuffer.cpp
-        OpenEXR/IlmImf/ImfScanLineInputFile.cpp
-        OpenEXR/IlmImf/ImfDeepScanLineInputPart.cpp
-        OpenEXR/IlmImf/ImfStandardAttributes.cpp
-        OpenEXR/IlmImf/ImfStdIO.cpp
-        OpenEXR/IlmImf/ImfStringAttribute.cpp
-        OpenEXR/IlmImf/ImfTestFile.cpp
-        OpenEXR/IlmImf/ImfThreading.cpp
-        OpenEXR/IlmImf/ImfTileDescriptionAttribute.cpp
-        OpenEXR/IlmImf/ImfTileOffsets.cpp
-        OpenEXR/IlmImf/ImfTiledInputFile.cpp
-        OpenEXR/IlmImf/ImfTiledMisc.cpp
-        OpenEXR/IlmImf/ImfTiledOutputFile.cpp
-        OpenEXR/IlmImf/ImfTiledRgbaFile.cpp
-        OpenEXR/IlmImf/ImfTimeCode.cpp
-        OpenEXR/IlmImf/ImfTimeCodeAttribute.cpp
-        OpenEXR/IlmImf/ImfVecAttribute.cpp
-        OpenEXR/IlmImf/ImfVersion.cpp
-        OpenEXR/IlmImf/ImfWav.cpp
-        OpenEXR/IlmImf/ImfZipCompressor.cpp
-        OpenEXR/IlmThread/IlmThread.cpp
-        OpenEXR/IlmThread/IlmThreadMutex.cpp
-        OpenEXR/IlmThread/IlmThreadPool.cpp
-        OpenEXR/IlmThread/IlmThreadSemaphore.cpp
-        OpenEXR/Imath/ImathBox.cpp
-        OpenEXR/Imath/ImathColorAlgo.cpp
-        OpenEXR/Imath/ImathFun.cpp
-        OpenEXR/Imath/ImathMatrixAlgo.cpp
-        OpenEXR/Imath/ImathRandom.cpp
-        OpenEXR/Imath/ImathShear.cpp
-        OpenEXR/Imath/ImathVec.cpp
         ZLib/adler32.c
         ZLib/compress.c
         ZLib/crc32.c
@@ -360,6 +311,8 @@ include_directories(.
 add_library(freeimage STATIC
         ${FREEIMAGE_SRC}
         ${LIBWEBP_SRC}
+        ${OPENEXR_SRC}
+        ${OPENEXR_HDRS}
         ${SRCS}
         )
 
