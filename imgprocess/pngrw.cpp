@@ -220,10 +220,120 @@ int write_png_file(char *file_name , pic_data *graph)
     return 0;
 }
 
-
-
 /* 功能：将LCUI_Graph结构中的数据写入至png文件 */
 int write_png565_file(char *file_name , pic_data *graph)
+{
+    printf("%s \n", __FUNCTION__);
+    int j, i, temp, pos;
+    png_byte color_type;
+
+    png_structp png_ptr;
+    png_infop info_ptr;
+    png_bytep * row_pointers;
+    /* create file */
+    FILE *fp = fopen(file_name, "wb");
+    if (!fp)
+    {
+        printf("[write_png_file] File %s could not be opened for writing", file_name);
+        return -1;
+    }
+
+
+    /* initialize stuff */
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+
+    if (!png_ptr)
+    {
+        printf("[write_png_file] png_create_write_struct failed");
+        return -1;
+    }
+    info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+        printf("[write_png_file] png_create_info_struct failed");
+        return -1;
+    }
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        printf("[write_png_file] Error during init_io");
+        return -1;
+    }
+    png_init_io(png_ptr, fp);
+
+
+    /* write header */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        printf("[write_png_file] Error during writing header");
+        return -1;
+    }
+    /* 判断要写入至文件的图片数据是否有透明度，来选择色彩类型 */
+    if(graph->flag == HAVE_ALPHA) {
+        color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+    }
+    else {
+        color_type = PNG_COLOR_TYPE_RGB;
+//        color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
+    }
+
+    png_set_IHDR(png_ptr, info_ptr, graph->width, graph->height,
+                 graph->bit_depth, color_type, PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+
+    png_write_info(png_ptr, info_ptr);
+
+
+    /* write bytes */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        printf("[write_png_file] Error during writing bytes");
+        return -1;
+    }
+    if(graph->flag == HAVE_ALPHA)
+        temp = (4 * graph->width);
+    else
+        temp = (3 * graph->width);
+
+//    temp = (2 * graph->width);
+
+    pos = 0;
+    row_pointers = (png_bytep*)malloc(graph->height*sizeof(png_bytep));
+    for(i = 0; i < graph->height; i++)
+    {
+        row_pointers[i] = (png_bytep)malloc(sizeof(unsigned char)*temp);
+        for(j = 0; j < temp; j += 3)
+        {
+            unsigned char ch0 = graph->rgba[pos * 3 + 0];
+            unsigned char ch1 = graph->rgba[pos * 3 + 1];
+            unsigned char ch2 = graph->rgba[pos * 3 + 2];
+            row_pointers[i][j + 0] = ch0 >> 3;
+            row_pointers[i][j + 0] |= ((ch1 & 0x1C) << 3 );
+            row_pointers[i][j + 1] = ch2 & 0xF8;
+            row_pointers[i][j + 1] |= ch1 >> 5;
+            ++pos;
+        }
+    }
+    png_write_image(png_ptr, row_pointers);
+
+    /* end write */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        printf("[write_png_file] Error during end of write");
+        return -1;
+    }
+    png_write_end(png_ptr, NULL);
+
+    /* cleanup heap allocation */
+    for (j=0; j<graph->height; j++)
+        free(row_pointers[j]);
+    free(row_pointers);
+
+    fclose(fp);
+    return 0;
+}
+
+/* 功能：将LCUI_Graph结构中的数据写入至png文件 */
+int write_png565_file_1(char *file_name , pic_data *graph)
 {
     printf("%s \n", __FUNCTION__);
 
@@ -273,5 +383,4 @@ int write_png565_file(char *file_name , pic_data *graph)
     delete []pbuf;
     return 0;
 }
-
 

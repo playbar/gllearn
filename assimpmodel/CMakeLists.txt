@@ -60,6 +60,7 @@ add_executable(assimpmodel
         ModelShader.cpp
         tiny_obj_loader.cc
         TinyObjLoader.cpp
+        TgaLoader.cpp
         ${ICON}
         ${GLAD})
 

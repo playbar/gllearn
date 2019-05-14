@@ -41,8 +41,8 @@ void ModelObject::PerformGLInits() {
 
     MyGLInits();
 
-//    mModelLoader = new AssimpLoader();
-    mModelLoader = new TinyObjLoader();
+    mModelLoader = new AssimpLoader();
+//    mModelLoader = new TinyObjLoader();
     std::string objFilename = "amenemhat.obj";
     mModelLoader->Load3DModel(objFilename);
 

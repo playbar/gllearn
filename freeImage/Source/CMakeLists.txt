@@ -264,8 +264,10 @@ set(SRCS
         OpenEXR/IlmImf/ImfCompressor.cpp
         OpenEXR/IlmImf/ImfConvert.cpp
         OpenEXR/IlmImf/ImfDoubleAttribute.cpp
+        OpenEXR/IlmImf/ImfDwaCompressor.cpp
         OpenEXR/IlmImf/ImfEnvmap.cpp
         OpenEXR/IlmImf/ImfEnvmapAttribute.cpp
+        OpenEXR/IlmImf/ImfFastHuf.cpp
         OpenEXR/IlmImf/ImfFloatAttribute.cpp
         OpenEXR/IlmImf/ImfFrameBuffer.cpp
         OpenEXR/IlmImf/ImfFramesPerSecond.cpp

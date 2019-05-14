@@ -119,6 +119,7 @@ main(int argc, char *argv[]) {
 			// load from the file handle
 			FIBITMAP *dib = FreeImage_LoadFromHandle(fif, &io, (fi_handle)file, 0);
 
+            FIBITMAP * new_dib = FreeImage_ConvertTo16Bits555(dib);
 			// save the bitmap as a PNG ...
 			const char *output_filename = "test.tga";
 
@@ -127,11 +128,12 @@ main(int argc, char *argv[]) {
 
 			if(out_fif != FIF_UNKNOWN) {
 				// then save the file
-				FreeImage_Save(out_fif, dib, output_filename, 0);
+				FreeImage_Save(out_fif, new_dib, output_filename, 0);
 			}
 
 			// free the loaded FIBITMAP
 			FreeImage_Unload(dib);
+            FreeImage_Unload(new_dib);
 		}
 		fclose(file);
 	}
