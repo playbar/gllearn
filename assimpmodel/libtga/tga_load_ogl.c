@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <GL/glew.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include "tga.h"
 
@@ -20,7 +21,7 @@
 ** return the id of the opengl texture, 0 in case of error
 */
 
-GLuint				tga_load_ogl(const char *filepath)
+GLuint tga_load_ogl(const char *filepath)
 {
 	t_tga				header;
 	GLuint				id;

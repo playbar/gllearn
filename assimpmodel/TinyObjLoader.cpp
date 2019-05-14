@@ -134,8 +134,8 @@ void TinyObjLoader::GenerateGLBuffers() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-        auto mid = shapes[n].mesh.material_ids;
-        auto materi =  materials[0].diffuse_texname;
+        auto mid = shapes[n].mesh.material_ids[0];
+        auto materi =  materials[mid].diffuse_texname;
 
         if( !materi.empty() )
         {

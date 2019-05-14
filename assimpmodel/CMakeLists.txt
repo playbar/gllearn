@@ -7,6 +7,8 @@ link_libraries(opencv_imgcodecs)
 include_directories(${glfw_INCLUDE_DIRS}
         "${GLFW_SOURCE_DIR}/deps"
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/libft
+        ${CMAKE_CURRENT_SOURCE_DIR}/libtga
         ${CMAKE_CURRENT_SOURCE_DIR}/../glm
         ${CMAKE_CURRENT_SOURCE_DIR}/../assimp/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../opencv/include
@@ -49,6 +51,19 @@ set(GETOPT "${GLFW_SOURCE_DIR}/deps/getopt.h"
 set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
                 "${GLFW_SOURCE_DIR}/deps/tinycthread.c")
 
+set(LIBFT_SRC
+        libft/libc/ft_bzero.c
+        libft/libc/ft_memcpy.c
+        libft/libft2/ft_malloc.c
+        libft/libft2/ft_memdup.c
+        libft/libft2/printf.c
+        )
+
+set(LIBTAG_SRC
+        libtga/tga.c
+        libtga/tga_display.c
+        libtga/tga_load_ogl.c
+        libtga/tga_save.c)
 
 add_executable(assimpmodel
         glfwmodel.cpp
@@ -61,6 +76,7 @@ add_executable(assimpmodel
         tiny_obj_loader.cc
         TinyObjLoader.cpp
         TgaLoader.cpp
+        ${LIBTAG_SRC}
         ${ICON}
         ${GLAD})
 

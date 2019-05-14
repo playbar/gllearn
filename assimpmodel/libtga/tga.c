@@ -10,16 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "tga.h"
 #include <fcntl.h>
 #include <stdlib.h>
+#include <printf.h>
+#include <mhash.h>
 
-static void			*load_tga_error(const char *error, void *file_content)
+static void	*load_tga_error(const char *error, void *file_content)
 {
 	if (file_content)
 		free(file_content);
-	ft_dprintf(2, "error: %s\n", error);
+	printf("error: %s\n", error);
 	return (NULL);
 }
 
@@ -60,7 +61,7 @@ static unsigned int	*tga_px3(unsigned char *pixels, const t_tga *specs)
 ** set to 0 and NULL will be returned
 */
 
-unsigned int		*tga_load(const char *filepath, t_tga *specs)
+unsigned int *tga_load(const char *filepath, t_tga *specs)
 {
 	size_t			file_size;
 	size_t			pixels_size;
@@ -68,8 +69,16 @@ unsigned int		*tga_load(const char *filepath, t_tga *specs)
 	char			*file_content;
 	t_tga			*header;
 
-	ft_bzero(specs, TGA_SIZE);
-	if (!(file_content = ft_readfile(filepath, &file_size)))
+    memset(specs, 0, TGA_SIZE);
+	FILE *pf = fopen(filepath, "rb");
+	fseek(pf, 0, SEEK_END);
+	file_size = ftell(pf);
+	fseek(pf, 0, SEEK_SET);
+	file_content = (char*)malloc(file_size + 1);
+	file_content[file_size] = "\0";
+	fread(file_content, file_size, 0, pf);
+	fclose(pf);
+	if(file_content == NULL )
 		return (load_tga_error("unable to read file\n", NULL));
 	if (file_size <= TGA_SIZE)
 		return (load_tga_error("invalid file or no content\n", file_content));
@@ -79,7 +88,7 @@ unsigned int		*tga_load(const char *filepath, t_tga *specs)
 	pixels_size = header->width * header->height * (header->depth >> 3) + 1;
 	if ((pixels = malloc(pixels_size)))
 	{
-		ft_memcpy(pixels, &file_content[TGA_SIZE], pixels_size);
+		memcpy(pixels, &file_content[TGA_SIZE], pixels_size);
 		*specs = *header;
 		free(file_content);
 		if (specs->depth == 24)

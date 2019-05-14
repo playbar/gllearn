@@ -10,10 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+//#include "libft.h"
+//#include "libft2.h"
 #include "tga.h"
 #include <fcntl.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*
 ** export pixels to a tga filepath, if the file already exists it will be
@@ -24,28 +26,43 @@
 ** 2 = failed to open destination file, check permissions
 */
 
-int					tga_save(const char *filepath, const t_tga *specs,
+void	*memdup(const void *src, size_t n)
+{
+    void	*out;
+    void	*dst;
+
+    if ((out = malloc(n)) == NULL)
+        return (NULL);
+    dst = out;
+    while (n--)
+        *(unsigned char*)dst++ = *(unsigned char*)src++;
+    return (out);
+}
+
+int	tga_save(const char *filepath, const t_tga *specs,
 	const unsigned int *pixels)
 {
 	const size_t	size = specs->height * specs->width;
-	int				fd;
+    FILE*			fd;
 	unsigned int	*px;
 	size_t			p;
 
 	if ((specs->type != TGA_TYPE_TC_RAW) ||
-			(!(px = ft_memdup(pixels, size << 2))))
+			(!(px = memdup(pixels, size << 2))))
 		return (1);
-	if (!(fd = open(filepath, O_RDWR | O_TRUNC | O_CREAT, 0644)))
-	{
-		free(px);
-		return (2);
-	}
+    fd = fopen(filepath, "wb");
+    if( fd == NULL )
+    {
+        free(px);
+        return 2;
+    }
+
 	p = size;
 	while (p--)
 		px[p] = TGA_S(px[p]);
-	write(fd, specs, TGA_SIZE);
-	write(fd, px, size << 2);
-	close(fd);
+	fwrite(specs, TGA_SIZE, 1, fd);
+	fwrite(px, size << 2, 1, fd);
+	fclose(fd);
 	free(px);
 	return (0);
 }

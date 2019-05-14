@@ -13,7 +13,8 @@
 #ifndef TGA_H
 # define TGA_H
 # define TGA_TYPE_TC_RAW		2
-# include <GL/glew.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 /*
 ** from ABGR to RGBA
@@ -60,10 +61,9 @@ typedef struct					s_tga
 
 # define TGA_SIZE				sizeof(t_tga)
 
-unsigned int					*tga_load(const char *filepath, t_tga *specs);
-GLuint							tga_load_ogl(const char *filepath);
-int								tga_save(const char *filepath,
-		const t_tga *specs, const unsigned int *pixels);
-void							tga_display(const t_tga *specs);
+unsigned int *tga_load(const char *filepath, t_tga *specs);
+GLuint		 tga_load_ogl(const char *filepath);
+int			 tga_save(const char *filepath, const t_tga *specs, const unsigned int *pixels);
+void		 tga_display(const t_tga *specs);
 
 #endif

@@ -56,7 +56,7 @@ STexture * TgaLoader::load(string fname){
     int pixnum = header.width * header.height;
 
     /*Start reading our image!*/
-    int i;
+    int i = 0;
     if(header.bitsperpixel == 32){
         for(i=0;i<pixnum;i++){
             /*BGRA --> RGBA*/
@@ -94,7 +94,7 @@ GLuint TgaLoader::newTex2d(string fname)
     //t_texture *tex;
     mTexture = load(fname);
 
-    glPixelStorei(GL_PACK_ALIGNMENT,1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glGenTextures(1, &name);
     glBindTexture(GL_TEXTURE_2D,name);
@@ -104,9 +104,13 @@ GLuint TgaLoader::newTex2d(string fname)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D,0,mTexture->length,
-                 mTexture->w,mTexture->h,0,mTexture->texFormat,
-                 GL_UNSIGNED_BYTE,mTexture->texels);
+//    glTexImage2D(GL_TEXTURE_2D, 0, mTexture->texFormat,
+//                 mTexture->w, mTexture->h, 0, mTexture->texFormat,
+//                 GL_UNSIGNED_SHORT_5_6_5, mTexture->texels);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 mTexture->w, mTexture->h, 0, GL_RGB,
+                 GL_UNSIGNED_SHORT_5_6_5, mTexture->texels);
 
     /*The texture is now inside OpenGL*/
     return name;

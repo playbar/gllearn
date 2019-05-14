@@ -50,8 +50,8 @@ void ModelObject::PerformGLInits() {
 //    std::string outFileName = "amenemhat/test.obj";
 //    mModelLoader->Export3DModel(outFileName);
 
-    TgaLoader tgaLoader;
-    tgaLoader.newTex2d("test.tga");
+//    TgaLoader tgaLoader;
+//    tgaLoader.newTex2d("test.tga");
 
     CheckGLError("ModelObject::PerformGLInits");
     initsDone = true;

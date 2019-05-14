@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <printf.h>
 #include "tga.h"
 
-void		tga_display(const t_tga *specs)
+void tga_display(const t_tga *specs)
 {
-	ft_printf("id: %hhd\ncolor_map: %hhd\ntype: %hhd\nfirst_entry_index: %hu\n"
+	printf("id: %hhd\ncolor_map: %hhd\ntype: %hhd\nfirst_entry_index: %hu\n"
 			"color_map_len: %hu\nbpp: %hhu\nx_offset: %hu\ny_offset: %hu\n"
 			"width: %hu\nheight: %hu\ndepth: %hhu\ndescriptor: %hhu\n",
 			specs->id, specs->color_map, specs->type, specs->first_entry_index,
