@@ -4,6 +4,7 @@
 
 
 #include "assimp/Importer.hpp"
+#include "TgaLoader.h"
 #include <opencv2/opencv.hpp>
 
 /**
@@ -48,6 +49,9 @@ void ModelObject::PerformGLInits() {
 
 //    std::string outFileName = "amenemhat/test.obj";
 //    mModelLoader->Export3DModel(outFileName);
+
+    TgaLoader tgaLoader;
+    tgaLoader.newTex2d("test.tga");
 
     CheckGLError("ModelObject::PerformGLInits");
     initsDone = true;

@@ -38,6 +38,7 @@ typedef struct{
 	int texFormat;
 	int bpp; //bits per pixel
 	int length;
+	int bytesperpixel;
 	TGA_BYTE *texels;
 } STexture;
 

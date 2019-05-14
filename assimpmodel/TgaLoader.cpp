@@ -6,11 +6,13 @@ TgaLoader::TgaLoader(void)
 
 STexture * TgaLoader::load(string fname){
     TgaHeader header;
+    memset(&header, 0, sizeof(TgaHeader));
     STexture *texture;
     FILE *fd;
     long int offset = 4*sizeof(char)+4*sizeof(short int);
 
     texture = (STexture *)malloc(sizeof(STexture));
+    memset(texture, 0, sizeof(STexture));
 
     fd = fopen(fname.c_str(),"rb");
     if(!fd){
@@ -31,7 +33,7 @@ STexture * TgaLoader::load(string fname){
     texture->h = header.height;
 
     texture->bpp = header.bitsperpixel;
-    int bytesperpixel=header.bitsperpixel/8;
+    texture->bytesperpixel=header.bitsperpixel/8;
     switch(header.bitsperpixel){
         case 24:
             texture->texFormat = GL_RGB;
@@ -39,14 +41,16 @@ STexture * TgaLoader::load(string fname){
         case 32:
             texture->texFormat = GL_RGBA ;
             break;
+        case 16:
+            texture->texFormat = GL_RGB565;
+            break;
         default:
             printf("Unsupported BPP\n");
-            exit(-1);
             break;
     }
 
     /*Allocate memory*/
-    texture->length = texture->w*texture->h*bytesperpixel*sizeof(TGA_BYTE);
+    texture->length = texture->w * texture->h * texture->bytesperpixel * sizeof(TGA_BYTE);
     texture->texels = (TGA_BYTE *) malloc(texture->length);
 
     int pixnum = header.width * header.height;
@@ -67,6 +71,12 @@ STexture * TgaLoader::load(string fname){
             texture->texels[i*3+2]=fgetc(fd);
             texture->texels[i*3+1]=fgetc(fd);
             texture->texels[i*3+0]=fgetc(fd);
+        }
+    }
+    if(header.bitsperpixel == 16){
+        for(i=0;i<pixnum;i++){
+            texture->texels[i*2+1]=fgetc(fd);
+            texture->texels[i*2+0]=fgetc(fd);
         }
     }
 

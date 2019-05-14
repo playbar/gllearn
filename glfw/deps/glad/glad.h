@@ -365,6 +365,7 @@ typedef GLintptr GLvdpauSurfaceNV;
 #define GL_RGBA2 0x8055
 #define GL_RGBA4 0x8056
 #define GL_RGB5_A1 0x8057
+#define GL_RGB565  0x8D62
 #define GL_RGBA8 0x8058
 #define GL_RGB10_A2 0x8059
 #define GL_RGBA12 0x805A
