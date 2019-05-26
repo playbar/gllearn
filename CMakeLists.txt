@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.4.1)
-project(glfwassimp LANGUAGES CXX C)
+project(gllearn LANGUAGES CXX C)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-narrowing -fexceptions")
 
 add_subdirectory(glew)
 add_subdirectory(glfw)
+add_subdirectory(gli)
 #add_subdirectory(BLPConverter)
 #add_subdirectory(freeImage)
-add_subdirectory(freetypegl)
+#add_subdirectory(freetypegl)
 #add_subdirectory(opencv)
 #add_subdirectory(assimp)
 #add_subdirectory(imagelib)
