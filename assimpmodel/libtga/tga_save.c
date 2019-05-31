@@ -26,7 +26,7 @@
 ** 2 = failed to open destination file, check permissions
 */
 
-void	*memdup(const void *src, size_t n)
+void *memdup(const void *src, size_t n)
 {
     void	*out;
     void	*dst;
