@@ -23,6 +23,17 @@ int pointInPoly(std::vector< glm::vec2>&verts, float testx, float testy)
     return c;
 }
 
+
+bool pointIPloy1(std::vector< glm::vec2>&verts, float testx, float testy)
+{
+    bool bin = false;
+    for( int i = 0; i < verts.size(); ++i )
+    {
+        if( )
+    }
+    return bin;
+}
+
 int main(int argc, char** argv)
 {
     std::vector< glm::vec2> verts;
