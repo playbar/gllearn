@@ -9,3 +9,6 @@ add_executable(pointtest
 
 add_executable(octree
         octree.cpp)
+
+add_executable(mainoctree
+        mainoctree.cpp)

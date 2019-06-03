@@ -68,7 +68,7 @@ int main(int argc, char** argv)
     verts.emplace_back(glm::vec2(2.0, -2.0));
     verts.emplace_back(glm::vec2(-2.0, -2.0));
     verts.emplace_back(glm::vec2(-2.0, 2.0));
-    glm::vec2 point(0.7, 0.1);
+    glm::vec2 point(0.1, 0.1);
 
     bool binploy = pointInPoly(verts, point);
 
