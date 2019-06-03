@@ -6,8 +6,6 @@
 #include "Octree.h"
 #include "Stopwatch.h"
 
-using namespace brandonpelfrey;
-
 // Used for testing
 std::vector<Vec3> points;
 Octree *octree;
@@ -16,13 +14,13 @@ Vec3 qmin, qmax;
 
 float rand11() // Random number between [-1,1]
 {
-	return -1.f + (2.f*rand()) * (1.f / RAND_MAX); 
+	return -1.f + (2.f*rand()) * (1.f / RAND_MAX);
 }
 
 Vec3 randVec3() // Random vector with components in the range [-1,1]
-{ 
-return Vec3(rand11(), rand11(), rand11());
- }
+{
+	return Vec3(rand11(), rand11(), rand11());
+}
 
 // Determine if 'point' is within the bounding box [bmin, bmax]
 bool naivePointInBox(const Vec3& point, const Vec3& bmin, const Vec3& bmax)
@@ -44,7 +42,8 @@ void init()
 
 	// Create a bunch of random points
 	const int nPoints = 1 * 1000 * 1000;
-	for(int i=0; i<nPoints; ++i) {
+	for(int i=0; i<nPoints; ++i)
+	{
 		points.push_back(randVec3());
 	}
 	printf("Created %ld points\n", points.size()); fflush(stdout);
