@@ -7,4 +7,5 @@ add_executable(pointtest
         pionttest.cpp
        )
 
-
+add_executable(octree
+        octree.cpp)
