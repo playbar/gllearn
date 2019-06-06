@@ -60,8 +60,43 @@ bool pointIPloy1(std::vector< glm::vec2>&verts, glm::vec2 &point)
     return bin;
 }
 
+bool testDotCroos()
+{
+    std::vector<glm::vec3> verts3;
+    std::vector< glm::vec2> verts;
+//    verts.emplace_back(glm::vec2(2.0, 2.0));
+//    verts.emplace_back(glm::vec2(2.0, -2.0));
+//    verts.emplace_back(glm::vec2(-2.0, -2.0));
+//    verts.emplace_back(glm::vec2(-2.0, 2.0));
+
+    verts.emplace_back(glm::vec2(1.0, 1.0));
+    verts.emplace_back(glm::vec2(3.0, 1.0));
+    verts.emplace_back(glm::vec2(3.0, 3.0));
+    verts.emplace_back(glm::vec2(1.0, 3.0));
+
+    for( int i = 0; i < 4; ++i )
+    {
+        glm::vec2 &first = verts[i];
+        glm::vec2 &second = verts[(i+ 1) & 3];
+        glm::vec2 temp = second - first;
+        glm::vec2 diff = glm::normalize(temp);
+        glm::vec3 val3 = glm::vec3(-diff.y, diff.x, (first.x * diff.y - first.y * diff.x) );
+        verts3.emplace_back(val3);
+    }
+
+    glm::vec3 point1( 1.5, 1.5, 1.0);
+
+    float r0 = glm::dot(verts3[0], point1);
+    float r1 = glm::dot(verts3[1], point1);
+    float r2 = glm::dot(verts3[2], point1);
+    float r3 = glm::dot(verts3[3], point1);
+
+    return true;
+}
+
 int main(int argc, char** argv)
 {
+    testDotCroos();
     std::vector< glm::vec2> verts;
     verts.emplace_back(glm::vec2(2.0, 2.0));
     verts.emplace_back(glm::vec2(3.0, 0.0));
