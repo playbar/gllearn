@@ -106,7 +106,7 @@ if(ANT_TWEAK_BAR_FOUND)
 endif()
 
 if(TARGET freetype-gl-hb)
-    create_demo(harfbuzz harfbuzz.c)
+    create_demo(harfbuzz1 harfbuzz.c)
     create_demo(harfbuzz-texture harfbuzz-texture.c)
     target_include_directories(harfbuzz
         BEFORE

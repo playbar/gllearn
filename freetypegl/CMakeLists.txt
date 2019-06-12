@@ -12,6 +12,13 @@ set(CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
 )
 
+include_directories(
+        ${OPENGL_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../freetype/include/
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${GLEW_INCLUDE_PATH}
+)
+
 message(STATUS "Building for ${CMAKE_SYSTEM_NAME} target system")
 message(STATUS "Building with ${CMAKE_C_COMPILER_ID} compiler")
 
@@ -28,7 +35,7 @@ option(freetype-gl_WITH_GLEW
 option(freetype-gl_USE_VAO "Use a VAO to render a vertex_buffer instance (required for forward compatible OpenGL 3.0 contexts)" OFF)
 option(freetype-gl_BUILD_DEMOS "Build the freetype-gl example programs" ON)
 option(freetype-gl_BUILD_APIDOC "Build the freetype-gl API documentation" OFF)
-option(freetype-gl_BUILD_HARFBUZZ "Build the freetype-gl harfbuzz support (experimental)" OFF)
+option(freetype-gl_BUILD_HARFBUZZ "Build the freetype-gl harfbuzz support (experimental)" ON)
 option(freetype-gl_BUILD_MAKEFONT "Build the makefont tool" ON)
 option(freetype-gl_BUILD_TESTS "Build the tests" ON)
 
@@ -88,12 +95,6 @@ if(freetype-gl_WITH_GLEW)
     find_package(GLEW REQUIRED)
 endif()
 
-include_directories(
-    ${OPENGL_INCLUDE_DIRS}
-    ${FREETYPE_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${GLEW_INCLUDE_PATH}
-)
 
 if(MSVC)
     # _CRT_NONSTDC_NO_DEPRECATE -> remove warning C4996
@@ -147,7 +148,7 @@ if(freetype-gl_BUILD_MAKEFONT)
     target_link_libraries(makefont
         freetype-gl
         ${OPENGL_LIBRARY}
-        ${FREETYPE_LIBRARIES}
+        freetype
         ${MATH_LIBRARY}
         ${GLEW_LIBRARY}
     )

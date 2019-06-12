@@ -39,16 +39,16 @@ function(download_ippicv root_var)
   endif()
 
   set(THE_ROOT "${OpenCV_BINARY_DIR}/3rdparty/ippicv")
-  ocv_download(FILENAME ${OPENCV_ICV_NAME}
-               HASH ${OPENCV_ICV_HASH}
-               URL
-                 "${OPENCV_IPPICV_URL}"
-                 "$ENV{OPENCV_IPPICV_URL}"
-                 "https://raw.githubusercontent.com/opencv/opencv_3rdparty/${IPPICV_COMMIT}/ippicv/"
-               DESTINATION_DIR "${THE_ROOT}"
-               ID IPPICV
-               STATUS res
-               UNPACK RELATIVE_URL)
+#  ocv_download(FILENAME ${OPENCV_ICV_NAME}
+#               HASH ${OPENCV_ICV_HASH}
+#               URL
+#                 "${OPENCV_IPPICV_URL}"
+#                 "$ENV{OPENCV_IPPICV_URL}"
+#                 "https://raw.githubusercontent.com/opencv/opencv_3rdparty/${IPPICV_COMMIT}/ippicv/"
+#               DESTINATION_DIR "${THE_ROOT}"
+#               ID IPPICV
+#               STATUS res
+#               UNPACK RELATIVE_URL)
 
   if(res)
     set(${root_var} "${THE_ROOT}/${OPENCV_ICV_PACKAGE_SUBDIR}" PARENT_SCOPE)
