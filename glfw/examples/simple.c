@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define SHADER_STRING(...) #__VA_ARGS__
+
 static const struct
 {
     float x, y;
@@ -43,25 +45,25 @@ static const struct
     {   0.f,  0.6f, 0.f, 0.f, 1.f }
 };
 
-static const char* vertex_shader_text =
-"#version 110\n"
-"uniform mat4 MVP;\n"
-"attribute vec3 vCol;\n"
-"attribute vec2 vPos;\n"
-"varying vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
+static const char* vertex_shader_text = SHADER_STRING(
+    uniform mat4 MVP;
+    attribute vec3 vCol;
+    attribute vec2 vPos;
+    varying vec3 color;
+    void main()
+    {
+        gl_Position = MVP * vec4(vPos, 0.0, 1.0);
+        color = vCol;
+    }
+);
 
-static const char* fragment_shader_text =
-"#version 110\n"
-"varying vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_FragColor = vec4(color, 1.0);\n"
-"}\n";
+static const char* fragment_shader_text = SHADER_STRING(
+    varying vec3 color;
+    void main()
+    {
+        gl_FragColor = vec4(color, 1.0);
+    }
+);
 
 static void error_callback(int error, const char* description)
 {
