@@ -1,4 +1,5 @@
 link_libraries(libpng)
+link_libraries(libwebp)
 include_directories(
         ${PROJECT_SOURCE_DIR}/libxml2/include
         ${PROJECT_SOURCE_DIR}/opencv/3rdparty/libpng
@@ -16,9 +17,14 @@ file(GLOB MAGICK_MAGICKCORE_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/MagickCore/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/MagickCore/*.h)
 
+file(GLOB MAGICK_MAGICKWAND_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/MagickWand/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/MagickWand/*.h)
+
 add_library(magick STATIC
         ${MAGICK_CODERS_SRC}
         ${MAGICK_MAGICKCORE_SRC}
+        ${MAGICK_MAGICKWAND_SRC}
         )
 
 
@@ -31,6 +37,7 @@ target_link_libraries(magick_test
         freetype
         xml2
         bzip
+        lzma
         z)
 
 

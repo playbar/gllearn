@@ -408,14 +408,11 @@ static MagickBooleanType ScribbleImage(MagickWand *canvas)
 
 int main(int argc,char **argv)
 {
-  char
-    filename[MagickPathExtent];
+  char filename[MagickPathExtent];
 
-  MagickBooleanType
-    status;
+  MagickBooleanType status;
 
-  MagickWand
-    *canvas;
+  MagickWand *canvas;
 
   if (argc != 2)
     {
