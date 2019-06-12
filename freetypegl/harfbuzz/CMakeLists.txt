@@ -6,7 +6,8 @@
 #find_package(HarfBuzz REQUIRED)
 
 include_directories(
-    ${HARFBUZZ_INCLUDE_DIRS}
+#    ${HARFBUZZ_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../harfbuzz/src
 )
 
 set(FREETYPE_GL_HB_HDR

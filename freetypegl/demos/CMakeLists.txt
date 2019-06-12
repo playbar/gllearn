@@ -108,15 +108,16 @@ endif()
 if(TARGET freetype-gl-hb)
     create_demo(harfbuzz1 harfbuzz.c)
     create_demo(harfbuzz-texture harfbuzz-texture.c)
-    target_include_directories(harfbuzz
+    target_include_directories(harfbuzz1
         BEFORE
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../harfbuzz/src
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../harfbuzz
-        PRIVATE ${HARFBUZZ_INCLUDE_DIRS}
     )
+    target_link_libraries(harfbuzz1 harfbuzz)
     target_include_directories(harfbuzz-texture
         BEFORE
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../harfbuzz/src
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../harfbuzz
-        PRIVATE ${HARFBUZZ_INCLUDE_DIRS}
     )
 endif()
 
