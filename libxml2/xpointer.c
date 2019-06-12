@@ -467,6 +467,8 @@ xmlXPtrNewRangeNodePoint(xmlNodePtr start, xmlXPathObjectPtr end) {
 	return(NULL);
     if (end == NULL)
 	return(NULL);
+    if (start->type != XPATH_POINT)
+	return(NULL);
     if (end->type != XPATH_POINT)
 	return(NULL);
 
@@ -1202,23 +1204,13 @@ xmlXPtrEvalChildSeq(xmlXPathParserContextPtr ctxt, xmlChar *name) {
     }
 
     while (CUR == '/') {
-	int child = 0, overflow = 0;
+	int child = 0;
 	NEXT;
 
 	while ((CUR >= '0') && (CUR <= '9')) {
-            int d = CUR - '0';
-            if (child > INT_MAX / 10)
-                overflow = 1;
-            else
-                child *= 10;
-            if (child > INT_MAX - d)
-                overflow = 1;
-            else
-                child += d;
+	    child = child * 10 + (CUR - '0');
 	    NEXT;
 	}
-        if (overflow)
-            child = 0;
 	xmlXPtrGetChildNo(ctxt, child);
     }
 }

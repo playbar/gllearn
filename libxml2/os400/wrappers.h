@@ -43,7 +43,7 @@ extern void *   _lx_dlsym(void * handle, const char * symbol);
 extern char *   _lx_dlerror(void);
 
 
-#ifdef LIBXML_ZLIB_ENABLED
+#ifdef HAVE_ZLIB_H
 
 #include <zlib.h>
 

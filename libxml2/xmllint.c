@@ -180,17 +180,17 @@ static int exc_canonical = 0;
 #ifdef LIBXML_READER_ENABLED
 static int stream = 0;
 static int walker = 0;
-#ifdef LIBXML_PATTERN_ENABLED
-static const char *pattern = NULL;
-static xmlPatternPtr patternc = NULL;
-static xmlStreamCtxtPtr patstream = NULL;
-#endif
 #endif /* LIBXML_READER_ENABLED */
 static int chkregister = 0;
 static int nbregister = 0;
 #ifdef LIBXML_SAX1_ENABLED
 static int sax1 = 0;
 #endif /* LIBXML_SAX1_ENABLED */
+#ifdef LIBXML_PATTERN_ENABLED
+static const char *pattern = NULL;
+static xmlPatternPtr patternc = NULL;
+static xmlStreamCtxtPtr patstream = NULL;
+#endif
 #ifdef LIBXML_XPATH_ENABLED
 static const char *xpathquery = NULL;
 #endif
@@ -1652,7 +1652,10 @@ testSAX(const char *filename) {
 	xmlSchemaValidCtxtPtr vctxt;
 
 	vctxt = xmlSchemaNewValidCtxt(wxschemas);
-	xmlSchemaSetValidErrors(vctxt, xmlGenericError, xmlGenericError, NULL);
+	xmlSchemaSetValidErrors(vctxt,
+		(xmlSchemaValidityErrorFunc) fprintf,
+		(xmlSchemaValidityWarningFunc) fprintf,
+		stderr);
 	xmlSchemaValidateSetFilename(vctxt, filename);
 
 	ret = xmlSchemaValidateStream(vctxt, buf, 0, handler,
@@ -2068,52 +2071,51 @@ static void doXPathDump(xmlXPathObjectPtr cur) {
             int i;
             xmlNodePtr node;
 #ifdef LIBXML_OUTPUT_ENABLED
-            xmlOutputBufferPtr buf;
+            xmlSaveCtxtPtr ctxt;
 
             if ((cur->nodesetval == NULL) || (cur->nodesetval->nodeNr <= 0)) {
                 fprintf(stderr, "XPath set is empty\n");
                 progresult = XMLLINT_ERR_XPATH;
                 break;
             }
-            buf = xmlOutputBufferCreateFile(stdout, NULL);
-            if (buf == NULL) {
+            ctxt = xmlSaveToFd(1, NULL, 0);
+            if (ctxt == NULL) {
                 fprintf(stderr, "Out of memory for XPath\n");
                 progresult = XMLLINT_ERR_MEM;
                 return;
             }
             for (i = 0;i < cur->nodesetval->nodeNr;i++) {
                 node = cur->nodesetval->nodeTab[i];
-                xmlNodeDumpOutput(buf, NULL, node, 0, 0, NULL);
-                xmlOutputBufferWrite(buf, 1, "\n");
+                xmlSaveTree(ctxt, node);
             }
-            xmlOutputBufferClose(buf);
+            xmlSaveClose(ctxt);
 #else
             printf("xpath returned %d nodes\n", cur->nodesetval->nodeNr);
 #endif
 	    break;
         }
         case XPATH_BOOLEAN:
-	    if (cur->boolval) printf("true\n");
-	    else printf("false\n");
+	    if (cur->boolval) printf("true");
+	    else printf("false");
 	    break;
         case XPATH_NUMBER:
 	    switch (xmlXPathIsInf(cur->floatval)) {
 	    case 1:
-		printf("Infinity\n");
+		printf("Infinity");
 		break;
 	    case -1:
-		printf("-Infinity\n");
+		printf("-Infinity");
 		break;
 	    default:
 		if (xmlXPathIsNaN(cur->floatval)) {
-		    printf("NaN\n");
+		    printf("NaN");
 		} else {
-		    printf("%0g\n", cur->floatval);
+		    printf("%0g", cur->floatval);
 		}
 	    }
 	    break;
         case XPATH_STRING:
-	    printf("%s\n", (const char *) cur->stringval);
+	    printf("%s", (const char *) cur->stringval);
 	    break;
         case XPATH_UNDEFINED:
 	    fprintf(stderr, "XPath Object is uninitialized\n");
@@ -2757,9 +2759,9 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 			"Couldn't allocate validation context\n");
 		exit(-1);
 	    }
-	    cvp->userData = NULL;
-	    cvp->error    = xmlGenericError;
-	    cvp->warning  = xmlGenericError;
+	    cvp->userData = (void *) stderr;
+	    cvp->error    = (xmlValidityErrorFunc) fprintf;
+	    cvp->warning  = (xmlValidityWarningFunc) fprintf;
 
 	    if ((timing) && (!repeat)) {
 		startTimer();
@@ -2793,9 +2795,9 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 	if ((timing) && (!repeat)) {
 	    startTimer();
 	}
-	cvp->userData = NULL;
-	cvp->error    = xmlGenericError;
-	cvp->warning  = xmlGenericError;
+	cvp->userData = (void *) stderr;
+	cvp->error    = (xmlValidityErrorFunc) fprintf;
+	cvp->warning  = (xmlValidityWarningFunc) fprintf;
 	if (!xmlValidateDocument(cvp, doc)) {
 	    xmlGenericError(xmlGenericErrorContext,
 		    "Document %s does not validate\n", filename);
@@ -2825,8 +2827,10 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 	    flag |= XML_SCHEMATRON_OUT_QUIET;
 	ctxt = xmlSchematronNewValidCtxt(wxschematron, flag);
 #if 0
-	xmlSchematronSetValidErrors(ctxt, xmlGenericError, xmlGenericError,
-                NULL);
+	xmlSchematronSetValidErrors(ctxt,
+		(xmlSchematronValidityErrorFunc) fprintf,
+		(xmlSchematronValidityWarningFunc) fprintf,
+		stderr);
 #endif
 	ret = xmlSchematronValidateDoc(ctxt, doc);
 	if (ret == 0) {
@@ -2855,7 +2859,10 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 	}
 
 	ctxt = xmlRelaxNGNewValidCtxt(relaxngschemas);
-	xmlRelaxNGSetValidErrors(ctxt, xmlGenericError, xmlGenericError, NULL);
+	xmlRelaxNGSetValidErrors(ctxt,
+		(xmlRelaxNGValidityErrorFunc) fprintf,
+		(xmlRelaxNGValidityWarningFunc) fprintf,
+		stderr);
 	ret = xmlRelaxNGValidateDoc(ctxt, doc);
 	if (ret == 0) {
 	    fprintf(stderr, "%s validates\n", filename);
@@ -2880,7 +2887,10 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 	}
 
 	ctxt = xmlSchemaNewValidCtxt(wxschemas);
-	xmlSchemaSetValidErrors(ctxt, xmlGenericError, xmlGenericError, NULL);
+	xmlSchemaSetValidErrors(ctxt,
+		(xmlSchemaValidityErrorFunc) fprintf,
+		(xmlSchemaValidityWarningFunc) fprintf,
+		stderr);
 	ret = xmlSchemaValidateDoc(ctxt, doc);
 	if (ret == 0) {
 	    fprintf(stderr, "%s validates\n", filename);
@@ -3005,7 +3015,7 @@ static void usage(FILE *f, const char *name) {
     fprintf(f, "\t--repeat : repeat 100 times, for timing or profiling\n");
     fprintf(f, "\t--insert : ad-hoc test for valid insertions\n");
 #ifdef LIBXML_OUTPUT_ENABLED
-#ifdef LIBXML_ZLIB_ENABLED
+#ifdef HAVE_ZLIB_H
     fprintf(f, "\t--compress : turn on gzip compression of output\n");
 #endif
 #endif /* LIBXML_OUTPUT_ENABLED */
@@ -3058,10 +3068,10 @@ static void usage(FILE *f, const char *name) {
 #ifdef LIBXML_READER_ENABLED
     fprintf(f, "\t--stream : use the streaming interface to process very large files\n");
     fprintf(f, "\t--walker : create a reader and walk though the resulting doc\n");
+#endif /* LIBXML_READER_ENABLED */
 #ifdef LIBXML_PATTERN_ENABLED
     fprintf(f, "\t--pattern pattern_value : test the pattern support\n");
 #endif
-#endif /* LIBXML_READER_ENABLED */
     fprintf(f, "\t--chkregister : verify the node registration code\n");
 #ifdef LIBXML_SCHEMAS_ENABLED
     fprintf(f, "\t--relaxng schema : do RelaxNG validation against the schema\n");
@@ -3285,7 +3295,7 @@ main(int argc, char **argv) {
 	}
 #endif
 #ifdef LIBXML_OUTPUT_ENABLED
-#ifdef LIBXML_ZLIB_ENABLED
+#ifdef HAVE_ZLIB_H
 	else if ((!strcmp(argv[i], "-compress")) ||
 	         (!strcmp(argv[i], "--compress"))) {
 	    compress++;
@@ -3393,12 +3403,6 @@ main(int argc, char **argv) {
 	         (!strcmp(argv[i], "--walker"))) {
 	     walker++;
              noout++;
-#ifdef LIBXML_PATTERN_ENABLED
-        } else if ((!strcmp(argv[i], "-pattern")) ||
-                   (!strcmp(argv[i], "--pattern"))) {
-	    i++;
-	    pattern = argv[i];
-#endif
 	}
 #endif /* LIBXML_READER_ENABLED */
 #ifdef LIBXML_SAX1_ENABLED
@@ -3449,6 +3453,12 @@ main(int argc, char **argv) {
                    (!strcmp(argv[i], "--path"))) {
 	    i++;
 	    parsePath(BAD_CAST argv[i]);
+#ifdef LIBXML_PATTERN_ENABLED
+        } else if ((!strcmp(argv[i], "-pattern")) ||
+                   (!strcmp(argv[i], "--pattern"))) {
+	    i++;
+	    pattern = argv[i];
+#endif
 #ifdef LIBXML_XPATH_ENABLED
         } else if ((!strcmp(argv[i], "-xpath")) ||
                    (!strcmp(argv[i], "--xpath"))) {
@@ -3541,8 +3551,10 @@ main(int argc, char **argv) {
 	}
 	ctxt = xmlSchematronNewParserCtxt(schematron);
 #if 0
-	xmlSchematronSetParserErrors(ctxt, xmlGenericError, xmlGenericError,
-                NULL);
+	xmlSchematronSetParserErrors(ctxt,
+		(xmlSchematronValidityErrorFunc) fprintf,
+		(xmlSchematronValidityWarningFunc) fprintf,
+		stderr);
 #endif
 	wxschematron = xmlSchematronParse(ctxt);
 	if (wxschematron == NULL) {
@@ -3572,8 +3584,10 @@ main(int argc, char **argv) {
 	    startTimer();
 	}
 	ctxt = xmlRelaxNGNewParserCtxt(relaxng);
-	xmlRelaxNGSetParserErrors(ctxt, xmlGenericError, xmlGenericError,
-                NULL);
+	xmlRelaxNGSetParserErrors(ctxt,
+		(xmlRelaxNGValidityErrorFunc) fprintf,
+		(xmlRelaxNGValidityWarningFunc) fprintf,
+		stderr);
 	relaxngschemas = xmlRelaxNGParse(ctxt);
 	if (relaxngschemas == NULL) {
 	    xmlGenericError(xmlGenericErrorContext,
@@ -3596,7 +3610,10 @@ main(int argc, char **argv) {
 	    startTimer();
 	}
 	ctxt = xmlSchemaNewParserCtxt(schema);
-	xmlSchemaSetParserErrors(ctxt, xmlGenericError, xmlGenericError, NULL);
+	xmlSchemaSetParserErrors(ctxt,
+		(xmlSchemaValidityErrorFunc) fprintf,
+		(xmlSchemaValidityWarningFunc) fprintf,
+		stderr);
 	wxschemas = xmlSchemaParse(ctxt);
 	if (wxschemas == NULL) {
 	    xmlGenericError(xmlGenericErrorContext,
@@ -3610,8 +3627,12 @@ main(int argc, char **argv) {
 	}
     }
 #endif /* LIBXML_SCHEMAS_ENABLED */
-#if defined(LIBXML_READER_ENABLED) && defined(LIBXML_PATTERN_ENABLED)
-    if ((pattern != NULL) && (walker == 0)) {
+#ifdef LIBXML_PATTERN_ENABLED
+    if ((pattern != NULL)
+#ifdef LIBXML_READER_ENABLED
+        && (walker == 0)
+#endif
+	) {
         patternc = xmlPatterncompile((const xmlChar *) pattern, NULL, 0, NULL);
 	if (patternc == NULL) {
 	    xmlGenericError(xmlGenericErrorContext,
@@ -3620,7 +3641,7 @@ main(int argc, char **argv) {
 	    pattern = NULL;
 	}
     }
-#endif /* LIBXML_READER_ENABLED && LIBXML_PATTERN_ENABLED */
+#endif /* LIBXML_PATTERN_ENABLED */
     for (i = 1; i < argc ; i++) {
 	if ((!strcmp(argv[i], "-encode")) ||
 	         (!strcmp(argv[i], "--encode"))) {
@@ -3674,7 +3695,7 @@ main(int argc, char **argv) {
 	    i++;
 	    continue;
         }
-#if defined(LIBXML_READER_ENABLED) && defined(LIBXML_PATTERN_ENABLED)
+#ifdef LIBXML_PATTERN_ENABLED
         if ((!strcmp(argv[i], "-pattern")) ||
 	    (!strcmp(argv[i], "--pattern"))) {
 	    i++;

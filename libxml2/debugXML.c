@@ -2363,7 +2363,10 @@ xmlShellRNGValidate(xmlShellCtxtPtr sctxt, char *schemas,
     int ret;
 
     ctxt = xmlRelaxNGNewParserCtxt(schemas);
-    xmlRelaxNGSetParserErrors(ctxt, xmlGenericError, xmlGenericError, NULL);
+    xmlRelaxNGSetParserErrors(ctxt,
+	    (xmlRelaxNGValidityErrorFunc) fprintf,
+	    (xmlRelaxNGValidityWarningFunc) fprintf,
+	    stderr);
     relaxngschemas = xmlRelaxNGParse(ctxt);
     xmlRelaxNGFreeParserCtxt(ctxt);
     if (relaxngschemas == NULL) {
@@ -2372,7 +2375,10 @@ xmlShellRNGValidate(xmlShellCtxtPtr sctxt, char *schemas,
 	return(-1);
     }
     vctxt = xmlRelaxNGNewValidCtxt(relaxngschemas);
-    xmlRelaxNGSetValidErrors(vctxt, xmlGenericError, xmlGenericError, NULL);
+    xmlRelaxNGSetValidErrors(vctxt,
+	    (xmlRelaxNGValidityErrorFunc) fprintf,
+	    (xmlRelaxNGValidityWarningFunc) fprintf,
+	    stderr);
     ret = xmlRelaxNGValidateDoc(vctxt, sctxt->doc);
     if (ret == 0) {
 	fprintf(stderr, "%s validates\n", sctxt->filename);
@@ -2641,9 +2647,9 @@ xmlShellValidate(xmlShellCtxtPtr ctxt, char *dtd,
     int res = -1;
 
     if ((ctxt == NULL) || (ctxt->doc == NULL)) return(-1);
-    vctxt.userData = NULL;
-    vctxt.error = xmlGenericError;
-    vctxt.warning = xmlGenericError;
+    vctxt.userData = stderr;
+    vctxt.error = (xmlValidityErrorFunc) fprintf;
+    vctxt.warning = (xmlValidityWarningFunc) fprintf;
 
     if ((dtd == NULL) || (dtd[0] == 0)) {
         res = xmlValidateDocument(&vctxt, ctxt->doc);

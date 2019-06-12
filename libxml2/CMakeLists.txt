@@ -1,23 +1,22 @@
-include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/coders
 
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-file(GLOB MAGICK_CODERS_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/coders/*.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/coders/*.h
+file(GLOB XML2_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/*.h
         )
 add_library(xml2 STATIC
-        ${MAGICK_CODERS_SRC}
+        ${XML2_SRC}
         )
 
 
-add_executable(magick_test
-        tests/drawtest.c
+add_executable(xml2_test
+        example/gjobread.c
         )
 
-target_link_libraries(magick_test
-        magick)
+target_link_libraries(xml2_test
+        xml2)
 
 

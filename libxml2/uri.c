@@ -325,18 +325,16 @@ static int
 xmlParse3986Port(xmlURIPtr uri, const char **str)
 {
     const char *cur = *str;
-    int port = 0;
+    unsigned port = 0; /* unsigned for defined overflow behavior */
 
     if (ISA_DIGIT(cur)) {
 	while (ISA_DIGIT(cur)) {
 	    port = port * 10 + (*cur - '0');
-            if (port > 99999999)
-                port = 99999999;
 
 	    cur++;
 	}
 	if (uri != NULL)
-	    uri->port = port;
+	    uri->port = port & INT_MAX; /* port value modulo INT_MAX+1 */
 	*str = cur;
 	return(0);
     }
@@ -2238,8 +2236,25 @@ xmlBuildRelativeURI (const xmlChar * URI, const xmlChar * base)
      * First we take care of the special case where either of the
      * two path components may be missing (bug 316224)
      */
+    if (bas->path == NULL) {
+	if (ref->path != NULL) {
+	    uptr = (xmlChar *) ref->path;
+	    if (*uptr == '/')
+		uptr++;
+	    /* exception characters from xmlSaveUri */
+	    val = xmlURIEscapeStr(uptr, BAD_CAST "/;&=+$,");
+	}
+	goto done;
+    }
     bptr = (xmlChar *)bas->path;
-    {
+    if (ref->path == NULL) {
+	for (ix = 0; bptr[ix] != 0; ix++) {
+	    if (bptr[ix] == '/')
+		nbslash++;
+	}
+	uptr = NULL;
+	len = 1;	/* this is for a string terminator only */
+    } else {
         xmlChar *rptr = (xmlChar *) ref->path;
         int pos = 0;
 
@@ -2265,28 +2280,30 @@ xmlBuildRelativeURI (const xmlChar * URI, const xmlChar * base)
 	 * beginning of the "unique" suffix of URI
 	 */
 	ix = pos;
+	if ((rptr[ix] == '/') && (ix > 0))
+	    ix--;
+	else if ((rptr[ix] == 0) && (ix > 1) && (rptr[ix - 1] == '/'))
+	    ix -= 2;
 	for (; ix > 0; ix--) {
-	    if (rptr[ix - 1] == '/')
+	    if (rptr[ix] == '/')
 		break;
 	}
-	uptr = (xmlChar *)&rptr[ix];
+	if (ix == 0) {
+	    uptr = (xmlChar *)rptr;
+	} else {
+	    ix++;
+	    uptr = (xmlChar *)&rptr[ix];
+	}
 
 	/*
 	 * In base, count the number of '/' from the differing point
 	 */
-	for (; bptr[ix] != 0; ix++) {
-	    if (bptr[ix] == '/')
-		nbslash++;
+	if (bptr[pos] != rptr[pos]) {/* check for trivial URI == base */
+	    for (; bptr[ix] != 0; ix++) {
+		if (bptr[ix] == '/')
+		    nbslash++;
+	    }
 	}
-
-	/*
-	 * e.g: URI="foo/" base="foo/bar" -> "./"
-	 */
-	if (nbslash == 0 && !uptr[0]) {
-	    val = xmlStrdup(BAD_CAST "./");
-	    goto done;
-	}
-
 	len = xmlStrlen (uptr) + 1;
     }
 

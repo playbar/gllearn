@@ -8,51 +8,24 @@
   </vendor>
   <product id="libxml2">
     <name>libxml2</name>
-    <version>v2.9.8</version>
-    <last-release> Mar 05 2018</last-release>
+    <version>v2.9.6</version>
+    <last-release> Oct 06 2017</last-release>
     <info-url>http://xmlsoft.org/</info-url>
     <changes>   - Portability:
-  python: remove single use of _PyVerify_fd (Patrick Welche),
-  Build more test executables on Windows/MSVC (Nick Wellnhofer),
-  Stop including ansidecl.h (Nick Wellnhofer),
-  Fix libz and liblzma detection (Nick Wellnhofer),
-  Revert "Compile testapi with -Wno-unused-function" (Nick Wellnhofer)
+  Change preprocessor OS tests to __linux__ (Nick Wellnhofer)
   
    - Bug Fixes:
-  Fix xmlParserEntityCheck (Nick Wellnhofer),
-  Halt parser in case of encoding error (Nick Wellnhofer),
-  Clear entity content in case of errors (Nick Wellnhofer),
-  Change calls to xmlCharEncInput to set flush false when not final call. Having flush incorrectly set to true causes errors for ICU. (Joel Hockey),
-  Fix buffer over-read in xmlParseNCNameComplex (Nick Wellnhofer),
-  Fix ICU library filenames on Windows/MSVC (Nick Wellnhofer),
-  Fix xmlXPathIsNaN broken by recent commit (Nick Wellnhofer),
-  Fix -Wenum-compare warnings (Nick Wellnhofer),
-  Fix callback signature in testapi.c (Nick Wellnhofer),
-  Fix unused parameter warning without ICU (Nick Wellnhofer),
-  Fix IO callback signatures (Nick Wellnhofer),
-  Fix misc callback signatures (Nick Wellnhofer),
-  Fix list callback signatures (Nick Wellnhofer),
-  Fix hash callback signatures (Nick Wellnhofer),
-  Refactor name and type signature for xmlNop (Vlad Tsyrklevich),
-  Fixed ICU to set flush correctly and provide pivot buffer. (Joel Hockey),
-  Skip EBCDIC tests if EBCDIC isn't supported (Nick Wellnhofer)
-  
-   - Improvements:
-  Disable pointer-overflow UBSan checks under Travis (Nick Wellnhofer),
-  Improve handling of context input_id (Daniel Veillard),
-  Add resource file to Windows DLL (ccpaging),
-  Run Travis tests with -Werror (Nick Wellnhofer),
-  Build with "-Wall -Wextra" (Nick Wellnhofer),
-  Fix -Wtautological-pointer-compare warnings (Nick Wellnhofer),
-  Remove unused AC_CHECKs (Nick Wellnhofer),
-  Update information about contributing (Nick Wellnhofer),
-  Fix -Wmisleading-indentation warnings (Nick Wellnhofer),
-  Don't touch CFLAGS in configure.ac (Nick Wellnhofer),
-  Ignore function pointer cast warnings (Nick Wellnhofer),
-  Simplify XPath NaN, inf and -0 handling (Nick Wellnhofer),
-  Introduce xmlPosixStrdup and update xmlMemStrdup (Nick Wellnhofer),
-  Add test for ICU flush and pivot buffer (Nick Wellnhofer),
-  Compile testapi with -Wno-unused-function (Nick Wellnhofer)
+  Fix XPath stack frame logic (Nick Wellnhofer),
+  Report undefined XPath variable error message (Nick Wellnhofer),
+  Fix regression with librsvg (Nick Wellnhofer),
+  Handle more invalid entity values in recovery mode (Nick Wellnhofer),
+  Fix structured validation errors (Nick Wellnhofer),
+  Fix memory leak in LZMA decompressor (Nick Wellnhofer),
+  Set memory limit for LZMA decompression (Nick Wellnhofer),
+  Handle illegal entity values in recovery mode (Nick Wellnhofer),
+  Fix debug dump of streaming XPath expressions (Nick Wellnhofer),
+  Fix memory leak in nanoftp (Nick Wellnhofer),
+  Fix memory leaks in SAX1 parser (Nick Wellnhofer)
   
 
 </changes>

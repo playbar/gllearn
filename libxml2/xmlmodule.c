@@ -340,7 +340,6 @@ xmlModulePlatformClose(void *handle)
 static int
 xmlModulePlatformSymbol(void *handle, const char *name, void **symbol)
 {
-XML_IGNORE_PEDANTIC_WARNINGS
 #ifdef _WIN32_WCE
     /*
      * GetProcAddressA seems only available on WinCE
@@ -350,7 +349,6 @@ XML_IGNORE_PEDANTIC_WARNINGS
     *symbol = GetProcAddress(handle, name);
 #endif
     return (NULL == *symbol) ? -1 : 0;
-XML_POP_WARNINGS
 }
 
 #endif /* _WIN32 */

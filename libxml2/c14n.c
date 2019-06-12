@@ -1798,6 +1798,15 @@ xmlC14NNewCtx(xmlDocPtr doc,
     }
 
     /*
+     *  Validate the XML document encoding value, if provided.
+     */
+    if (doc->charset != XML_CHAR_ENCODING_UTF8) {
+        xmlC14NErr(ctx, (xmlNodePtr) doc, XML_C14N_REQUIRES_UTF8,
+		   "xmlC14NNewCtx: source document not in UTF8\n");
+        return (NULL);
+    }
+
+    /*
      * Allocate a new xmlC14NCtxPtr and fill the fields.
      */
     ctx = (xmlC14NCtxPtr) xmlMalloc(sizeof(xmlC14NCtx));
@@ -2080,7 +2089,7 @@ xmlC14NDocSave(xmlDocPtr doc, xmlNodeSetPtr nodes,
         xmlC14NErrParam("saving doc");
         return (-1);
     }
-#ifdef LIBXML_ZLIB_ENABLED
+#ifdef HAVE_ZLIB_H
     if (compression < 0)
         compression = xmlGetCompressMode();
 #endif

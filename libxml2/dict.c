@@ -38,8 +38,7 @@
  *  list we will use the BigKey algo as soon as the hash size grows
  *  over MIN_DICT_SIZE so this actually works
  */
-#if defined(HAVE_RAND) && defined(HAVE_SRAND) && defined(HAVE_TIME) && \
-    !defined(FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION)
+#if defined(HAVE_RAND) && defined(HAVE_SRAND) && defined(HAVE_TIME)
 #define DICT_RANDOMIZATION
 #endif
 
@@ -372,7 +371,6 @@ found_pool:
  * http://burtleburtle.net/bob/hash/doobs.html
  */
 
-ATTRIBUTE_NO_SANITIZE("unsigned-integer-overflow")
 static uint32_t
 xmlDictComputeBigKey(const xmlChar* data, int namelen, int seed) {
     uint32_t hash;
@@ -405,7 +403,6 @@ xmlDictComputeBigKey(const xmlChar* data, int namelen, int seed) {
  *
  * Neither of the two strings must be NULL.
  */
-ATTRIBUTE_NO_SANITIZE("unsigned-integer-overflow")
 static unsigned long
 xmlDictComputeBigQKey(const xmlChar *prefix, int plen,
                       const xmlChar *name, int len, int seed)

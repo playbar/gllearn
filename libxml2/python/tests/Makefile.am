@@ -66,7 +66,6 @@ tests: $(PYTESTS)
 	   export PYTHONPATH; \
 	   LD_LIBRARY_PATH="$(top_builddir)/.libs:$$LD_LIBRARY_PATH" ; \
 	   export LD_LIBRARY_PATH; \
-	   export PATH="$(top_builddir)/.libs:$$PATH" ; \
 	   for test in $(PYTESTS) ; \
 	   do log=`$(PYTHON) $(srcdir)/$$test` ; \
 	   if [ "`echo $$log | grep OK`" = "" ] ; then \
