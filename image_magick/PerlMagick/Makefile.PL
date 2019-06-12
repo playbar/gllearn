@@ -161,11 +161,11 @@ foreach my $delegate (@tested_delegates) {
 }
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
-my $INC_magick = '-I../ -I..   -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16  -I/usr/X11/include -I"' . $Config{'usrinc'} . '/ImageMagick"';
+my $INC_magick = '-I../ -I..   -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../MagickCore/.libs -lMagickCore-7.Q16HDRI -lperl -lm';
-my $CCFLAGS_magick = "$Config{'ccflags'} -I/usr/include/libxml2 -I/usr/local/Cellar/webp/1.0.2/include -I/usr/local/Cellar/webp/1.0.2/include -I/usr/local/include/libpng16 -D_THREAD_SAFE -I/usr/local/Cellar/openexr/2.3.0/include/OpenEXR -I/usr/local/Cellar/ilmbase/2.3.0/include/OpenEXR -I/usr/local/Cellar/xz/5.2.4/include -I/usr/local/Cellar/openjpeg/2.3.1/include/openjpeg-2.3 -I/usr/local/Cellar/little-cms2/2.9/include -I/usr/local/opt/freetype/include/freetype2 -I/usr/local/Cellar/fontconfig/2.13.1/include -I/usr/local/opt/freetype/include/freetype2    -g -O2 -Wall -mtune=ivybridge -fexceptions -D_FORTIFY_SOURCE=0 -Qunused-arguments -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16";
-my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore-7.Q16HDRI $Config{'ldflags'}   -L/usr/X11/lib";
-my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore-7.Q16HDRI $Config{'lddlflags'}   -L/usr/X11/lib";
+my $CCFLAGS_magick = "$Config{'ccflags'} -I/usr/include/libxml2 -I/usr/local/Cellar/webp/1.0.0/include -I/usr/local/Cellar/webp/1.0.0/include -I/usr/local/Cellar/libpng/1.6.35/include/libpng16 -I/usr/local/Cellar/xz/5.2.4/include -I/usr/local/opt/freetype/include/freetype2   -fopenmp -g -O2 -Wall -mtune=core2 -fexceptions -D_FORTIFY_SOURCE=0 -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16";
+my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore-7.Q16HDRI $Config{'ldflags'} ";
+my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore-7.Q16HDRI $Config{'lddlflags'} ";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
   my($Ipaths, $Lpaths) = AutodetectWin32gcc();
@@ -209,7 +209,7 @@ WriteMakefile
    #'CC' => 'gcc',
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS' => "$Config{'cppflags'}   -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16  -I/usr/X11/include",
+   # 'CPPFLAGS' => "$Config{'cppflags'}   -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16",
 
    # C compiler flags (e.g. -O -g)
    'CCFLAGS' => $CCFLAGS_magick,
@@ -236,7 +236,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as ImageMagick
-   'PERLMAINCC'	=> ' ',
+   'PERLMAINCC'	=> ' -fopenmp',
    'AR' => 'ar',
    'LD' => '',
 
