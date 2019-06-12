@@ -22,6 +22,7 @@ file(GLOB MAGICK_MAGICKWAND_SRC
         ${CMAKE_CURRENT_SOURCE_DIR}/MagickWand/*.h)
 
 add_library(magick STATIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/filters/analyze.c
         ${MAGICK_CODERS_SRC}
         ${MAGICK_MAGICKCORE_SRC}
         ${MAGICK_MAGICKWAND_SRC}
@@ -41,3 +42,34 @@ target_link_libraries(magick_test
         z)
 
 
+###########
+
+file(GLOB MAGICKPP_LIB_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Magick++/lib/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Magick++/lib/Magick++/*.h
+        )
+
+add_library(magickpp STATIC
+        ${MAGICKPP_LIB_SRC}
+        )
+
+target_include_directories(magickpp PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/Magick++/lib
+)
+
+add_executable(magickpp_analyze
+        ${CMAKE_CURRENT_SOURCE_DIR}/Magick++/demo/analyze.cpp
+        )
+
+target_include_directories(magickpp_analyze PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/Magick++/lib
+        )
+
+target_link_libraries(magickpp_analyze
+        magickpp
+        magick
+        freetype
+        xml2
+        bzip
+        lzma
+        z)
