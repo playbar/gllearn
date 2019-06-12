@@ -3,7 +3,7 @@
 # Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
 # file `LICENSE` for more details.
 
-find_package( ImageMagick COMPONENTS compare REQUIRED )
+#find_package( ImageMagick COMPONENTS compare REQUIRED )
 
 function(cmp_test TARGET DISTANCE)
     set(_TEST_NAME ${TARGET}-cmp-test)
