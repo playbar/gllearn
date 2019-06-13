@@ -1,3 +1,15 @@
+link_libraries(assimp)
+link_libraries(libglew_static)
+
+
+file(GLOB SOIL_SRC
+        ${CMAKE_CURRENT_SOURCE_DIR}/soil/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/soil/*.h
+        )
+
+add_library(soil STATIC
+        ${SOIL_SRC})
+
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
@@ -13,6 +25,8 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/glm
         ${PROJECT_SOURCE_DIR}/glfw/include
         ${PROJECT_SOURCE_DIR}/glew/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/soil
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
         )
 
 ## find the required packages
@@ -44,7 +58,7 @@ elseif(APPLE)
   FIND_LIBRARY(IOKit_LIBRARY IOKit)
   MARK_AS_ADVANCED(COCOA_LIBRARY OpenGL_LIBRARY)
   SET(APPLE_LIBS ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY})
-  SET(APPLE_LIBS ${APPLE_LIBS} glfw3 GLEW assimp SOIL)
+  SET(APPLE_LIBS ${APPLE_LIBS} glfw assimp soil)
   set(LIBS ${LIBS} ${APPLE_LIBS})
 else()
   set(LIBS )
@@ -113,11 +127,6 @@ set(6.in_practice
     1.debugging
     # 2.text_rendering
 )
-
-
-
-configure_file(configuration/root_directory.h.in configuration/root_directory.h)
-include_directories(${CMAKE_BINARY_DIR}/configuration)
 
 foreach(CHAPTER ${CHAPTERS})
     foreach(DEMO ${${CHAPTER}})
