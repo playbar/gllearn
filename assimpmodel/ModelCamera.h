@@ -28,7 +28,8 @@ private:
     float       nearPlaneDistance, farPlaneDistance;
 
     glm::mat4   projectionViewMat;
-    glm::mat4   rotateMat, translateMat;
+    glm::mat4   rotateMat;
+    glm::mat4   translateMat;
     glm::mat4   modelMat;
     glm::mat4   viewMat;
     glm::mat4   mvpMat;     // ModelViewProjection: obtained by multiplying Projection, View, & Model
