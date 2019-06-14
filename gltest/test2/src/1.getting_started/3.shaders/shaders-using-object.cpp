@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 
 // Other includes
-#include <learnopengl/shader.h>
+#include <shader.h>
 
 
 // Function prototypes
