@@ -2,7 +2,9 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/common
         ${PROJECT_SOURCE_DIR}/glm
         ${PROJECT_SOURCE_DIR}/glfw/include
-        ${PROJECT_SOURCE_DIR}/glew/include)
+        ${PROJECT_SOURCE_DIR}/glew/include
+        ${PROJECT_SOURCE_DIR}/assimp/include
+)
 
 link_libraries(glfw)
 
