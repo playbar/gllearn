@@ -133,6 +133,23 @@ int main(int argc, char **argv)
 
     // NOTE: OpenGL error checks have been omitted for brevity
 
+    int maxVertexAttribs = 0;
+    int maxVertexUniformVectors = 0;
+    int maxVaryingVectors = 0;
+    int maxCombinedTextureImageUnits = 0;
+    int maxVertexTextureImageUnits = 0;
+    int maxTextureImageUnits = 0;
+    int maxFragmentUniformVectors = 0;
+    int maxTextureSize = 0;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribs);
+//    glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &maxVertexUniformVectors);
+//    glGetIntegerv(GL_MAX_VARYING_VECTORS, &maxVaryingVectors);
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits);
+    glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &maxVertexTextureImageUnits);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureImageUnits);
+//    glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_VECTORS, &maxFragmentUniformVectors);
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+
     gModelObject = new ModelObject();
     gModelObject->PerformGLInits();
     gModelObject->SetViewport( gWidth * 2, gHeith * 2 );

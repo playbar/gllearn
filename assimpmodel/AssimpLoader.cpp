@@ -23,6 +23,7 @@ AssimpLoader::AssimpLoader() {
     mvpLocation             = GetUniformLocation(shaderProgramID, "mvpMat");
     textureSamplerLocation  = GetUniformLocation(shaderProgramID, "textureSampler");
 
+
     CheckGLError("AssimpLoader::AssimpLoader");
 }
 
