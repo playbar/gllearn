@@ -452,6 +452,8 @@ int main(int argc,char **argv)
   /*
     Save image to file.
   */
+  status=MagickResizeImage(canvas,50,50,UndefinedFilter);
+
   status=MagickWriteImage(canvas,filename);
   if (status == MagickFalse)
     ThrowWandException(canvas);

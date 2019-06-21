@@ -41,6 +41,16 @@ target_link_libraries(magick_test
         lzma
         z)
 
+add_executable(magick_wandtest
+        tests/wandtest.c)
+
+target_link_libraries(magick_wandtest
+        magick
+        freetype
+        xml2
+        bzip
+        lzma
+        z)
 
 ###########
 
