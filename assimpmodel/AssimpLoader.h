@@ -45,6 +45,7 @@ public:
     void Delete3DModel();
 
 private:
+    void RenderBG();
     void GenerateGLBuffers();
     bool LoadTexturesToGL(std::string modelFilename);
 
@@ -57,9 +58,16 @@ private:
 
     std::map<std::string, GLuint> textureNameMap;   // (texture filename, texture name in GL)
 
+    GLuint  mModelProgramID;
     GLuint  vertexAttribute, vertexUVAttribute;     // attributes for shader variables
-    GLuint  shaderProgramID;
     GLint   mvpLocation, textureSamplerLocation;    // location of MVP in the shader
+
+    GLuint mBGProgramID;
+    GLuint mBgVerAtt;
+    GLuint mBgVerColor;
+    GLuint mBgMvp;
+//    GLuint mBgColor;
+
 
 };
 

@@ -17,12 +17,20 @@ AssimpLoader::AssimpLoader() {
     // shader related setup -- loading, attribute and uniform locations
     std::string vertexShader    = "shaders/modelTextured.vsh";
     std::string fragmentShader  = "shaders/modelTextured.fsh";
-    shaderProgramID         = LoadShaders(vertexShader, fragmentShader);
-    vertexAttribute         = GetAttributeLocation(shaderProgramID, "vertexPosition");
-    vertexUVAttribute       = GetAttributeLocation(shaderProgramID, "vertexUV");
-    mvpLocation             = GetUniformLocation(shaderProgramID, "mvpMat");
-    textureSamplerLocation  = GetUniformLocation(shaderProgramID, "textureSampler");
+    mModelProgramID         = LoadShaders(vertexShader, fragmentShader);
+    vertexAttribute         = GetAttributeLocation(mModelProgramID, "vertexPosition");
+    vertexUVAttribute       = GetAttributeLocation(mModelProgramID, "vertexUV");
+    mvpLocation             = GetUniformLocation(mModelProgramID, "mvpMat");
+    textureSamplerLocation  = GetUniformLocation(mModelProgramID, "textureSampler");
 
+
+    std::string bgverShader  = "shaders/color.vs";
+    std::string bgfraShader  = "shaders/color.fs";
+    mBGProgramID         = LoadShaders(bgverShader, bgfraShader);
+    mBgVerAtt         = GetAttributeLocation(mBGProgramID, "position");
+    mBgVerColor       = GetAttributeLocation(mBGProgramID, "color");
+    mBgMvp             = GetUniformLocation(mBGProgramID, "MVP");
+//    mBgColor  = GetUniformLocation(mBGProgramID, "color_u");
 
     CheckGLError("AssimpLoader::AssimpLoader");
 }
@@ -278,10 +286,43 @@ void AssimpLoader::Delete3DModel() {
     }
 }
 
+void AssimpLoader::RenderBG()
+{
+    glUseProgram(mBGProgramID);
+    glm::mat4 mat;
+    glUniformMatrix4fv(mBgMvp, 1, GL_FALSE, (const GLfloat *) &mat);
+//    glUniform4f(mBgColor, 1.0f, 0.0f, 0.0f, 1.0f);
+
+
+    glm::vec4 color;
+    color.r = 1.0f;
+    color.g = 0.0f;
+    color.b = 0.0f;
+    color.a = 1.0f;
+
+    float vertices[] = {
+            // positions                //color
+            -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, -1.0f, 1.0f,  0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f,   -1.0f, 1.0f,  0.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, -1.0f,  -1.0f, 1.0f,  1.0f, 1.0f, 0.0f, 1.0f
+    };
+    glEnableVertexAttribArray(mBgVerAtt);
+    glVertexAttribPointer(mBgVerAtt, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), vertices);
+
+    glEnableVertexAttribArray(mBgVerColor);
+    glVertexAttribPointer(mBgVerColor, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), vertices + 4);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+}
+
+
 /**
  * Renders the 3D model by rendering every mesh in the object
  */
-void AssimpLoader::Render3DModel(glm::mat4 *mvpMat) {
+void AssimpLoader::Render3DModel(glm::mat4 *mvpMat)
+{
 
     if (!isObjectLoaded) {
         return;
@@ -289,7 +330,12 @@ void AssimpLoader::Render3DModel(glm::mat4 *mvpMat) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(shaderProgramID);
+    glDisable(GL_DEPTH_TEST);
+    RenderBG();
+
+    glEnable(GL_DEPTH_TEST);
+
+    glUseProgram(mModelProgramID);
     glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, (const GLfloat *) mvpMat);
 
     glActiveTexture(GL_TEXTURE0);
