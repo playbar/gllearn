@@ -9,8 +9,8 @@ ModelObject *gModelObject =NULL;
 bool bleftpress = false;
 bool brightpress = false;
 
-GLint gWidth = 640;
-GLint gHeith = 480;
+GLint gWidth = 480;
+GLint gHeith = 320;
 
 GLfloat glastx = 0;
 GLfloat glasty = 0;
@@ -103,6 +103,19 @@ void scroll_callback(GLFWwindow* window, double x, double y)
 }
 
 
+//这个是窗口变化的回调函数。。注意输入参数
+//是一个glfw的窗口，一个宽度和高度
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+
+    gModelObject->SetViewport( width, height );
+//    glViewport(0, 0, width, height);//这个是回调函数内的内容
+    //这里是将视口改成变化后的的窗口大小
+    //注意需要的注册该回调函数
+    //glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    //两个参数是，glfw的窗口以及回调函数
+}
+
 int main(int argc, char **argv)
 {
     GLFWwindow *window;
@@ -126,6 +139,7 @@ int main(int argc, char **argv)
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetScrollCallback( window, scroll_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);//注册函数，该函数还可以注册其他相关硬件的回调函数
 
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
