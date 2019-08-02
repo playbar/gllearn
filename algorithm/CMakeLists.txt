@@ -12,3 +12,6 @@ add_executable(octree
 
 add_executable(mainoctree
         mainoctree.cpp)
+
+add_executable(psimpl_test
+        psimpl_test.cpp)
