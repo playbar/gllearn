@@ -103,6 +103,10 @@ public:
         PVRTC2A,
         //! ETC-compressed texture: ETC
         ETC,
+        //! ETC2-compressed texture: GL_COMPRESSED_RGB8_ETC2
+        ETC2_RGB,
+        //! ETC2-compressed texture: GL_COMPRESSED_RGBA8_ETC2_EAC
+        ETC2_RGBA,
         //! S3TC-compressed texture: S3TC_Dxt1
         S3TC_DXT1,
         //! S3TC-compressed texture: S3TC_Dxt3

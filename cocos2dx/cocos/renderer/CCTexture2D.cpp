@@ -53,6 +53,9 @@ THE SOFTWARE.
     #include "renderer/CCTextureCache.h"
 #endif
 
+#define GL_COMPRESSED_RGB8_ETC2           0x9274
+#define GL_COMPRESSED_RGBA8_ETC2_EAC      0x9278
+
 NS_CC_BEGIN
 
 
@@ -70,7 +73,9 @@ namespace {
         PixelFormatInfoMapValue(Texture2D::PixelFormat::A8, Texture2D::PixelFormatInfo(GL_ALPHA, GL_ALPHA, GL_UNSIGNED_BYTE, 8, false, false)),
         PixelFormatInfoMapValue(Texture2D::PixelFormat::I8, Texture2D::PixelFormatInfo(GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE, 8, false, false)),
         PixelFormatInfoMapValue(Texture2D::PixelFormat::AI88, Texture2D::PixelFormatInfo(GL_LUMINANCE_ALPHA, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 16, false, true)),
-        
+        PixelFormatInfoMapValue(Texture2D::PixelFormat::ETC2_RGB,  Texture2D::PixelFormatInfo(GL_COMPRESSED_RGB8_ETC2, 0xFFFFFFFF, 0xFFFFFFFF, 4, true, false)),
+        PixelFormatInfoMapValue(Texture2D::PixelFormat::ETC2_RGBA, Texture2D::PixelFormatInfo(GL_COMPRESSED_RGBA8_ETC2_EAC, 0xFFFFFFFF, 0xFFFFFFFF, 8, true, true)),
+
 #ifdef GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG
         PixelFormatInfoMapValue(Texture2D::PixelFormat::PVRTC2, Texture2D::PixelFormatInfo(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG, 0xFFFFFFFF, 0xFFFFFFFF, 2, true, false)),
         PixelFormatInfoMapValue(Texture2D::PixelFormat::PVRTC2A, Texture2D::PixelFormatInfo(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG, 0xFFFFFFFF, 0xFFFFFFFF, 2, true, true)),
@@ -591,10 +596,11 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
 
     if (info.compressed && !Configuration::getInstance()->supportsPVRTC()
                         && !Configuration::getInstance()->supportsETC()
+                        && !Configuration::getInstance()->supportsETC2()
                         && !Configuration::getInstance()->supportsS3TC()
                         && !Configuration::getInstance()->supportsATITC())
     {
-        CCLOG("cocos2d: WARNING: PVRTC/ETC images are not supported");
+        CCLOG("cocos2d: WARNING: PVRTC/ETC/ETC2 images are not supported");
         return false;
     }
 
@@ -1377,6 +1383,11 @@ const char* Texture2D::getStringForFormat() const
             
         case Texture2D::PixelFormat::ETC:
             return "ETC";
+
+        case Texture2D::PixelFormat::ETC2_RGB:
+            return "ETC2_RGB";
+        case Texture2D::PixelFormat::ETC2_RGBA:
+            return "ETC2_RGBA";
 
         case Texture2D::PixelFormat::S3TC_DXT1:
             return "S3TC_DXT1";

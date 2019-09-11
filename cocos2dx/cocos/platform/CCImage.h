@@ -89,6 +89,8 @@ public:
         PVR,
         //! ETC
         ETC,
+        //
+        ETC2,
         //! S3TC
         S3TC,
         //! ATITC
@@ -168,6 +170,7 @@ protected:
     bool encodeWithWIC(const std::string& filePath, bool isToRGB, GUID containerFormat);
     bool decodeWithWIC(const unsigned char *data, ssize_t dataLen);
 #endif
+    bool isEtc2(const unsigned char *data, ssize_t dataLen);
     bool initWithJpgData(const unsigned char *  data, ssize_t dataLen);
     bool initWithPngData(const unsigned char * data, ssize_t dataLen);
     bool initWithTiffData(const unsigned char * data, ssize_t dataLen);
@@ -176,6 +179,7 @@ protected:
     bool initWithPVRv2Data(const unsigned char * data, ssize_t dataLen);
     bool initWithPVRv3Data(const unsigned char * data, ssize_t dataLen);
     bool initWithETCData(const unsigned char * data, ssize_t dataLen);
+    bool initWithETC2Data(const unsigned char * data, ssize_t dataLen);
     bool initWithS3TCData(const unsigned char * data, ssize_t dataLen);
     bool initWithATITCData(const unsigned char *data, ssize_t dataLen);
     typedef struct sImageTGA tImageTGA;

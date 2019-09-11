@@ -43,6 +43,7 @@ Configuration::Configuration()
 : _maxTextureSize(0) 
 , _maxModelviewStackDepth(0)
 , _supportsPVRTC(false)
+,_supportsETC2(false)
 , _supportsETC1(false)
 , _supportsS3TC(false)
 , _supportsATITC(false)
@@ -129,6 +130,9 @@ void Configuration::gatherGPUInfo()
     glGetIntegerv(GL_MAX_SAMPLES_APPLE, &_maxSamplesAllowed);
 	_valueDict["gl.max_samples_allowed"] = Value((int)_maxSamplesAllowed);
 #endif
+
+    _supportsETC2 = checkForEtc2();
+    _valueDict["gl.supports_ETC2"] = Value(_supportsETC2);
     
     _supportsETC1 = checkForGLExtension("GL_OES_compressed_ETC1_RGB8_texture");
     _valueDict["gl.supports_ETC1"] = Value(_supportsETC1);
@@ -243,6 +247,11 @@ bool Configuration::supportsETC() const
 #else
     return false;
 #endif
+}
+
+bool Configuration::supportsETC2() const
+{
+    return _supportsETC2;
 }
 
 bool Configuration::supportsS3TC() const
@@ -424,6 +433,28 @@ void Configuration::loadConfigFile(const std::string& filename)
         _valueDict[name] = Value((int)_animate3DQuality);
     
     Director::getInstance()->getEventDispatcher()->dispatchEvent(_loadedEvent);
+}
+
+bool Configuration::checkForEtc2() const
+{
+    // Only the following two formats are supported
+#define GL_COMPRESSED_RGB8_ETC2           0x9274
+#define GL_COMPRESSED_RGBA8_ETC2_EAC      0x9278
+
+    GLint numFormats = 0;
+    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &numFormats);
+    GLint* formats = new GLint[numFormats];
+    glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats);
+
+    int supportNum = 0;
+    for (GLint i = 0; i < numFormats; ++i)
+    {
+        if (formats[i] == GL_COMPRESSED_RGB8_ETC2 || formats[i] == GL_COMPRESSED_RGBA8_ETC2_EAC)
+            supportNum++;
+    }
+    delete [] formats;
+
+    return supportNum >= 2;
 }
 
 NS_CC_END

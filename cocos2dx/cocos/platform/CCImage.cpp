@@ -124,6 +124,50 @@ NS_CC_BEGIN
 
 namespace
 {
+    // etc2
+#define ETC2_RGB_NO_MIPMAPS           1
+#define ETC2_RGBA_NO_MIPMAPS          3
+
+    static const int ETC2_PKM_HEADER_SIZE = 16;
+    static const char ETC2_PKM_MAGIC[] = { 'P', 'K', 'M', ' ', '2', '0' };
+
+    static const uint32_t ETC2_PKM_FORMAT_OFFSET = 6;
+    static const uint32_t ETC2_PKM_ENCODED_WIDTH_OFFSET = 8;
+    static const uint32_t ETC2_PKM_ENCODED_HEIGHT_OFFSET = 10;
+    static const uint32_t ETC2_PKM_WIDTH_OFFSET = 12;
+    static const uint32_t ETC2_PKM_HEIGHT_OFFSET = 14;
+
+    static uint32_t read_big_endian_uint16(const uint8_t *pIn) {
+        return (pIn[0] << 8) | pIn[1];
+    }
+
+    static bool etc2_pkm_is_valid(const uint8_t* pHeader) {
+        if (memcmp(pHeader, ETC2_PKM_MAGIC, sizeof(ETC2_PKM_MAGIC))) {
+            return false;
+        }
+        uint32_t format = read_big_endian_uint16(pHeader + ETC2_PKM_FORMAT_OFFSET);
+        uint32_t encodedWidth = read_big_endian_uint16(pHeader + ETC2_PKM_ENCODED_WIDTH_OFFSET);
+        uint32_t encodedHeight = read_big_endian_uint16(pHeader + ETC2_PKM_ENCODED_HEIGHT_OFFSET);
+        uint32_t width = read_big_endian_uint16(pHeader + ETC2_PKM_WIDTH_OFFSET);
+        uint32_t height = read_big_endian_uint16(pHeader + ETC2_PKM_HEIGHT_OFFSET);
+        return (format == ETC2_RGB_NO_MIPMAPS || format == ETC2_RGBA_NO_MIPMAPS) &&
+               encodedWidth >= width && encodedWidth - width < 4 &&
+               encodedHeight >= height && encodedHeight - height < 4;
+    }
+
+    static uint32_t etc2_pkm_get_width(const uint8_t * pHeader) {
+        return read_big_endian_uint16(pHeader + ETC2_PKM_WIDTH_OFFSET);
+    }
+
+    static uint32_t etc2_pkm_get_height(const uint8_t* pHeader){
+        return read_big_endian_uint16(pHeader + ETC2_PKM_HEIGHT_OFFSET);
+    }
+
+    static uint32_t etc2_pkm_get_format(const uint8_t* pHeader) {
+        return read_big_endian_uint16(pHeader + ETC2_PKM_FORMAT_OFFSET);
+    }
+
+
     static const int PVR_TEXTURE_FLAG_TYPE_MASK = 0xff;
     
     static bool _PVRHaveAlphaPremultiplied = false;
@@ -584,6 +628,9 @@ bool Image::initWithImageData(const unsigned char * data, ssize_t dataLen)
         case Format::ETC:
             ret = initWithETCData(unpackedData, unpackedLen);
             break;
+        case Format::ETC2:
+            ret = initWithETC2Data(unpackedData, unpackedLen);
+            break;
         case Format::S3TC:
             ret = initWithS3TCData(unpackedData, unpackedLen);
             break;
@@ -713,6 +760,7 @@ bool Image::isPvr(const unsigned char * data, ssize_t dataLen)
     return memcmp(&headerv2->pvrTag, gPVRTexIdentifier, strlen(gPVRTexIdentifier)) == 0 || CC_SWAP_INT32_BIG_TO_HOST(headerv3->version) == 0x50565203;
 }
 
+
 Image::Format Image::detectFormat(const unsigned char * data, ssize_t dataLen)
 {
     if (isPng(data, dataLen))
@@ -746,6 +794,10 @@ Image::Format Image::detectFormat(const unsigned char * data, ssize_t dataLen)
     else if (isATITC(data, dataLen))
     {
         return Format::ATITC;
+    }
+    else if (isEtc2(data, dataLen))
+    {
+        return Format::ETC2;
     }
     else
     {
@@ -921,6 +973,11 @@ bool Image::encodeWithWIC(const std::string& filePath, bool isToRGB, GUID contai
 
 
 #endif //CC_USE_WIC
+
+bool Image::isEtc2(const unsigned char *data, ssize_t dataLen)
+{
+    return dataLen >= ETC2_PKM_HEADER_SIZE && etc2_pkm_is_valid(data);
+}
 
 bool Image::initWithJpgData(const unsigned char * data, ssize_t dataLen)
 {
@@ -1771,6 +1828,41 @@ bool Image::initWithETCData(const unsigned char * data, ssize_t dataLen)
         
         return true;
     }
+    return false;
+}
+
+bool Image::initWithETC2Data(const unsigned char * data, ssize_t dataLen)
+{
+    const unsigned char* header = data;
+
+    //check the data
+    if (!etc2_pkm_is_valid(header))
+    {
+        return  false;
+    }
+
+    _width = etc2_pkm_get_width(header);
+    _height = etc2_pkm_get_height(header);
+
+    if (0 == _width || 0 == _height)
+    {
+        return false;
+    }
+
+    if (Configuration::getInstance()->supportsETC2())
+    {
+        uint32_t format = etc2_pkm_get_format(header);
+        if (format == ETC2_RGB_NO_MIPMAPS)
+            _renderFormat = Texture2D::PixelFormat::ETC2_RGB;
+        else
+            _renderFormat = Texture2D::PixelFormat::ETC2_RGBA;
+        _dataLen = dataLen - ETC2_PKM_HEADER_SIZE;
+        _data = static_cast<unsigned char*>(malloc(_dataLen * sizeof(unsigned char)));
+        memcpy(_data, static_cast<const unsigned char*>(data) + ETC2_PKM_HEADER_SIZE, _dataLen);
+        _hasPremultipliedAlpha = false;
+        return true;
+    }
+    CCLOG("cocos2d: Hardware ETC2 decoder not support.");
     return false;
 }
 

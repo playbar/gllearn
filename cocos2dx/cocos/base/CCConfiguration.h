@@ -114,6 +114,8 @@ public:
      * @return Is true if supports ETC Texture Compressed.
      */
     bool supportsETC() const;
+
+	bool supportsETC2() const;
     
     /** Whether or not S3TC Texture Compressed is supported.
      *
@@ -203,6 +205,8 @@ public:
      */
     bool checkForGLExtension(const std::string &searchName) const;
 
+    bool checkForEtc2() const;
+
     /** Initialize method.
      *
      * @return Is true if initialize success.
@@ -261,6 +265,7 @@ protected:
     GLint           _maxModelviewStackDepth;
     bool            _supportsPVRTC;
     bool            _supportsETC1;
+	bool            _supportsETC2;
     bool            _supportsS3TC;
     bool            _supportsATITC;
     bool            _supportsNPOT;
