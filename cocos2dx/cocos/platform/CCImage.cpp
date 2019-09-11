@@ -117,10 +117,23 @@ extern "C"
 #define CC_GL_ATC_RGBA_EXPLICIT_ALPHA_AMD                          0x8C93
 #define CC_GL_ATC_RGBA_INTERPOLATED_ALPHA_AMD                      0x87EE
 
+//PKM2格式说明
+//ETC2只是一个压缩算法，还需要一种文件格式来包含它，etc1常包含在pkm文件中，etc2也可以在pkm中，
+// 只不过etc1的是pkm10版本，而etc2需要pkm20版本，这两个文件版本是兼容的
+//4 byte	magic number: "PKM "
+//2 byte 	version "10" or "20"
+//2 byte 	format: 0 (ETC1_RGB_NO_MIPMAPS), 1(ETC2_RGB_NO_MIPMAPS), ...
+//16 bit 	big endian extended width
+//16 bit 	big endian extended height
+//16 bit 	big endian original width
+//16 bit 	big endian original height
+//        data, 64bit big endian words.
+
 NS_CC_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 //struct and data for pvr structure
+
 
 namespace
 {
