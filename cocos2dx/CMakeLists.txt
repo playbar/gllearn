@@ -45,6 +45,8 @@ option(BUILD_TESTS "Build tests" ON)
 set(BUILD_LUA_LIBS ON)
 set(BUILD_JS_LIBS ON)
 
+add_subdirectory(libiconv)
+link_libraries(iconv)
 add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 
 # prevent tests project to build "cocos2d-x/cocos" again
