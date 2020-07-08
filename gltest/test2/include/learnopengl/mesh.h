@@ -9,9 +9,6 @@
 #include <learnopengl/shader.h>
 
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -36,13 +33,12 @@ struct Texture {
 
 class Mesh {
 public:
-    /*  Mesh Data  */
-    vector<Vertex> vertices;
+    // mesh Data
+    vector<Vertex>       vertices;
     vector<unsigned int> indices;
-    vector<Texture> textures;
+    vector<Texture>      textures;
     unsigned int VAO;
 
-    /*  Functions  */
     // constructor
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
     {
@@ -55,7 +51,7 @@ public:
     }
 
     // render the mesh
-    void Draw(Shader shader) 
+    void Draw(Shader &shader) 
     {
         // bind appropriate textures
         unsigned int diffuseNr  = 1;
@@ -69,15 +65,15 @@ public:
             string number;
             string name = textures[i].type;
             if(name == "texture_diffuse")
-				number = std::to_string(diffuseNr++);
-			else if(name == "texture_specular")
-				number = std::to_string(specularNr++); // transfer unsigned int to stream
+                number = std::to_string(diffuseNr++);
+            else if(name == "texture_specular")
+                number = std::to_string(specularNr++); // transfer unsigned int to stream
             else if(name == "texture_normal")
-				number = std::to_string(normalNr++); // transfer unsigned int to stream
+                number = std::to_string(normalNr++); // transfer unsigned int to stream
              else if(name == "texture_height")
-			    number = std::to_string(heightNr++); // transfer unsigned int to stream
+                number = std::to_string(heightNr++); // transfer unsigned int to stream
 
-													 // now set the sampler to the correct texture unit
+            // now set the sampler to the correct texture unit
             glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
@@ -93,10 +89,9 @@ public:
     }
 
 private:
-    /*  Render data  */
+    // render data 
     unsigned int VBO, EBO;
 
-    /*  Functions    */
     // initializes all the buffer objects/arrays
     void setupMesh()
     {

@@ -45,7 +45,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
     // glfw window creation
@@ -307,7 +307,6 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = 2.5 * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -394,11 +393,11 @@ void renderSphere()
         }
 
         bool oddRow = false;
-        for (int y = 0; y < Y_SEGMENTS; ++y)
+        for (unsigned int y = 0; y < Y_SEGMENTS; ++y)
         {
             if (!oddRow) // even rows: y == 0, y == 2; and so on
             {
-                for (int x = 0; x <= X_SEGMENTS; ++x)
+                for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
                 {
                     indices.push_back(y       * (X_SEGMENTS + 1) + x);
                     indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
@@ -417,7 +416,7 @@ void renderSphere()
         indexCount = indices.size();
 
         std::vector<float> data;
-        for (int i = 0; i < positions.size(); ++i)
+        for (unsigned int i = 0; i < positions.size(); ++i)
         {
             data.push_back(positions[i].x);
             data.push_back(positions[i].y);

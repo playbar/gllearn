@@ -5,6 +5,8 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
+link_libraries(freetype)
+
 project(freetype-gl LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH

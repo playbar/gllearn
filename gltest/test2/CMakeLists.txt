@@ -71,9 +71,9 @@ set(1.getting_started
     3.3.shaders_class
     4.1.textures
     4.2.textures_combined
-    4.3.textures_exercise2
-    4.4.textures_exercise3
-    4.5.textures_exercise4
+    4.4.textures_exercise2
+    4.5.textures_exercise3
+    4.6.textures_exercise4
     5.1.transformations
     5.2.transformations_exercise2
     6.1.coordinate_systems
@@ -93,7 +93,7 @@ set(2.lighting
     3.2.materials_exercise1
     4.1.lighting_maps_diffuse_map
     4.2.lighting_maps_specular_map
-    4.3.lighting_maps_exercise4
+    4.4.lighting_maps_exercise4
     5.1.light_casters_directional
     5.2.light_casters_point
     5.3.light_casters_spot
@@ -122,7 +122,8 @@ set(4.advanced_opengl
     10.1.instancing_quads
     10.2.asteroids
     10.3.asteroids_instanced
-    11.anti_aliasing_offscreen
+    11.1.anti_aliasing_msaa
+    11.2.anti_aliasing_offscreen
 )
 
 set(5.advanced_lighting
@@ -155,7 +156,8 @@ set(6.pbr
 
 set(7.in_practice
     1.debugging
-    # 2.text_rendering
+    2.text_rendering
+    #3.2d_game
 )
 
 # first create relevant static libraries requried for other projects
