@@ -85,8 +85,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader(FileSystem::getPath("lighting/advanced_lighting.vs").c_str(),
-                  FileSystem::getPath("lighting/advanced_lighting.fs").c_str());
+    Shader shader("advanced_lighting.vs","advanced_lighting.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -117,7 +116,7 @@ int main()
 
     // load textures
     // -------------
-    unsigned int floorTexture = loadTexture(FileSystem::getPath("lighting/wood.png").c_str());
+    unsigned int floorTexture = loadTexture(FileSystem::getPath("resources/textures/wood.png").c_str());
     
     // shader configuration
     // --------------------
