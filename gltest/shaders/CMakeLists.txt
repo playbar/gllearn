@@ -1,3 +1,5 @@
+#https://www.shadertoy.com/browse
+
 link_libraries(assimp)
 link_libraries(libglew_static)
 
@@ -56,6 +58,7 @@ set(advanced
         advanced_lighting
         cubemaps_skybox
         stencil_testing
+        textures_vague
 )
 
 
