@@ -49,7 +49,8 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader ourShader("4.1.texture.vs", "4.1.texture.fs"); 
+//    Shader ourShader("texture.vs", "texture.fs");
+    Shader ourShader("blur.vs", "blur.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -134,6 +135,7 @@ int main()
         // render container
         ourShader.use();
         ourShader.setFloat("dis", 25);
+        ourShader.setBool("horizontal", true);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
