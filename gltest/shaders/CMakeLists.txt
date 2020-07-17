@@ -17,7 +17,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 
-link_directories(${CMAKE_SOURCE_DIR}/lib)
+#link_directories(${CMAKE_SOURCE_DIR}/lib)
 include_directories(
         ${PROJECT_SOURCE_DIR}/glm
         ${PROJECT_SOURCE_DIR}/glfw/include
@@ -57,6 +57,7 @@ set(CHAPTERS
 set(advanced
         advanced_lighting
         cubemaps_skybox
+        rimshader
         stencil_testing
         textures_vague
 )

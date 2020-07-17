@@ -1,1 +1,1 @@
-const char * logl_root = "../../../../../gltest/test2";
+const char * logl_root = "../../../../../gltest/shaders";
