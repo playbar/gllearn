@@ -115,11 +115,11 @@ int main()
         // draw model as usual
         backpack.Draw(shader);
 
-//        // then draw model with normal visualizing geometry shader
-//        normalShader.use();
-//        normalShader.setMat4("projection", projection);
-//        normalShader.setMat4("view", view);
-//        normalShader.setMat4("model", model);
+        // then draw model with normal visualizing geometry shader
+        normalShader.use();
+        normalShader.setMat4("projection", projection);
+        normalShader.setMat4("view", view);
+        normalShader.setMat4("model", model);
 
         backpack.Draw(normalShader);
 
