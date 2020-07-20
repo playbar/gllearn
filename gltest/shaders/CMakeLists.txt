@@ -58,6 +58,7 @@ set(advanced
         advanced_lighting
         cubemaps_skybox
         rimshader
+        rimshader_normalize
         stencil_testing
         textures_vague
 )
