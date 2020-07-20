@@ -52,6 +52,7 @@ endif(WIN32)
 
 set(CHAPTERS
     advanced
+    test1
 )
 
 set(advanced
@@ -63,6 +64,25 @@ set(advanced
         textures_vague
 )
 
+set(test1
+        00skeleton
+        01shader_vbo1
+        01shader_vbo2
+        02indexed_vbo
+        03texture
+        04perspective
+        05fbo_fxaa
+        06instancing1
+        06instancing2_buffer_texture
+        06instancing3_uniform_buffer
+        07geometry_shader_blending
+        08map_buffer
+        09transform_feedback
+        10queries_conditional_render
+        11tesselation
+        12shader_image_load_store
+        13compute_shader_nbody
+)
 
 
 # first create relevant static libraries requried for other projects
