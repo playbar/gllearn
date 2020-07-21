@@ -1,5 +1,6 @@
 link_libraries(assimp)
 link_libraries(libglew_static)
+link_libraries(freetype)
 
 
 file(GLOB SOIL_SRC
@@ -15,8 +16,9 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 
-link_directories(${CMAKE_SOURCE_DIR}/lib)
+#link_directories(${CMAKE_SOURCE_DIR}/lib)
 include_directories(
+        ${PROJECT_SOURCE_DIR}/freetype/include
         ${PROJECT_SOURCE_DIR}/glm
         ${PROJECT_SOURCE_DIR}/glfw/include
         ${PROJECT_SOURCE_DIR}/glew/include
@@ -42,7 +44,7 @@ elseif(APPLE)
   FIND_LIBRARY(CoreVideo_LIBRARY CoreVideo)
   MARK_AS_ADVANCED(COCOA_LIBRARY OpenGL_LIBRARY)
   SET(APPLE_LIBS ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY})
-  SET(APPLE_LIBS ${APPLE_LIBS} glfw assimp soil)
+  SET(APPLE_LIBS ${APPLE_LIBS} glfw assimp soil freetype)
   set(LIBS ${LIBS} ${APPLE_LIBS})
 else()
   set(LIBS )
