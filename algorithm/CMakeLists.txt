@@ -15,3 +15,7 @@ add_executable(mainoctree
 
 add_executable(psimpl_test
         psimpl_test.cpp)
+
+add_executable(clipper_console_demo
+        clipper_console_demo.cpp
+        clipper.cpp)
