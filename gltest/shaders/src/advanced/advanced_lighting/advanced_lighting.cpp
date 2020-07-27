@@ -12,6 +12,7 @@
 #include <model.h>
 
 #include <iostream>
+#include "fps.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_button_callback( GLFWwindow* window, int button, int action, int mods );
@@ -162,12 +163,13 @@ int main()
         glBindTexture(GL_TEXTURE_2D, floorTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        std::cout << (blinn ? "Blinn-Phong" : "Phong") << std::endl;
+//        std::cout << (blinn ? "Blinn-Phong" : "Phong") << std::endl;
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
+        ShowFPS();
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:

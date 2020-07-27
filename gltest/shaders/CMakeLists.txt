@@ -86,7 +86,7 @@ set(test1
 
 
 # first create relevant static libraries requried for other projects
-add_library(stbimg "src/stb_image.cpp")
+add_library(stbimg "src/stb_image.cpp" "src/fps.cpp")
 set(LIBS ${LIBS} stbimg)
 
 add_library(gladlib "src/glad.c")
