@@ -1,0 +1,62 @@
+﻿/**
+
+\page pagDownload Download
+
+\subpage pagChangelog "You can review the changelog here."
+
+Remember to set the <code>VL_DATA_PATH</code> environment variable to the directory containing the sample data in order to run the demos and tests included in VL.
+
+Run the tests using any supported backend plus the test number as the first argument. The list of tests can be printed using <i>0</i>, ex: <code>vlWin32_tests 0</code>.
+
+<div class="featuretitle">Releases</div>
+
+<div id="vl-releases">
+Loading...
+</div>
+
+\htmlonly
+<script>
+$.ajax({
+  url: "https://api.github.com/repos/MicBosi/VisualizationLibrary/releases",
+  success: function(releases){
+    var html = ''
+    function mySorter(a, b) {
+        var x = a.name;
+        var y = b.name;
+        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+    }
+    releases = releases.sort(mySorter);
+    releases.forEach(function(release) {
+      html += '<p><a href="' + release.html_url + '">' + release.name + '</a> <small>(' + new Date(release.published_at).toLocaleString() + ')</small></p>';
+    });
+    $('#vl-releases').html( html );
+  }
+});
+</script>
+\endhtmlonly
+
+All releases:
+
+<a href="https://github.com/MicBosi/VisualizationLibrary/releases">github.com/MicBosi/VisualizationLibrary/releases</a>
+
+<div class="featuretitle">GitHub Repository</div>
+
+VL official repo is <a href="https://github.com/MicBosi/VisualizationLibrary">github.com/MicBosi/VisualizationLibrary</a>
+
+Clone VL repo: <code>git clone https://github.com/MicBosi/VisualizationLibrary.git</code>
+
+Download .zip file: <a href="https://github.com/MicBosi/VisualizationLibrary/archive/master.zip">github.com/MicBosi/VisualizationLibrary/archive/master.zip</a>
+
+Download .tar.gz file: <a href="https://github.com/MicBosi/VisualizationLibrary/archive/master.tar.gz">github.com/MicBosi/VisualizationLibrary/archive/master.tar.gz</a>
+
+<div class="featuretitle">Compiling Visualization Library</div>
+
+Visualization Library uses CMake as its building system and can target several environments and compilers. At the moment we officially support the following platforms:
+
+- Windows: Visual Studio &amp; MinGW
+- Linux: GNU make/GCC
+- Mac OS X: Xcode
+
+More information at \subpage pagInstall "Compiling and Installing VL".
+
+*/

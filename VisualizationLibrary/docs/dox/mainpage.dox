@@ -1,0 +1,57 @@
+/**
+\mainpage Visualization Library Reference Documentation
+
+<table border=0 style="width: 1000px; margin: auto 0;">
+  <tr>
+    <td>
+      <div class="featuretitle"><b>Basic Information</b></div>
+
+      - \subpage pagIntro "Introduction"
+      - \subpage pagKeyFeatures "Features Overview"
+      - <a target=_blank href="http://VisualizationLibrary.org/gallery"><b>Gallery</b></a>
+
+      <div class="featuretitle"><b>Download</b></div>
+
+      - <a target=_blank href="http://VisualizationLibrary.org/download"><b>Download Page</b></a>
+      - \subpage pagChangelog
+
+      <div class="featuretitle"><b>Getting Started</b></div>
+
+      - \subpage pagInstall "Compiling and Installing VL"
+      - \subpage pagKnowledgeBase "Knowledge Base"
+      - \subpage pagLearning "Learning VL"
+      - \subpage pagDesign "Architecture Diagrams"
+      - \subpage pagOpenGL "OpenGL to VL Mapping"
+      - \subpage pagGuides "Tutorials"
+
+      <div class="featuretitle"><b>Community</b></div>
+
+      - <a target=_blank href="https://github.com/MicBosi/VisualizationLibrary/blob/master/CONTRIBUTING.md"><b>Contributing</b></a>
+      - <a target=_blank href="https://github.com/MicBosi/VisualizationLibrary"><b>GitHub VL Home</b></a>
+      - <a target=_blank href="https://github.com/MicBosi/VisualizationLibrary/issues"><b>GitHub VL Issues</b></a>
+      - <a target=_blank href="http://www.twitter.com/VizLibrary"><b>Twitter</b></a>
+      - <a target=_blank href="https://groups.google.com/forum/#!forum/visualization-library"><b>Google Group</b> (legacy)</a>
+      - <a target=_blank href="http://VisualizationLibrary.org/forum"><b>Forums</b> (legacy)</a>
+
+      <div class="featuretitle"><b>API Documentation</b></div>
+
+      - \subpage pagMainClasses "Grouped Classes and Functions"
+      - <a href="annotated.html"><b>Annotated Class List</b></a>
+      - <a href="classes.html"><b>Alphabetical Class List</b></a>
+      - <a href="hierarchy.html"><b>Class Hierarchy</b></a>
+
+      <div class="featuretitle"><b>Licensing, Credits and Contacts</b></div>
+
+      - \subpage pagLicensing "Licensing"
+      - \subpage pagCredits "Credits"
+      - \subpage pagContacts "Contacts"
+
+      <div class="featuretitle"><b>Docs Versions</b></div>
+
+      - <a href="/docs/2.0/"><b>VL 2.0 Docs</b></a>
+      - <a href="/docs/1.0/"><b>VL 1.0 Docs</b></a>
+
+    </td>
+  </tr>
+</table>
+*/
