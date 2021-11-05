@@ -12,7 +12,8 @@ uniform sampler2D texture_diffuse1;
 
 void main()
 {
-    vec4 color = vec4(0.5, 0.3, 0.6, 1.0);
+//    vec4 color = vec4(0.5, 0.3, 0.6, 1.0);
+    vec4 color = vec4(0.1, 0.1, 0.1, 1.0);
     vec3 n = normalize(mat3(view) * fragNormal);
     vec3 p = vec3(view * vec4(fragPosition, 1.0));
     vec3 v = normalize(-p);
@@ -30,6 +31,6 @@ void main()
 
 //    FragColor.rgb = FragColor.rgb * smoothstep(0.0, 1.0, vdn);
     FragColor = mix(color, color1, smoothstep(0.0, 1.0, vdn));
-//    FragColor = FragColor;
+//    FragColor = color1;
 }
 

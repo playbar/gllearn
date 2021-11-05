@@ -197,15 +197,15 @@ int main()
     // -------------
     unsigned int cubeTexture = loadTexture(FileSystem::getPath("resources/textures/container.jpg").c_str());
 
-    vector<std::string> faces
-    {
-        FileSystem::getPath("resources/textures/skybox/right.jpg"),
-        FileSystem::getPath("resources/textures/skybox/left.jpg"),
-        FileSystem::getPath("resources/textures/skybox/top.jpg"),
-        FileSystem::getPath("resources/textures/skybox/bottom.jpg"),
-        FileSystem::getPath("resources/textures/skybox/front.jpg"),
-        FileSystem::getPath("resources/textures/skybox/back.jpg")
-    };
+    vector<std::string> faces;
+
+    faces.push_back(FileSystem::getPath("resources/textures/skybox/right.jpg"));
+    faces.push_back(FileSystem::getPath("resources/textures/skybox/left.jpg"));
+    faces.push_back(FileSystem::getPath("resources/textures/skybox/top.jpg"));
+    faces.push_back(FileSystem::getPath("resources/textures/skybox/bottom.jpg"));
+    faces.push_back(FileSystem::getPath("resources/textures/skybox/front.jpg"));
+    faces.push_back(FileSystem::getPath("resources/textures/skybox/back.jpg"));
+
     unsigned int cubemapTexture = loadCubemap(faces);
 
     // shader configuration
@@ -215,6 +215,16 @@ int main()
 
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
+
+    int numAttribs = 0;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &numAttribs);
+    glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &numAttribs);
+    glGetIntegerv(GL_MAX_VARYING_VECTORS, &numAttribs);
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &numAttribs);
+    glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numAttribs);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numAttribs);
+    glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_VECTORS, &numAttribs);
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &numAttribs);
 
     // render loop
     // -----------

@@ -157,9 +157,9 @@ int main() {
     // data for a fullscreen quad (this time with texture coords)
     GLfloat vertexData[] = {
     //  X     Y     Z           U     V     
-       1.0f, 1.0f, 0.0f,       1.0f, 1.0f, // vertex 0
-      -1.0f, 1.0f, 0.0f,       0.0f, 1.0f, // vertex 1
-       1.0f,-1.0f, 0.0f,       1.0f, 0.0f, // vertex 2
+       1.0f, 1.0f, 0.0f,       2.0f, 2.0f, // vertex 0
+      -1.0f, 1.0f, 0.0f,       0.0f, 2.0f, // vertex 1
+       1.0f,-1.0f, 0.0f,       2.0f, 0.0f, // vertex 2
       -1.0f,-1.0f, 0.0f,       0.0f, 0.0f, // vertex 3
     }; // 4 vertices with 5 components (floats) each
 
@@ -214,8 +214,8 @@ int main() {
     // set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
     // set texture content
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);

@@ -106,8 +106,9 @@ int main()
         // configure transformation matrices
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-        view = glm::rotate(view, glm::radians((float)glfwGetTime() * -10.0f), glm::vec3(1.0, 1.0, 0.0));
+//        view = glm::rotate(view, glm::radians((float)glfwGetTime() * -10.0f), glm::vec3(1.0, 1.0, 0.0));
         glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians((float)glfwGetTime() * -10.0f), glm::vec3(1.0, 1.0, 0.0));
         shader.use();
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);

@@ -126,7 +126,7 @@ int main()
 
     // lighting info
     // -------------
-    glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+    glm::vec3 lightPos(0.0f, 1.0f, 0.0f);
 
     // render loop
     // -----------
