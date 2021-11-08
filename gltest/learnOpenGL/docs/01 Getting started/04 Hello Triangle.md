@@ -160,8 +160,18 @@ void main()
 当前这个顶点着色器可能是我们能想到的最简单的顶点着色器了，因为我们对输入数据什么都没有处理就把它传到着色器的输出了。在真实的程序里输入数据通常都不是标准化设备坐标，所以我们首先必须先把它们转换至OpenGL的可视区域内。
 
 ## 编译着色器
+现在，我们暂时将顶点着色器的源代码硬编码在代码文件顶部的C风格字符串中：
 
-我们已经写了一个顶点着色器源码（储存在一个C的字符串中），但是为了能够让OpenGL使用它，我们必须在运行时动态编译它的源码。
+```c++
+const char *vertexShaderSource = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+```
+
+为了能够让OpenGL使用它，我们必须在运行时动态编译它的源代码。
 
 我们首先要做的是创建一个着色器对象，注意还是用ID来引用的。所以我们储存这个顶点着色器为`unsigned int`，然后用<fun>glCreateShader</fun>创建这个着色器：
 
@@ -217,7 +227,7 @@ void main()
 } 
 ```
 
-片段着色器只需要一个输出变量，这个变量是一个4分量向量，它表示的是最终的输出颜色，我们应该自己将其计算出来。我们可以用`out`关键字声明输出变量，这里我们命名为<var>FragColor</var>。下面，我们将一个alpha值为1.0(1.0代表完全不透明)的橘黄色的`vec4`赋值给颜色输出。
+片段着色器只需要一个输出变量，这个变量是一个4分量向量，它表示的是最终的输出颜色，我们应该自己将其计算出来。声明输出变量可以使用`out`关键字，这里我们命名为<var>FragColor</var>。下面，我们将一个Alpha值为1.0(1.0代表完全不透明)的橘黄色的`vec4`赋值给颜色输出。
 
 编译片段着色器的过程与顶点着色器类似，只不过我们使用<var>GL_FRAGMENT_SHADER</var>常量作为着色器类型：
 
@@ -311,7 +321,7 @@ glEnableVertexAttribArray(0);
 
 !!! Important
 
-	每个顶点属性从一个VBO管理的内存中获得它的数据，而具体是从哪个VBO（程序中可以有多个VBO）获取则是通过在调用<fun>glVetexAttribPointer</fun>时绑定到<var>GL_ARRAY_BUFFER</var>的VBO决定的。由于在调用<fun>glVetexAttribPointer</fun>之前绑定的是先前定义的<var>VBO</var>对象，顶点属性`0`现在会链接到它的顶点数据。
+	每个顶点属性从一个VBO管理的内存中获得它的数据，而具体是从哪个VBO（程序中可以有多个VBO）获取则是通过在调用<fun>glVertexAttribPointer</fun>时绑定到<var>GL_ARRAY_BUFFER</var>的VBO决定的。由于在调用<fun>glVertexAttribPointer</fun>之前绑定的是先前定义的<var>VBO</var>对象，顶点属性`0`现在会链接到它的顶点数据。
 
 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用<fun>glEnableVertexAttribArray</fun>，以顶点属性位置值作为参数，启用顶点属性；顶点属性默认是禁用的。自此，所有东西都已经设置好了：我们使用一个顶点缓冲对象将顶点数据初始化至缓冲中，建立了一个顶点和一个片段着色器，并告诉了OpenGL如何把顶点数据链接到顶点着色器的顶点属性上。在OpenGL中绘制一个物体，代码会像是这样：
 
@@ -432,7 +442,7 @@ unsigned int indices[] = { // 注意索引从0开始!
 };
 ```
 
-你可以看到，当时用索引的时候，我们只定义了4个顶点，而不是6个。下一步我们需要创建索引缓冲对象：
+你可以看到，当使用索引的时候，我们只定义了4个顶点，而不是6个。下一步我们需要创建索引缓冲对象：
 
 ```c++
 unsigned int EBO;
