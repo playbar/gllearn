@@ -91,16 +91,16 @@ int main()
     }
 
 	// find path to font
-	const char *font_name = FileSystem::getPath("resources/fonts/Antonio-Bold.ttf").c_str();
-    if(!font_name)
+    std::string font_name = FileSystem::getPath("resources/fonts/Antonio-Bold.ttf");
+    if (font_name.empty())
     {
-        std::cout << "ERROR::FREETYPE: Failed to load font_name: " << font_name << std::endl;
+        std::cout << "ERROR::FREETYPE: Failed to load font_name" << std::endl;
         return -1;
     }
 	
 	// load font as face
     FT_Face face;
-    if (FT_New_Face(ft, font_name, 0, &face)) {
+    if (FT_New_Face(ft, font_name.c_str(), 0, &face)) {
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
         return -1;
     }
@@ -145,7 +145,7 @@ int main()
                 texture,
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                face->glyph->advance.x
+                static_cast<unsigned int>(face->glyph->advance.x)
             };
             Characters.insert(std::pair<char, Character>(c, character));
         }
@@ -258,4 +258,3 @@ void RenderText(Shader &shader, std::string text, float x, float y, float scale,
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-
