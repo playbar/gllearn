@@ -163,6 +163,7 @@ int main() {
       -1.0f,-1.0f, 0.0f,       0.0f, 0.0f, // vertex 3
     }; // 4 vertices with 5 components (floats) each
 
+
     // fill with data
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*4*5, vertexData, GL_STATIC_DRAW);
                     
