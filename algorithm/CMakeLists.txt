@@ -3,6 +3,9 @@ include_directories(${glfw_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/../glm
         )
 
+add_executable(CalNormalVector
+        CalNormalVector.cpp)
+
 add_executable(pointtest
         pionttest.cpp
        )
